@@ -44,8 +44,6 @@ public class BinaryTree
 	**/
 	public void insert( int value )
 	{
-		//Create a new tree with the provided value
-		BinaryTree toInsert = new BinaryTree( value ); 
 		
 		//Insert into left subtree if value is less than or equal to data
 		if( value <= this.data ) 
@@ -53,6 +51,7 @@ public class BinaryTree
 			//insert if left subtree is null
 			if( this.leftSubTree == null )
 			{
+				//Create a new tree with the provided value
 				leftSubTree = new BinaryTree ( value );
 			}
 			
@@ -70,6 +69,7 @@ public class BinaryTree
 			//insert if right subtree is null
 			if( this.rightSubTree == null )
 			{
+				//Create a new tree with the provided value
 				rightSubTree = new BinaryTree ( value );
 			}
 			
