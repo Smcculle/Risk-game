@@ -28,6 +28,7 @@ public class BinaryTreeExample
 		{
 			System.out.println( "Usage: BinaryTreeExample filename" );
 			System.out.println( "where filename contains a serialized ArrayList<Integer>" );
+			
 		}
 		
 		else

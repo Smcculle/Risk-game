@@ -53,7 +53,28 @@ public class BinaryTreeTest extends TestCase
         PrintStream oldStdOut = System.out;
 		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut( new PrintStream( outContent ) );
-		 
+		
+		/*Testing with single element.  setUp initializes testTree with 7.
+		 * inOrder() now generates a bytearrayoutputstream that we will convert
+         * to string to compare with expected values.  reset() clears the stream
+         */
+		String singleExpected = "7";
+        testTree.inOrder(); // generates our bytearray of values
+        assertEquals( singleExpected, outContent.toString().trim() );         
+        outContent.reset();
+		
+		//single test with -7 initialized
+		String singleExpectedNeg = "-7";
+		testTreeNeg.inOrder();
+		assertEquals( singleExpectedNeg, outContent.toString().trim() );         
+        outContent.reset();
+		
+		//Single test with 0
+		String singleExpectedZero = "0";
+		new BinaryTree(0).inOrder();
+		assertEquals( singleExpectedZero, outContent.toString().trim() );         
+        outContent.reset();
+		
 		//Testing insert with reverse sorted entries and duplicates
 		String testInsertTreeExpected = "-30 -26 -5 2 6 24 24 26 30 30";
 	
@@ -68,15 +89,8 @@ public class BinaryTreeTest extends TestCase
 		testInsertTree.insert( -26 );
 		testInsertTree.insert( -30 );
 		
-		/* inOrder() now generates a bytearrayoutputstream that we will convert
-         * to string to compare with expected values.  Since outContent.toString
-         * comes from a byte stream, we need to trim it to compare to our
-		 * string 
-		 */
 		testInsertTree.inOrder();
 		assertEquals( testInsertTreeExpected, outContent.toString().trim() );
-		
-		//empty the stream for the next test
 		outContent.reset();
 		
 		//Testing insert with sorted entries and duplicates
@@ -95,6 +109,7 @@ public class BinaryTreeTest extends TestCase
 		
 		testInsertTree2.inOrder();
 		assertEquals( testInsertTree2Expected, outContent.toString().trim() );
+	
 		
 		/* Cleanup.  Closing bytearrayoutputstream has 
         *  no effect, so we ignore that.  
