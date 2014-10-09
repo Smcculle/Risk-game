@@ -27,7 +27,7 @@ public class BinaryTreeExample
 		if( args.length != 1 )
 		{
 			System.out.println( "Usage: BinaryTreeExample filename" );
-			System.out.println( "where filename is a serialized ArrayList<Integer>" );
+			System.out.println( "where filename contains a serialized ArrayList<Integer>" );
 		}
 		
 		else
