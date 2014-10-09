@@ -52,13 +52,13 @@ public class BinaryTree
 			if( this.leftSubTree == null )
 			{
 				//Create a new tree with the provided value
-				leftSubTree = new BinaryTree ( value );
+				this.leftSubTree = new BinaryTree ( value );
 			}
 			
 			//if left subtree is not null, call insert recursively on subtree
 			else
 			{
-				leftSubTree.insert( value );
+				this.leftSubTree.insert( value );
 			}
 			
 		}
@@ -70,13 +70,13 @@ public class BinaryTree
 			if( this.rightSubTree == null )
 			{
 				//Create a new tree with the provided value
-				rightSubTree = new BinaryTree ( value );
+				this.rightSubTree = new BinaryTree ( value );
 			}
 			
 			//if right subtree is not null, call insert recursively on subtree
 			else
 			{
-				rightSubTree.insert( value );
+				this.rightSubTree.insert( value );
 			}
 			
 		}		
@@ -91,16 +91,16 @@ public class BinaryTree
 	public void inOrder()
 	{
 		//Traverse left subtree until we reach null
-		if( this.leftSubTree != null)
+		if( this.leftSubTree != null )
 			this.leftSubTree.inOrder();
 		
 		//Executes after reaching null as a left subtree, 'visiting' that node.
-		System.out.printf( "%d ", this.data); 
+		System.out.printf( "%d ", this.data ); 
 		
 		/* Begin right transversal, which will then start over traversing
 		 * every leftSubTree of that right branch until null
 		 */
-		if( this.rightSubTree != null)
+		if( this.rightSubTree != null )
 			this.rightSubTree.inOrder();
 		
 	}
