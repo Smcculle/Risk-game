@@ -6,51 +6,54 @@
  * @version 0.1
  **/
 
-package interfaces;
+package classes;
 import java.util.ArrayList;
 
 
 /**
- * @interface ContinentInterface interface specifying continents on the board
+ * Continent class specifying continents on the board
  * GameBoard objects will contain Continent objects 
  **/
-public interface ContinentInterface
+public class Continent
 {
+	public Continent() { } 
+	
+	public Continent(String name, int bonusArmies) { }
 
 	/**
 	 * @return the name of the continent as a String
 	 **/
-	String getName();
+	public String getName() { return null; }
 	
 	/**
 	 * If no player owns all territories on a continent then this method should 
 	 * return null
 	 * @return a reference to the Player object that currently owns this continent
 	 **/
-	Player getOccupant();
+	public Player getOccupant() { return null; }
 	
 	/**
 	 * @return the number of additional armies a player gets for owning this continent
 	 **/
-	int getNumBonusArmies();
+	public int getNumBonusArmies() { return 0; }
 	
 	/**
 	 * Sets which player owns a continent, if any
 	 * @param occupant a reference to the Player object that now owns this continent
 	 **/
-	void setOccupant( Player occupant );
+	public void setOccupant( Player occupant ) { }
 	
 	// May also want
 	
 	/**
 	 * @return true of there is a player that owns all the territories on this continent
 	 **/
-	boolean isOccupied();
+	public boolean isOccupied() { return false; }
 	
 	/**
 	 * @return an ArrayList of all the territories on the continent
 	 **/
-	ArrayList<Territory> getTerritories();
+	ArrayList<Territory> getTerritories() { return null; }
 
 }
-// end Continent interface
+// end Continent class

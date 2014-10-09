@@ -5,13 +5,13 @@
  * @date September 15, 2014
  * @version 0.1
  **/
-package interfaces;
+package classes;
 
 /**
  * @interface DiceInterface specifying the dice used in the game to resolve attacks
  * Dice objects will be contained in Game objects
  **/
-public interface DiceInterface
+public class Dice
 {
 
 	/**
@@ -20,7 +20,7 @@ public interface DiceInterface
 	 * @param defending and integer to represent how many dice to use for the defense(1-2)
 	 * @return an integer array with the results of the rolls
 	 **/
-	int[] roll( int attacking, int defending );
+	int[] roll( int attacking, int defending ) { return null; }
 
 }
-// end Dice interface
+// end Dice class

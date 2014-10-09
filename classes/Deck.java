@@ -6,42 +6,42 @@
  * @version 0.1
  **/
 
-package interfaces;
+package classes;
 import java.util.ArrayList;
 
 
 /**
- * @interface DeckInterface specifying the deck of undistributed Risk game cards
+ * Deck class specifying the deck of undistributed Risk game cards
  * Game objects will contain Deck objects
  **/
-public interface DeckInterface
+public class Deck
 {
 
 	/**
 	 * Issues one card to be given to a player
 	 * @return Card from the front of the deck
 	 **/
-	Card deal();
+	Card deal() { return null; }
 	
 	/**
 	 * Used to add cards turned-in by players back to the deck
 	 * @param set an ArrayList of Cards turned-in by a player
 	 **/
-	void acceptCards( ArrayList<Card> set );
+	void acceptCards( ArrayList<Card> set ) { }
 	
 	/**
 	 * Shuffles the deck
 	 **/
-	void shuffle();
+	void shuffle() { }
 	
 	// may also want
 	
 	/**
 	 *
 	 **/
-	boolean hasCards();
+	boolean hasCards() { return false; }
 
 }
-// end Deck interface
+// end Deck class
 
 

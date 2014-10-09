@@ -1,5 +1,5 @@
 /**
- * Risk Game Interfaces
+ * Risk Game Classes
  * CSCI 2120 Fall 2014
  * @author Shane McCulley
  * @date September 15, 2014
@@ -7,25 +7,25 @@
  **/
 
 
-package interfaces;
+package classes;
 
 
 /**
- * @interface CardInterface specifying the Risk game cards
+ *   Card class specifying the Risk game cards
  **/
-public interface CardInterface
+public class Card
 {
 
 	/**
 	 * @return the type (infantry, cavalry, artillery) of the card as a String
 	 **/
-	String getType();
+	public String getType() { return null;} 
 	
 	/**
 	 * @return a reference to the territory this card is matched to
 	 **/
-	Territory getTerritory();
+	public Territory getTerritory() { return null;}
 
 }
-// end Card interface
+// end Card class
 
