@@ -1,13 +1,16 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class HandInterface
  * @author Shane McCulley
  * @date September 15, 2014
- * @version 0.1
  **/
 
 package interfaces;
+
 import java.util.ArrayList;
+import classes.Card;
+
+
 /**
  * @interface HandInterface specifying a hand of cards held by a specific player
  * Player objects will contain Hand objects

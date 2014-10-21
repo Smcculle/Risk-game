@@ -1,9 +1,8 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class Game
  * @author Shane McCulley
- * @date September 15, 2014
- * @version 0.1
+ * @date October 21, 2014
  **/
 
 package classes;
@@ -15,25 +14,26 @@ package classes;
 public class Game
 {
 
+	public Game() {}
 	/** 
 	 * Starts a new game and will call private methods to initialize the new game.
 	 * @param gameName the name used to save the game into a file
 	 **/
-	void newGame( String gameName ) { }
+	public void newGame( String gameName ) { }
 	
 	/**
 	 * Loads a saved game from serialized objects stored in a file
 	 * @param gameName the name of the file containing the saved game
 	 **/
-	void loadSavedGame( String gameName ) { }
+	public void loadSavedGame( String gameName ) { }
 	
 	/**
 	 * Starts the game loop that will begin actual game play
 	 **/
-	void playGame() { } 
+	public void playGame() { } 
 	
-	// note takeTurn() is a private method used by playGame()
-	// so it does not appear in the interface
+	private void takeTurn() {} 
+
 	
 
 } 

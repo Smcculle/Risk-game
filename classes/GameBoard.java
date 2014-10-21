@@ -1,13 +1,12 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class GameBoard
  * @author Shane McCulley
- * @date September 15, 2014
- * @version 0.1
+ * @date October 21, 2014
  **/
 
 package classes;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -17,17 +16,22 @@ import java.util.ArrayList;
 public class GameBoard
 {
 
+	private HashMap<String, Territory> territories;
+	private HashMap<String, Continent> continents;
+	
+	
+	public GameBoard() {}
 	/**
 	 * Returns a list of all the territories on the board
 	 * @return ArrayList of Territory references
 	 **/
-	public ArrayList<Territory> getTerritoriesList() { return null; }
+	public HashMap<String, Territory> getTerritoriesList() { return null; }
 	
 	/**
 	 * Returns a list of all the continents on the board
 	 * @return ArrayList of Continent references
 	 **/
-	public ArrayList<Continent> getContinentsList() { return null; }
+	public HashMap<String, Continent> getContinentsList() { return null; }
 	
 	/**
 	 * Retrieves a reference to a territory by name

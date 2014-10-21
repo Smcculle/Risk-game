@@ -1,9 +1,8 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class Continent
  * @author Shane McCulley
- * @date September 15, 2014
- * @version 0.1
+ * @date October 21, 2014
  **/
 
 package classes;
@@ -16,6 +15,11 @@ import java.util.ArrayList;
  **/
 public class Continent
 {
+	/* Instance variables */
+	private String name;
+	private Player occupant;
+	private int bonusArmies;
+	
 	public Continent() { } 
 	
 	public Continent(String name, int bonusArmies) { }
@@ -53,7 +57,7 @@ public class Continent
 	/**
 	 * @return an ArrayList of all the territories on the continent
 	 **/
-	ArrayList<Territory> getTerritories() { return null; }
+	public ArrayList<Territory> getTerritories() { return null; }
 
 }
 // end Continent class

@@ -1,18 +1,22 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class Dice
  * @author Shane McCulley
- * @date September 15, 2014
- * @version 0.1
+ * @date October 21, 2014
  **/
+
 package classes;
 
+import java.util.Random;
+
 /**
- * @interface DiceInterface specifying the dice used in the game to resolve attacks
- * Dice objects will be contained in Game objects
+ * 
  **/
 public class Dice
 {
+	private Random die;
+	
+	public Dice () {} 
 
 	/**
 	 * Simulates the rolling of a set of dice
@@ -20,7 +24,7 @@ public class Dice
 	 * @param defending and integer to represent how many dice to use for the defense(1-2)
 	 * @return an integer array with the results of the rolls
 	 **/
-	int[] roll( int attacking, int defending ) { return null; }
+	public int[] roll( int attacking, int defending ) { return null; }
 
 }
 // end Dice class

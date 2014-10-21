@@ -1,13 +1,12 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class Territory
  * @author Shane McCulley
- * @date September 15, 2014
- * @version 0.1
+ * @date October 21, 2014
  **/
 
 package classes; 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Territory class specifying territories on the board
@@ -15,38 +14,45 @@ import java.util.ArrayList;
  **/
 public class Territory
 {
+	private String name;
+	private Player occupant;
+	private int armies;
+	private HashMap<String, Territory> neighbors;
+	
+	public Territory() {}
+	public Territory( String name, HashMap<String, Territory> neighbors) {}
 
 	/**
 	 * @return the name of the territory
 	 **/
-	String getName() { return null; }
+	public String getName() { return null; }
 	
 	/**
 	 * @return an ArrayList of all territories it shares a border with
 	 **/
-	ArrayList<Territory> getNeighbors() { return null; }
+	public HashMap<String, Territory> getNeighbors() { return null; }
 	
 	/**
 	 * @return a reference to the player that currently owns this territory
 	 **/
-	Player getOccupant() { return null; }
+	public Player getOccupant() { return null; }
 	
 	/**
 	 * @return the number of armies the occupying player has in the territory
 	 **/
-	int getNumArmies() { return 0; } 
+	public int getNumArmies() { return 0; } 
 	
 	/**
 	 * Used to set the new occupying player of a territory
 	 * @param occupant reference to the Player object who now occupies the territory
 	 **/
-	void setOccupant( Player occupant ) { }
+	public void setOccupant( Player occupant ) { }
 	
 	/**
 	 * Used by the occupying player to add armies to a territory
 	 * @param numArmies the number of armies to be placed into the territory
 	 **/
-	void setNumArmies( int numArmies ) { }
+	public void setNumArmies( int numArmies ) { }
 
 
 }

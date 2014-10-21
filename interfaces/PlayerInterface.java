@@ -1,13 +1,15 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class PlayerInterface
  * @author Shane McCulley
  * @date September 15, 2014
- * @version 0.1
  **/
 
 package interfaces;
-import java.util.ArrayList;
+import java.util.HashMap;
+import classes.Territory;
+import classes.Continent;
+import classes.Card;
 
 /**
  * @interface PlayerInterface specifying players who are playing an active game
@@ -34,12 +36,12 @@ public interface PlayerInterface
 	/**
 	 * @return an ArrayList of the territories the player controls
 	 **/
-	ArrayList<Territory> getTerritoriesList();
+	HashMap<String, Territory> getTerritoriesList();
 	
 	/**
 	 * @return a possibly empty ArrayList of continents the player controls
 	 **/
-	ArrayList<Continent> getContinentsList();
+	HashMap<String, Continent> getContinentsList();
 	
 	/**
 	 * Used to add territories to the player's list of controlled territories

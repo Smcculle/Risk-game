@@ -1,9 +1,8 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class Deck
  * @author Shane McCulley
- * @date September 15, 2014
- * @version 0.1
+ * @date October 21, 2014
  **/
 
 package classes;
@@ -16,30 +15,35 @@ import java.util.ArrayList;
  **/
 public class Deck
 {
-
+	
+	private ArrayList<Card> cards;
+	
+	public Deck() {} 
 	/**
 	 * Issues one card to be given to a player
 	 * @return Card from the front of the deck
 	 **/
-	Card deal() { return null; }
+	public Card deal() { return null; }
 	
 	/**
 	 * Used to add cards turned-in by players back to the deck
 	 * @param set an ArrayList of Cards turned-in by a player
 	 **/
-	void acceptCards( ArrayList<Card> set ) { }
+	public void acceptCards( ArrayList<Card> set ) { }
 	
 	/**
 	 * Shuffles the deck
 	 **/
-	void shuffle() { }
+	public void shuffle() { }
 	
 	// may also want
 	
 	/**
 	 *
 	 **/
-	boolean hasCards() { return false; }
+	public boolean hasCards() { return false; }
+	
+	public int getSize() {return 0;}
 
 }
 // end Deck class

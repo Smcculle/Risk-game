@@ -1,9 +1,8 @@
 /**
- * Risk Game Classes
  * CSCI 2120 Fall 2014
+ * Risk Game Class Card
  * @author Shane McCulley
- * @date September 15, 2014
- * @version 0.1
+ * @date October 21, 2014
  **/
 
 
@@ -15,16 +14,22 @@ package classes;
  **/
 public class Card
 {
+	/* Instance variables */
+	private String type;
+	private String territory;
 
+	public Card( String type, String territory) {} 
+	
+	
 	/**
 	 * @return the type (infantry, cavalry, artillery) of the card as a String
 	 **/
 	public String getType() { return null;} 
 	
 	/**
-	 * @return a reference to the territory this card is matched to
+	 * @return a reference to the territory this card is matched to.  
 	 **/
-	public Territory getTerritory() { return null;}
+	public String getTerritory() { return null;}
 
 }
 // end Card class

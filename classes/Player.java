@@ -1,13 +1,12 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class Player
  * @author Shane McCulley
- * @date September 15, 2014
- * @version 0.1
+ * @date October 21, 2014
  **/
 
 package classes;
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @interface PlayerInterface specifying players who are playing an active game
@@ -15,7 +14,12 @@ import java.util.ArrayList;
  **/
 public class Player
 {
-	//TODO Instance variables 
+	// Instance variables 
+	private String name;
+	private int numArmies; 
+	private HashMap<String, Territory> territories;
+	private HashMap<String, Continent> continents;
+	private Hand cardHand;
 	
 	
 	//TODO Constructors 
@@ -41,12 +45,12 @@ public class Player
 	/**
 	 * @return an ArrayList of the territories the player controls
 	 **/
-	public ArrayList<Territory> getTerritoriesList() { return null; }
+	public HashMap<String, Territory> getTerritoriesList() { return null; }
 	
 	/**
 	 * @return a possibly empty ArrayList of continents the player controls
 	 **/
-	public ArrayList<Continent> getContinentsList() { return null; }
+	public HashMap<String, Continent> getContinentsList() { return null; }
 	
 	/**
 	 * Used to add territories to the player's list of controlled territories
@@ -81,7 +85,13 @@ public class Player
 	 * @param numAttackingArmies an integer representing the number of armies used in
 	 *  the attack
 	 **/
-	void attack(Territory attacker, Territory defender, int numAttackingArmies ) { }
+	public void attack(Territory attacker, Territory defender, int numAttackingArmies ) { }
+	
+	/**
+	 * Removes a territory from the player when he loses one.  
+	 * @param oldTerritory The territory lost 
+	 */
+	public void removeTerritory( Territory oldTerritory ) {}
 
 }
 // end Player class

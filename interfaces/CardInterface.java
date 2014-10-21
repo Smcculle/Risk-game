@@ -1,9 +1,8 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class CardInterface
  * @author Shane McCulley
  * @date September 15, 2014
- * @version 0.1
  **/
 
 
@@ -24,7 +23,7 @@ public interface CardInterface
 	/**
 	 * @return a reference to the territory this card is matched to
 	 **/
-	Territory getTerritory();
+	String getTerritory();
 
 }
 // end Card interface

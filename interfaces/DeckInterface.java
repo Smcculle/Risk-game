@@ -1,13 +1,14 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class DeckInterface
  * @author Shane McCulley
  * @date September 15, 2014
- * @version 0.1
  **/
 
 package interfaces;
+
 import java.util.ArrayList;
+import classes.Card;
 
 
 /**
@@ -40,7 +41,11 @@ public interface DeckInterface
 	 *
 	 **/
 	boolean hasCards();
-
+	
+	/**
+	 * return number of cards left in deck 
+	 */
+	int getSize();
 }
 // end Deck interface
 

@@ -1,9 +1,8 @@
 /**
- * Risk Game Interfaces
  * CSCI 2120 Fall 2014
+ * Risk Game Class GameInterface
  * @author Shane McCulley
  * @date September 15, 2014
- * @version 0.1
  **/
 
 package interfaces;
