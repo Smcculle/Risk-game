@@ -6,7 +6,7 @@
  **/
 
 package classes;
-import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -16,36 +16,55 @@ import java.util.HashMap;
 public class GameBoard
 {
 
-	private HashMap<String, Territory> territories;
-	private HashMap<String, Continent> continents;
+	private Map<String, Territory> territories;
+	private Map<String, Continent> continents;
 	
 	
-	public GameBoard() {}
+	public GameBoard( Map<String, Territory> territories, Map<String, Continent> continents ) 
+	{
+		this.territories = territories;
+		this.continents = continents;
+	}
 	/**
 	 * Returns a list of all the territories on the board
+	 * 
 	 * @return ArrayList of Territory references
 	 **/
-	public HashMap<String, Territory> getTerritoriesList() { return null; }
+	public Map<String, Territory> getTerritoriesList() 
+	{ 
+		return this.territories; 
+	}
 	
 	/**
 	 * Returns a list of all the continents on the board
+	 * 
 	 * @return ArrayList of Continent references
 	 **/
-	public HashMap<String, Continent> getContinentsList() { return null; }
+	public Map<String, Continent> getContinentsList() 
+	{ 
+		return this.continents; 
+	}
 	
 	/**
 	 * Retrieves a reference to a territory by name
-	 * @param the String containing the name of the territory to get
+	 * 
+	 * @param territoryName  the String containing the name of the territory to get
 	 * @return a reference to the specified territory
 	 **/
-	public Territory getTerritoryByName( String territoryName ) { return null; }
+	public Territory getTerritoryByName( String territoryName ) 
+	{ 
+		return this.territories.get( territoryName ); 
+	}
 	
 	/**
 	 * Retrieves a reference to a continent by name
-	 * @param the String containing the name of the continent to get
+	 * 
+	 * @param continentName  the String containing the name of the continent to get
 	 * @return a reference to the specified continent
 	 **/
-	public Continent getContinentByName( String continentName ) { return null; }
+	public Continent getContinentByName( String continentName ) 
+	{ 
+		return this.continents.get( continentName ); 	
+	}
 
-} 
-// end GameBoard class
+} // end GameBoard class

@@ -23,11 +23,11 @@ public class DeckTest extends TestCase
 	
 	protected void setUp() 
 	{
-		test1 = new Deck();
 		Card c1 = new Card( "type1", "");					
 		Card c2 = new Card( "", "territory2");
 		someCards.add( c1 );
-		someCards.add( c2 ); 
+		someCards.add( c2 );
+		test1 = new Deck( someCards );
 	}
 	
 	

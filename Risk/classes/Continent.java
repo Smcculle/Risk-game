@@ -44,7 +44,7 @@ public class Continent
 	 **/
 	public String getName() 
 	{
-		return name; 
+		return new String( this.name ); 
 	}
 	
 	/**

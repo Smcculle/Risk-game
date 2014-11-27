@@ -19,7 +19,10 @@ public class Deck
 	
 	private ArrayList<Card> cards;
 	
-	public Deck() {} 
+	public Deck( ArrayList<Card> cards) 
+	{
+		this.cards = cards; 
+	} 
 	/**
 	 * Issues one card to be given to a player.  Because players can only hold 5 cards at a time, the deck
 	 * should never run out of cards.  

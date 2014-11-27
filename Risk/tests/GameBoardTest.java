@@ -20,67 +20,99 @@ public class GameBoardTest extends TestCase {
 	
 	
 	private Continent testContinent;
-	private Continent testContinent2;
+	private Continent testContinentEurope;
 	
+	private Territory testTerritory; 
+	private Territory testTerritoryFrance; 
 	 
+	/* to initialize the gameboard with some values */
+	private Territory france; 
+	private Territory spain; 
+	private Continent europe; 
+	private Continent asia; 
 	
 	
 	protected void setUp() {
 		
-		//new GameBoard() should initialize our arraylist of countries and territories
-		testGameBoard = new GameBoard(); 
+		france = new Territory( "France", null);
+		spain = new Territory( "Spain", null );
+		HashMap<String, Territory> territories = new HashMap<String, Territory>();
+		territories.put( france.getName() , france );
+		territories.put( spain.getName(), spain );
 		
-		/* Fresh copy of testContinent for each method */
+		europe = new Continent( "Europe", 5, null );
+		asia = new Continent( "Asia", 7, null );
+		HashMap<String, Continent> continents = new HashMap<String, Continent>();
+		continents.put( europe.getName(), europe);
+		continents.put( asia.getName(), asia );
+		
+		
+		testGameBoard = new GameBoard( territories, continents); 
+		
+		/* Fresh copy of tests for each method */
 		testContinent = new Continent();
-		testContinent2 = new Continent();
+		testTerritory = new Territory();
+		
+		testContinentEurope = new Continent( "Europe", 5 );
+		testTerritoryFrance = new Territory( "France", null );
 		
 	}
 	
 	
 	//Testing GameBoard's getContinentByName(String): Continent method
-    public void testGetContinentByName() {
+    public void testGetContinentByName() 
+    {
     	
     	testContinent = testGameBoard.getContinentByName("Europe");
+    	assertEquals( testContinent, europe );
+    	
+    	testContinent = testGameBoard.getContinentByName( europe.getName() );
+    	assertEquals( testContinent, europe );
     	
     	// testContinent should be Europe
     	assertTrue( testContinent != null );
     	assertTrue( testContinent.getNumBonusArmies() > 0 );
-    	assertEquals( testContinent.getName(), ( testContinent2.getName() ));
+    	assertEquals( testContinent.getNumBonusArmies(), testContinentEurope.getNumBonusArmies() );
+    	assertEquals( testContinent.getName(), ( testContinentEurope.getName() ));
+    	
     	
     	/* should not be any continents with "" as name */
     	assertTrue( testGameBoard.getContinentByName( "" ) == null);
     	assertTrue( testGameBoard.getContinentByName( "Europa" ) == null);
-    	
     		
-    	
     }
     
     //Testing GameBoard's getContinentsList(): HashMap<String, Continent> method
     public void testGetContinentsList() 
     {
-    	HashMap<String, Continent> gcl = testGameBoard.getContinentsList();
+    	HashMap<String, Continent> gcl = (HashMap<String, Continent>)testGameBoard.getContinentsList();
     	
     	assertTrue( !gcl.isEmpty() );
     	
     	
-    	assertTrue( gcl.size() == 6 );
+    	assertTrue( gcl.size() == 2 );
     	
-    	assertTrue( gcl.containsKey( "Asia" ) );
-    	assertTrue( gcl.containsKey( "North America" ) );
-    	assertTrue( gcl.containsKey( "Europe" ) );
-    	assertTrue( gcl.containsKey( "Africa" ) );
-    	assertTrue( gcl.containsKey( "Australia" ) );
-    	assertTrue( gcl.containsKey( "South America" ) );
-    	
+    	assertTrue( gcl.containsKey( asia.getName() ) );
+    	assertTrue( gcl.containsKey( europe.getName() ) );
+    	assertTrue( gcl.containsValue( asia ));
+    	assertTrue( gcl.containsValue( europe ));
     	
     }
     
 	//Testing GameBoard's getTerritoriesList(): HashMap<String, Territory> method
     public void testGetTerritoriesList() 
     {
-    		HashMap<String, Territory> gtl = testGameBoard.getTerritoriesList();
-    		/* 42 total territories */
-    		assertTrue( gtl.size() == 42 );
+    	HashMap<String, Territory> gtl = (HashMap<String,Territory>)testGameBoard.getTerritoriesList();
+    	
+    	assertTrue( !gtl.isEmpty() );
+    	
+    	
+    	assertTrue( gtl.size() == 2 );
+    	
+    	assertTrue( gtl.containsKey( france.getName() ) );
+    	assertTrue( gtl.containsKey( spain.getName() ) );
+    	assertTrue( gtl.containsValue( france ));
+    	assertTrue( gtl.containsValue( spain ));
     		
     	
     }
@@ -88,11 +120,20 @@ public class GameBoardTest extends TestCase {
   //Testing GameBoard's getTerritoryByName(String): Territory method
     public void testGetTerritoryByName() 
     {
-    	HashMap<String, Territory> gtl = testGameBoard.getTerritoriesList();
-    	for( String s : gtl.keySet() )
-    	{
-    		assertTrue( gtl.get( s ) == testGameBoard.getTerritoryByName( s ) ) ;
-    	}
+    	testTerritory = testGameBoard.getTerritoryByName("France");
+    	assertEquals( testTerritory, france );
+    	
+    	testTerritory = testGameBoard.getTerritoryByName( france.getName() );
+    	assertEquals( testTerritory, france );
+    	
+    	// testTerritory should be france
+    	assertTrue( testTerritory != null );
+    	assertEquals( testTerritory.getName(), ( testTerritoryFrance.getName() ));
+    	
+    
+    	/* should not be any territories with "" as name */
+    	assertTrue( testGameBoard.getTerritoryByName( "" ) == null);
+    	assertTrue( testGameBoard.getTerritoryByName( "Franc" ) == null);
     	
     }
 	

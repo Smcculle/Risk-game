@@ -14,7 +14,10 @@ package classes;
 public class Game
 {
 
-	public Game() {}
+	public Game() 
+	{
+		takeTurn();
+	}
 	/** 
 	 * Starts a new game and will call private methods to initialize the new game.
 	 * @param gameName the name used to save the game into a file
