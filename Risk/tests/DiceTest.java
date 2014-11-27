@@ -57,5 +57,6 @@ public class DiceTest extends TestCase
 		for( int i : testResult )
 			assertTrue( i <= 6 && i >= 1);
 		
+		
 	}
 }

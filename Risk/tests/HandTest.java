@@ -20,7 +20,7 @@ public class HandTest extends TestCase
 	
 	protected void setUp() 
 	{
-		test1 = new Hand(); 
+		test1 = new Hand();
 	}
 	
 	
@@ -52,11 +52,14 @@ public class HandTest extends TestCase
 		Card c2 = new Card( "C2", "CT2" );
 		
 		test1.acceptCard( c1 );
+		assertTrue( test1.getCards().size() == 1 );
 		test1.acceptCard( c2 );
+		assertTrue( test1.getCards().size() == 2 );
 		int[] turnInIndex = {0, 1};
 		
 		ArrayList<Card> pCards = test1.getCards();
 		assertTrue( pCards.size() == 2 );
+		assertTrue( pCards.equals( test1.getCards() ));
 		
 		/*get cards should return no cards after this, as we have 2 cards and we are
 		 * turning in cards with indices 0 and 1*/

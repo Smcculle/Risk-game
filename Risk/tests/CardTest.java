@@ -36,6 +36,6 @@ public class CardTest extends TestCase
 	{
 		assertEquals( test1.getTerritory(), "" );
 		assertEquals( test2.getTerritory(), "territory2" );	
-		
+		assertEquals( test1.getTerritory(), test2.getType() );
 	}
 }

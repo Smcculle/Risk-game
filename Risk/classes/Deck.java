@@ -7,11 +7,12 @@
 
 package classes;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 /**
  * Deck class specifying the deck of undistributed Risk game cards
- * Game objects will contain Deck objects
+ * Game objects will contain a Deck object
  **/
 public class Deck
 {
@@ -20,32 +21,54 @@ public class Deck
 	
 	public Deck() {} 
 	/**
-	 * Issues one card to be given to a player
+	 * Issues one card to be given to a player.  Because players can only hold 5 cards at a time, the deck
+	 * should never run out of cards.  
+	 * 
 	 * @return Card from the front of the deck
 	 **/
-	public Card deal() { return null; }
+	public Card deal() 
+	{ 
+		Card c = this.hasCards() ? cards.get(0) : null; 
+		return c;
+	}
 	
 	/**
-	 * Used to add cards turned-in by players back to the deck
-	 * @param set an ArrayList of Cards turned-in by a player
+	 * Used to add cards turned-in by players back to the deck.  Turn in will be verified in
+	 * the game class.  
+	 * 
+	 * @param set  an ArrayList of Cards turned in by a player
 	 **/
-	public void acceptCards( ArrayList<Card> set ) { }
+	public void acceptCards( ArrayList<Card> set ) 
+	{ 
+		for( Card c : set )
+			cards.add(c);
+	}
 	
 	/**
 	 * Shuffles the deck
 	 **/
-	public void shuffle() { }
+	public void shuffle() 
+	{ 
+		Collections.shuffle( cards );
+	}
 	
-	// may also want
 	
 	/**
-	 *
+	 * @return true if there are cards left, false if not
 	 **/
-	public boolean hasCards() { return false; }
+	public boolean hasCards() 
+	{ 
+		return (!cards.isEmpty() ); 
+	}
 	
-	public int getSize() {return 0;}
+	/**
+	 * @return number of cards left in deck.  
+	 */
+	public int getSize() 
+	{
+		return cards.size();	
+	}
 
-}
-// end Deck class
+}// end Deck class
 
 

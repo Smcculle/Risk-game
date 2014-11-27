@@ -25,17 +25,26 @@ public class Player
 	//TODO Constructors 
 	public Player() { }
 	
-	public Player(String name) { }
+	public Player(String name) 
+	{ 
+		this.name = name; 
+	}
 	
 	/**
 	 * @return the Player's name
 	 **/
-	public String getName() { return null; }
+	public String getName() 
+	{
+		return name; 
+	}
 	
 	/**
 	 * @return integer representing the number of armies the player has that can be placed
 	 **/
-	public int getUnplacedArmies() { return 0; }
+	public int getUnplacedArmies() 
+	{ 
+		return numArmies; 
+	}
 	
 	/**
 	 * @return integer representing the total number of armies a player has on the board

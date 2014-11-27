@@ -7,9 +7,12 @@
 
 package tests;
 
+import java.util.HashMap;
+
 import junit.framework.TestCase;
 import classes.Continent;
 import classes.Player;
+import classes.Territory;
 
 
 public class ContinentTest extends TestCase {
@@ -79,8 +82,11 @@ public class ContinentTest extends TestCase {
         
         testContinent.setOccupant( testPlayerEmpty );
         
-        assertTrue( testContinent.isOccupied() == false);
+        assertTrue( testContinent.isOccupied() == true);
         
+        testPlayerEmpty = null; 
+        testContinent.setOccupant( testPlayerEmpty );
+        assertTrue( testContinent.isOccupied() == false );
         
     }
     
@@ -90,14 +96,14 @@ public class ContinentTest extends TestCase {
         //getOccupant() should return null as there is no occupant
         assertTrue( testPlayerEmpty != null );
         testPlayerEmpty = testContinentEmpty.getOccupant(); 
-        assertTrue( testPlayer == null ); 
+        assertTrue( testPlayerEmpty == null ); 
         
         //testPlayerEmpty is set to null from the lines above 
         testContinent2.setOccupant( testPlayerEmpty );
         assertTrue( testContinent2.getOccupant() == null );
         
         //getOccupant() should return testOccupied Player
-        assertTrue( testContinent.getOccupant().equals( testOccupiedPlayer ));
+        assertTrue( testOccupied.getOccupant().equals( testOccupiedPlayer ));
         
 
     }
@@ -122,6 +128,13 @@ public class ContinentTest extends TestCase {
          testContinent2.setOccupant( null );
          assertTrue( testContinent2.getOccupant() == null );
         
+    }
+    
+    public void testGetTerritories()
+    {
+    	assertTrue( testContinent.getTerritories() == null );
+    	HashMap<String, Territory> testMap = new HashMap<String, Territory>();
+    	//testMap.put( "Alaska", new Territory("Alaska" ));
     }
     
 

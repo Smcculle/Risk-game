@@ -18,18 +18,32 @@ public class Card
 	private String type;
 	private String territory;
 
-	public Card( String type, String territory) {} 
+	public Card( String type, String territory) 
+	{
+		
+		this.type = type;
+		this.territory = territory; 
+	} 
 	
 	
 	/**
-	 * @return the type (infantry, cavalry, artillery) of the card as a String
+	 * @return String type (infantry, cavalry, artillery) of the card
 	 **/
-	public String getType() { return null;} 
+	public String getType() 
+	{ 
+		
+		return type;
+		
+	} 
 	
 	/**
-	 * @return a reference to the territory this card is matched to.  
+	 * @return String reference to the territory this card is matched to.  
 	 **/
-	public String getTerritory() { return null;}
+	public String getTerritory() 
+	{
+		
+		return territory;	
+	}
 
 }
 // end Card class
