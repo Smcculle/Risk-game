@@ -17,7 +17,10 @@ public class Hand
 {
 	private ArrayList<Card> cards;
 	
-	public Hand () {}
+	public Hand () 
+	{
+		cards = new ArrayList<Card>();
+	}
 
 	/**
 	 * Used to receive a Card into a Player's hand
@@ -49,7 +52,9 @@ public class Hand
 		/* add cards toReturn, then remove from hand */
 		for( int index: set )
 		{
-			result.add( this.cards.get( index ) );
+			/* array bounds checking */
+			if( index < this.cards.size() )
+				result.add( this.cards.get( index ) );
 		}
 		this.cards.removeAll( result );
 		
