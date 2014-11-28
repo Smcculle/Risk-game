@@ -7,6 +7,7 @@
 
 package classes;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -30,14 +31,28 @@ public class Dice
 	public int[] roll( int attacking, int defending ) 
 	{
 		int totalRolls = attacking + defending; 
-		int[] results = new int[ totalRolls ];
+		int[] results = new int[ totalRolls + 1 ];
 		
-		for( int i = 0; i < totalRolls; i++)
+		for( int i = 0; i < totalRolls + 1; i++)
 		{
-			/* random number from 1 to 6 inclusive */
-			results[i] = die.nextInt( 6 ) + 1;
+			if( i != attacking )
+			{
+				/* random number from 1 to 6 inclusive */
+				results[i] = die.nextInt( 6 ) + 1;
+			}
+			else
+			{
+				/* add a 0 separator between attacking and defending rolls */
+				results[i] = 0;
+			}
 		}
 		
+		
+		/* sort attacker's dice in ascending order */
+		Arrays.sort( results, 0, attacking );
+
+		/* sort defender's dice in ascending order */
+		Arrays.sort( results, attacking, attacking + defending);
 		return results; 
 		
 	}

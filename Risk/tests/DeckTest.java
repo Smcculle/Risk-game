@@ -17,150 +17,142 @@ public class DeckTest extends TestCase
 {
 	private Deck test1;
 	private ArrayList<Card> someCards = new ArrayList<Card>();
-	private Card c1;
-	private Card c2;
-				
 	
-	protected void setUp() 
+	protected void setUp()
 	{
-		Card c1 = new Card( "type1", "");					
-		Card c2 = new Card( "", "territory2");
-		someCards.add( c1 );
-		someCards.add( c2 );
+		someCards.add( new Card( "type1", "" ) );
+		someCards.add( new Card( "", "territory2" ) );
 		test1 = new Deck( someCards );
 	}
-	
-	
-	//Testing Deck's deal() method
+
+	// Testing Deck's deal() method
 	public void testDeal()
 	{
 		int numCards = test1.getSize();
-		
+
 		/* test1 should be full of cards */
 		Card c = test1.deal();
 		assertTrue( c != null );
-		assertTrue( test1.getSize() == numCards - 1 );
-		
+		assertEquals( test1.getSize(), numCards - 1 );
+
 		/* deal all cards */
-		for( int i = 0; i < test1.getSize(); i++)
+		for ( int i = 0; i < test1.getSize(); i++ )
 		{
 			c = test1.deal();
 			assertTrue( c != null );
 		}
-		
+
 		assertTrue( test1.getSize() == 0 );
 		assertTrue( test1.hasCards() == false );
-		
-		c = test1.deal(); //no cards left to deal 
-		
+
+		c = test1.deal(); // no cards left to deal
+
 		assertNull( c );
-		
-		
+
 	}
-	
-	//Testing Deck's acceptCards(ArrayList<Card>) method
+
+	// Testing Deck's acceptCards(ArrayList<Card>) method
 	public void testAcceptCards()
 	{
-		/*Set up an array list of cards to test with */
-		
+		/* Set up an array list of cards to test with */
+
 		assertTrue( test1.hasCards() == true );
-		
+
 		/* deal all cards */
-		for( int i = 0; i < test1.getSize(); i++)
+		while( test1.hasCards() )
 		{
-			test1.deal();
+			test1.deal();	
 		}
+		
 		assertTrue( test1.hasCards() == false );
 		assertTrue( test1.getSize() == 0 );
-		
+
 		/* adding 2 cards, size should move to 2 */
-		test1.acceptCards( someCards ); 
+		test1.acceptCards( someCards );
 		assertTrue( test1.hasCards() == true );
 		assertTrue( test1.getSize() == 2 );
-		
-		/*testing duplicates in deck.  We should expect to have 2 cards, not 4 (2 repeated) */
+
+		/*
+		 * testing duplicates in deck. We should expect to have 2 cards, not 4
+		 * (2 repeated)
+		 */
 		test1.acceptCards( someCards );
 		assertTrue( test1.getSize() == 2 );
-		
-		test1.deal(); 
-		test1.deal(); 
-		
+
+		test1.deal();
+		test1.deal();
+
 		assertTrue( test1.hasCards() == false );
-		assertTrue( test1.getSize() == 0 ); 
-		
+		assertTrue( test1.getSize() == 0 );
+
 	}
-	
-	//Testing Deck's shuffle() method
+
+	// Testing Deck's shuffle() method
 	public void testShuffle()
 	{
-		
-		/*Shuffle implemented using Collections.shuffle(), so there is not much to test 
-		 * Since the hashCode will change on a successful shuffle, we test that */
-		
-		int preShuffle = test1.hashCode();
+		/* using Collections.shuffle method, the only way it shouldn't work is if an exception is thrown. */
+		int preShuffleSize = test1.getSize();
 		test1.shuffle();
-		assertTrue( preShuffle != test1.hashCode() );
-		test1.shuffle();
-		assertTrue( preShuffle != test1.hashCode() );
-	
+		assertEquals( test1.getSize(), preShuffleSize );
+
 	}
-	
-	//Testing Deck's hasCards() method
+
+	// Testing Deck's hasCards() method
 	public void testHasCards()
-	{	
+	{
 		assertTrue( test1.hasCards() == true );
-		
+
 		/* deal all cards */
-		for( int i = 0; i < test1.getSize(); i++)
+		while( test1.hasCards() )
 		{
 			test1.deal();
 		}
-		
+
 		assertTrue( test1.hasCards() == false );
-		
-		/*after dealing from an empty deck, we should still be empty */
-		test1.deal(); 
+
+		/* after dealing from an empty deck, we should still be empty */
+		test1.deal();
 		assertTrue( test1.hasCards() == false );
-		
-		/* after adding a single card, it should evaluate  to true */
+
+		/* after adding a single card, it should evaluate to true */
 		ArrayList<Card> aCard = new ArrayList<Card>();
-		aCard.add( new Card( "aT", "bT") );
+		aCard.add( new Card( "aT", "bT" ) );
 		test1.acceptCards( aCard );
 		assertTrue( test1.hasCards() == true );
-		
+
 		/* and empty again */
 		test1.deal();
 		assertTrue( test1.hasCards() == false );
-		
+
 	}
-	
-	//Testing getSize method
-	public void testGetSize() 
+
+	// Testing getSize method
+	public void testGetSize()
 	{
 		int initSize = test1.getSize();
 		assertTrue( initSize >= 0 );
-		
+
 		/* dealing single card reduces size by 1 */
-		test1.deal(); 
-		assertTrue( (initSize - 1) == test1.getSize() );
-		
-		initSize = test1.getSize(); 
-		
+		test1.deal();
+		assertEquals( ( initSize - 1 ), test1.getSize() );
+
+		initSize = test1.getSize();
+
 		/* deal all cards and check size */
-		for( int i = 1; i < test1.getSize() + 1; i++)
+		for ( int i = 1; i < test1.getSize() + 1; i++ )
 		{
 			test1.deal();
-			assertTrue( (initSize - i) == test1.getSize() );
+			assertTrue( ( initSize - i ) == test1.getSize() );
 		}
+
+		assertEquals( test1.getSize(), 0 );
+
 		
-		assertTrue( test1.getSize() == 0 );
-		
-		/* since test1 is empty, guaranteed to add 2 with acceptCards */
 		test1.acceptCards( someCards );
-		assertTrue( test1.getSize() == 2 );
-		test1.deal(); 
-		assertTrue( test1.getSize() == 1 );
 		
-		
+		assertEquals( test1.getSize(), 2 );
+		test1.deal();
+		assertEquals( test1.getSize(), 1 );
+
 	}
 }

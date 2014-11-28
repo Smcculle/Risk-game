@@ -5,12 +5,13 @@
  * @date October 21, 2014
  **/
 
-package classes; 
+package classes;
+
 import java.util.HashMap;
 
 /**
- * Territory class specifying territories on the board
- * GameBoard objects will contain Territory objects 
+ * Territory class specifying territories on the board GameBoard objects will
+ * contain Territory objects
  **/
 public class Territory
 {
@@ -18,73 +19,92 @@ public class Territory
 	private Player occupant;
 	private int armies;
 	private HashMap<String, Territory> neighbors;
-	
-	public Territory() {}
-	public Territory( String name, HashMap<String, Territory> neighbors) 
-	{ 
+
+	public Territory()
+	{
+	}
+
+	public Territory( String name, HashMap<String, Territory> neighbors )
+	{
 		this.name = name;
-		this.neighbors = neighbors; 
+		this.neighbors = neighbors;
 	}
 
 	/**
 	 * @return the name of the territory
 	 **/
-	public String getName() 
-	{ 
-		return name; 
+	public String getName()
+	{
+		return name;
 	}
-	
-	/** TODO: Implement
+
+	/**
+	 * TODO: Implement
+	 * 
 	 * @return an ArrayList of all territories it shares a border with
 	 **/
-	public HashMap<String, Territory> getNeighbors() 
-	{ 
-		return neighbors; 
+	public HashMap<String, Territory> getNeighbors()
+	{
+		return neighbors;
 	}
-	
+
 	/**
 	 * @return a reference to the player that currently owns this territory
 	 **/
-	public Player getOccupant() 
+	public Player getOccupant()
 	{
-		return occupant;	
+		return occupant;
 	}
-	
+
 	/**
 	 * @return the number of armies the occupying player has in the territory
 	 **/
-	public int getNumArmies() 
-	{ 
-		return armies; 
-	} 
-	
+	public int getNumArmies()
+	{
+		return armies;
+	}
+
 	/**
 	 * Used to set the new occupying player of a territory
-	 * @param occupant reference to the Player object who now occupies the territory
+	 * 
+	 * @param occupant  reference to the Player object who now occupies the
+	 *        territory
 	 **/
-	public void setOccupant( Player occupant ) 
-	{ 
-		this.occupant = occupant; 
+	public void setOccupant( Player occupant )
+	{
+		this.occupant = occupant;
+	}
+
+	/**
+	 * Used by the occupying player to add armies to a territory
+	 * 
+	 * @param numArmies  the number of armies to be placed into the territory
+	 **/
+	public void setNumArmies( int numArmies )
+	{
+		this.armies = numArmies;
 	}
 	
 	/**
-	 * Used by the occupying player to add armies to a territory
-	 * @param numArmies the number of armies to be placed into the territory
-	 **/
-	public void setNumArmies( int numArmies ) 
-	{ 
-		this.armies = numArmies; 
-	}
-	
+	 * Determines if a territory is adjacent to another for attacking, moving purposes. 
+	 * 
+	 * @param t  another territory to check adjacency with. 
+	 * @return true if adjacent, false otherwise.  
+	 */
 	public boolean isAdjacent( Territory t )
 	{
 		return neighbors.containsValue( t );
 	}
 	
+	/**
+	 * Determines if a territory is adjacent to another for attacking, moving purposes. 
+	 * 
+	 * @param t  another territory to check adjacency with. 
+	 * @return true if adjacent, false otherwise.  
+	 */
 	public boolean isAdjacent( String s )
 	{
 		return neighbors.containsKey( s );
 	}
-
 
 }// end Territory class

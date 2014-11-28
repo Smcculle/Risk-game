@@ -60,6 +60,22 @@ public class Hand
 		
 		return result; 
 	}
+	
+	/**
+	 * Inserts all cards of the given hand into this hand.  
+	 * 
+	 * @param hand  the Cards from a defeated player.  
+	 */
+	public void takeHand( Hand hand ) 
+	{
+		if( hand.size() > 0 )
+			this.cards.addAll( hand.cards );
+	}
+	
+	public int size()
+	{
+		return cards.size();
+	}
 
 }
 // end Hand class

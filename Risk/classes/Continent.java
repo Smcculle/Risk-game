@@ -23,12 +23,9 @@ public class Continent
 	private int bonusArmies;
 	private Map<String, Territory> territories; 
 	
-	public Continent() { } 
-	
 	public Continent(String name, int bonusArmies) 
 	{ 
-		this( name, bonusArmies, new HashMap<String, Territory>() );
-		
+		this( name, bonusArmies, new HashMap<String, Territory>() );	
 	}
 	
 	public Continent( String name, int bonusArmies, Map<String,Territory> territories )
@@ -44,7 +41,7 @@ public class Continent
 	 **/
 	public String getName() 
 	{
-		return new String( this.name ); 
+		return this.name; 
 	}
 	
 	/**

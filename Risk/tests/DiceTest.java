@@ -57,6 +57,15 @@ public class DiceTest extends TestCase
 		for( int i : testResult )
 			assertTrue( i <= 6 && i >= 1);
 		
-		
+		/* test ordering */
+		testResult = test1.roll( 6, 10 );
+		for( int i = 0; i < 5; i++ )
+		{
+			assertTrue( testResult[i] <= testResult[i+1] );
+		}
+		for( int i = 6; i < 14; i++ )
+		{
+			assertTrue( testResult[i] <= testResult[i+1] );
+		}
 	}
 }

@@ -100,4 +100,28 @@ public class HandTest extends TestCase
 		assertTrue( test1.getCards().size() == 1 );
 		
 	}
+	
+	public void testTakeHand()
+	{
+		Hand test2 = new Hand();
+		Card c1 = new Card( "THType1", "THTerr1" );
+		Card c2 = new Card( "THType2", "THTerr2" );
+		
+		test2.acceptCard( c1 );
+		test2.acceptCard( c2 );
+		
+		assertEquals( test1.size(), 0 );
+		assertEquals( test2.size(), 2 );
+		test1.takeHand( test2 );
+		assertEquals( test1.size(), 2 );
+		assertEquals( test2.size(), 2 );
+		
+		Hand test3 = new Hand(); 
+		
+		assertEquals( test3.size(), 0 );
+		test3.takeHand( test1 );
+		
+		assertEquals( test3.size(), 2 );
+		
+	}
 }
