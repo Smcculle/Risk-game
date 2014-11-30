@@ -7,7 +7,6 @@
 
 package classes;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,6 @@ public class Player
 	private Map<String, Continent> continents;
 	private Hand cardHand;
 
-	// TODO Constructors
 	public Player()
 	{
 		this( null );
@@ -64,12 +62,7 @@ public class Player
 		int result = 0;
 
 		for ( Territory t : territories.values() )
-		{
-			System.out.print( "For territory " + t.getName() + "(" + t.getNumArmies() + ") ");
-			System.out.print("Result was " + result);
 			result = result + t.getNumArmies();
-			System.out.println(" and now result is " + result );
-		}
 
 		return result;
 
@@ -143,8 +136,8 @@ public class Player
 	 * Resolves the action of an attack by decreasing troops and reassigning
 	 * territories as needed.
 	 * 
-	 * @param attacker a reference to a Territory object the player is 
-	 * 		  attacking from
+	 * @param attacker a reference to a Territory object the player is attacking
+	 *        from
 	 * @param defender a reference to a Territory object that is being attacked
 	 * @param diceResults array containing attacker results in ascending order,
 	 *        0 separator, followed by defender results in ascending order.
@@ -158,10 +151,10 @@ public class Player
 
 		int numAttacking = findSeparator( diceResults );
 
-		/* highest attack rolls start at separator-1 and decrease to index 0 */ 
+		/* highest attack rolls start at separator-1 and decrease to index 0 */
 		int nextHighAttack = numAttacking - 1;
-		
-		/* high defense rolls start at length - 1 and decrease to separator*/
+
+		/* high defense rolls start at length - 1 and decrease to separator */
 		int nextHighDefend = diceResults.length - 1;
 
 		/* process dice until attacker or defender runs out */
@@ -182,12 +175,12 @@ public class Player
 			attackerArmies -= numAttacking;
 			occupyTerritory( defender, numAttacking );
 		}
-		
+
 		else
 		{
 			defender.setNumArmies( defenderArmies );
 		}
-		
+
 		attacker.setNumArmies( attackerArmies );
 
 	}
@@ -213,19 +206,11 @@ public class Player
 				i++;
 		}
 
-		// TODO Remove this
-		if ( separator == -1 )
-		{
-			System.err.println( "Separator error on array: "
-					+ Arrays.toString( diceResults ) );
-			System.exit( 1 );
-		}
-
 		return separator;
 	}
 
 	/**
-	 * Takes control of territory captured and checks for elimination.  If a 
+	 * Takes control of territory captured and checks for elimination. If a
 	 * player is eliminated, gain their cards.
 	 * 
 	 * @param defender the country to take control of for this player.
@@ -236,25 +221,26 @@ public class Player
 	{
 		Player defendingPlayer = defender.getOccupant();
 		defendingPlayer.removeTerritory( defender );
-		
+
 		defender.setNumArmies( numAttacking );
 		defender.setOccupant( this );
-	
+
 		/* handle defeated case, take cards */
-		if( !defendingPlayer.hasTerritory() )
+		if ( !defendingPlayer.hasTerritory() )
 			this.cardHand.takeHand( defendingPlayer.cardHand );
-		
+
 	}
-	
+
 	public java.util.ArrayList<Card> turnInSet( int[] set )
 	{
 		return cardHand.turnInSet( set );
 	}
-	
+
 	public int getHandSize()
 	{
 		return cardHand.size();
 	}
+
 	/**
 	 * Removes a territory from the player when he loses one.
 	 * 
@@ -269,7 +255,7 @@ public class Player
 	{
 		return ( !this.territories.isEmpty() );
 	}
-	
+
 	public int getNumTerritories()
 	{
 		return territories.size();

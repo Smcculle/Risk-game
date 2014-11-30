@@ -21,7 +21,7 @@ public class Deck
 
 	public Deck( ArrayList<Card> cards )
 	{
-		this.cards = new ArrayList<Card>(cards);
+		this.cards = new ArrayList<Card>( cards );
 	}
 
 	/**
@@ -40,14 +40,14 @@ public class Deck
 	 * Used to add cards turned-in by players back to the deck. Turn in will be
 	 * verified in the game class.
 	 * 
-	 * @param set  an ArrayList of Cards turned in by a player
+	 * @param set an ArrayList of Cards turned in by a player
 	 **/
 	public void acceptCards( ArrayList<Card> set )
 	{
 		for ( Card c : set )
 		{
 			/* cards should be unique */
-			if( !this.cards.contains( c ) ) 
+			if ( !this.cards.contains( c ) )
 				cards.add( c );
 		}
 	}

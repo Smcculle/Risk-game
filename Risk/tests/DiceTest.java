@@ -27,35 +27,35 @@ public class DiceTest extends TestCase
 		
 		/*testing all possible combinations of rolls to return the appropriate number of results*/
 		testResult = test1.roll(1, 1);
-		assertTrue( testResult.length == 2 );
+		assertEquals( testResult.length, 3 );
 		
 		/* all results should be between 1...6 */
 		for( int i : testResult )
-			assertTrue( i <= 6 && i >= 1);
+			assertTrue( i <= 6 && i >= 0);
 		
 		testResult = test1.roll(1, 2);
-		assertTrue( testResult.length == 3 );
-		
-		for( int i : testResult )
-			assertTrue( i <= 6 && i >= 1);
-		
-		testResult = test1.roll(2, 1);
-		assertTrue( testResult.length == 3);
-		
-		for( int i : testResult )
-			assertTrue( i <= 6 && i >= 1);
-		
-		testResult = test1.roll(2, 2);
 		assertTrue( testResult.length == 4 );
 		
 		for( int i : testResult )
-			assertTrue( i <= 6 && i >= 1);
+			assertTrue( i <= 6 && i >= 0);
 		
-		testResult = test1.roll(3, 2);
+		testResult = test1.roll(2, 1);
+		assertTrue( testResult.length == 4);
+		
+		for( int i : testResult )
+			assertTrue( i <= 6 && i >= 0);
+		
+		testResult = test1.roll(2, 2);
 		assertTrue( testResult.length == 5 );
 		
 		for( int i : testResult )
-			assertTrue( i <= 6 && i >= 1);
+			assertTrue( i <= 6 && i >= 0);
+		
+		testResult = test1.roll(3, 2);
+		assertTrue( testResult.length == 6 );
+		
+		for( int i : testResult )
+			assertTrue( i <= 6 && i >= 0);
 		
 		/* test ordering */
 		testResult = test1.roll( 6, 10 );

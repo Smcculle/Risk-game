@@ -39,8 +39,6 @@ public class Territory
 	}
 
 	/**
-	 * TODO: Implement
-	 * 
 	 * @return an ArrayList of all territories it shares a border with
 	 **/
 	public HashMap<String, Territory> getNeighbors()
@@ -67,7 +65,7 @@ public class Territory
 	/**
 	 * Used to set the new occupying player of a territory
 	 * 
-	 * @param occupant  reference to the Player object who now occupies the
+	 * @param occupant reference to the Player object who now occupies the
 	 *        territory
 	 **/
 	public void setOccupant( Player occupant )
@@ -78,29 +76,31 @@ public class Territory
 	/**
 	 * Used by the occupying player to add armies to a territory
 	 * 
-	 * @param numArmies  the number of armies to be placed into the territory
+	 * @param numArmies the number of armies to be placed into the territory
 	 **/
 	public void setNumArmies( int numArmies )
 	{
 		this.armies = numArmies;
 	}
-	
+
 	/**
-	 * Determines if a territory is adjacent to another for attacking, moving purposes. 
+	 * Determines if a territory is adjacent to another for attacking, moving
+	 * purposes.
 	 * 
-	 * @param t  another territory to check adjacency with. 
-	 * @return true if adjacent, false otherwise.  
+	 * @param t another territory to check adjacency with.
+	 * @return true if adjacent, false otherwise.
 	 */
 	public boolean isAdjacent( Territory t )
 	{
 		return neighbors.containsValue( t );
 	}
-	
+
 	/**
-	 * Determines if a territory is adjacent to another for attacking, moving purposes. 
+	 * Determines if a territory is adjacent to another for attacking, moving
+	 * purposes.
 	 * 
-	 * @param t  another territory to check adjacency with. 
-	 * @return true if adjacent, false otherwise.  
+	 * @param t another territory to check adjacency with.
+	 * @return true if adjacent, false otherwise.
 	 */
 	public boolean isAdjacent( String s )
 	{
