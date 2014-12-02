@@ -1,26 +1,10 @@
 /**
  * CSCI 2120 Fall 2014
- * Risk Game class CreatePlayersScreenPanel
+ * Risk class anotherCreatePlayersScreenPanel
  * @author Shane McCulley
- * @date November 29, 2014
+ * @date Nov 30, 2014
  **/
-
 package gui;
-
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.Window;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -29,14 +13,25 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.FieldView;
 
-@SuppressWarnings( "serial" )
-public class CreatePlayersScreenPanel extends JPanel
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.FlowLayout;
+import java.awt.Component;
+import javax.swing.Box;
+
+public class anotherCreatePlayersScreenPanel extends JPanel
 {
 
 	private final String[] COMBO_BOX_ITEMS = { "3", "4", "5", "6" };
@@ -70,8 +65,9 @@ public class CreatePlayersScreenPanel extends JPanel
 	JPanel menuButtonPanel;
 	private JButton backButton;
 	private JButton nextButton;
+	private Component horizontalStrut;
 
-	public CreatePlayersScreenPanel( ActionListener handler )
+	public anotherCreatePlayersScreenPanel( ActionListener handler )
 	{
 		// TODO Auto-generated constructor stub
 		// super( new CardLayout() );
@@ -89,10 +85,13 @@ public class CreatePlayersScreenPanel extends JPanel
 		initComboBox();
 		
 		JPanel topPanel = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) topPanel.getLayout();
 		topPanel.setBorder( BorderFactory.createRaisedBevelBorder() );
 	
 		topPanel.add( gameNameLabel );
 		topPanel.add( gameNameField );
+		horizontalStrut = Box.createHorizontalStrut(15);
+		topPanel.add(horizontalStrut);
 
 		topPanel.add( numPlayersLabel );
 		topPanel.add( numPlayersBox );
@@ -143,9 +142,8 @@ public class CreatePlayersScreenPanel extends JPanel
 		menuButtonPanel.add( nextButton );
 		menuButtonPanel.setPreferredSize( menuButtonPanel.getPreferredSize() );
 		this.add( menuButtonPanel, BorderLayout.SOUTH );
-		//this.setSize( 640, 380 );
+		this.setSize( 640, 380 );
 		this.setBorder( new EmptyBorder(10, 10, 10, 10) );
-		this.setPreferredSize( this.getPreferredSize() );
 	}
 
 	/**
@@ -154,7 +152,10 @@ public class CreatePlayersScreenPanel extends JPanel
 	 */
 	private void initComboBox()
 	{
-		numPlayersBox = new JComboBox<String>( this.COMBO_BOX_ITEMS );
+		numPlayersBox = new JComboBox<String>();
+		for( String s : this.COMBO_BOX_ITEMS )
+			numPlayersBox.addItem( s );
+		
 		numPlayersBox.addItemListener( new ItemListener()
 		{
 			@Override
@@ -238,7 +239,7 @@ public class CreatePlayersScreenPanel extends JPanel
 		System.out.println( "Tested it " );
 		CreatePlayersScreenHandler handler = new CreatePlayersScreenHandler(
 				null );
-		CreatePlayersScreenPanel sp = new CreatePlayersScreenPanel( handler );
+		anotherCreatePlayersScreenPanel sp = new anotherCreatePlayersScreenPanel( handler );
 		sp.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
 		JFrame frame = new JFrame( "Test frame" );
 
@@ -259,7 +260,7 @@ public class CreatePlayersScreenPanel extends JPanel
 
 	private static JPanel testGridBag()
 	{
-		CreatePlayersScreenPanel sp = new CreatePlayersScreenPanel(
+		anotherCreatePlayersScreenPanel sp = new anotherCreatePlayersScreenPanel(
 				new CreatePlayersScreenHandler( null ) );
 
 		GridBagConstraints c = new GridBagConstraints();

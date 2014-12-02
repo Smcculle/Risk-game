@@ -7,12 +7,13 @@
 
 package engine;
 
+import java.awt.Dimension;
 import gui.GameGUI;
-
 import javax.swing.JFrame;
 
 public class Risk
 {
+	public final static Dimension GAME_SIZE = new Dimension( 512, 347 );
 
 	public static void main( String[] args )
 	{
@@ -22,9 +23,9 @@ public class Risk
 		gameEngine.addObserver( gui );
 
 		gui.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		
-		gui.setSize( 400, 400 );
-		//gui.pack();
+
+		gui.setSize( GAME_SIZE );
+		// gui.pack();
 		gui.setVisible( true );
 	}
 

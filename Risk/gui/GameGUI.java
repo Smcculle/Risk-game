@@ -43,7 +43,8 @@ public class GameGUI extends JFrame implements Observer
 	private RiskGame game;
 
 	public GameGUI( RiskGameEngine gameEngine )
-	{
+	{	
+		//this.setPreferredSize( new java.awt.Dimension( 1000, 800 ) );
 		this.gameEngine = gameEngine;
 		// START SCREEN INIT
 		this.startScreenHandler = new StartScreenHandlerClass( this.gameEngine );
@@ -82,6 +83,7 @@ public class GameGUI extends JFrame implements Observer
 		this.getContentPane().remove( this.currentPanel );
 		this.currentPanel = newCurrentPanel;
 		this.getContentPane().add( this.currentPanel );
+		//this.pack();
 		this.revalidate();
 		this.repaint();
 	}

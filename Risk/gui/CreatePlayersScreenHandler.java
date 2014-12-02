@@ -7,8 +7,12 @@
 
 package gui;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.SwingUtilities;
+
 import engine.RiskGameEngine;
 
 public class CreatePlayersScreenHandler implements ActionListener
@@ -33,6 +37,10 @@ public class CreatePlayersScreenHandler implements ActionListener
 		{
 			System.out.println( "Going back!" );
 			if( model != null ) model.createNewGame();
+		}
+		if( command == "Next" )
+		{
+			System.out.println( SwingUtilities.getWindowAncestor( (java.awt.Component)event.getSource() ).getSize() );
 		}
 
 	}

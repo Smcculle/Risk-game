@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import engine.Risk;
+
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -54,6 +56,7 @@ public class StartScreenPanel extends JPanel
 		loadSavedGameButton.setActionCommand( "loadSavedGame" );
 		loadSavedGameButton.addActionListener( this.screenHandler );
 		this.add( loadSavedGameButton );
+		this.setPreferredSize( Risk.GAME_SIZE );
 
 	}
 
