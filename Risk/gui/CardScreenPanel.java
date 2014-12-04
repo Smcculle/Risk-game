@@ -6,6 +6,7 @@
  **/
 package gui;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,6 +19,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseListener;
@@ -31,10 +33,11 @@ public class CardScreenPanel extends JPanel
 {
 	private static final int PREFERRED_WIDTH = 843;
 	private static final int PREFERRED_HEIGHT = 227;
+	
+	private JLabel chooseSet;
 	private JPanel menuButtonPanel;
 	private JButton exitButton;
 	private JButton acceptButton;
-	private JLabel chooseSet;
 	private JPanel cardPanel;
 	private JScrollPane scrollPane; 
 	private CardScreenHandler handler; 
@@ -48,6 +51,24 @@ public class CardScreenPanel extends JPanel
 				+ "Match 3 of a kind or 1 of each infantry, cavalry, artillery" );
 		this.add( chooseSet, BorderLayout.NORTH );
 		
+		addButtons();
+		
+		/* panel for cards, scroll panel for view */ 
+		cardPanel = new JPanel();
+		scrollPane = createScrollPane(); 
+		scrollPane.setViewportView( cardPanel );
+		this.add( scrollPane, BorderLayout.CENTER );
+		
+		/* To prevent a very large screen if player has 6+ cards */
+		scrollPane.setPreferredSize( new Dimension( PREFERRED_WIDTH, PREFERRED_HEIGHT));
+		this.add( menuButtonPanel, BorderLayout.SOUTH );
+		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
+		
+
+	}
+	
+	private void addButtons()
+	{
 		/* holds the bottom buttons */
 		menuButtonPanel = new JPanel();
 		menuButtonPanel.setLayout( new FlowLayout( FlowLayout.RIGHT, 5, 5 ) );
@@ -55,44 +76,27 @@ public class CardScreenPanel extends JPanel
 		/* accept button */
 		acceptButton = new JButton( "Accept" );
 		acceptButton.setEnabled( false );
+		acceptButton.addActionListener( handler );
 		menuButtonPanel.add( acceptButton );
-		// acceptButton.addActionListener( handler );
+		
 		
 		/* exit button */
 		exitButton = new JButton( "Exit" );
 		exitButton.setPreferredSize( acceptButton.getPreferredSize() );
+		exitButton.addActionListener( handler );
 		// exitButton.addActionListener( handler );
 		menuButtonPanel.add( exitButton );
 		
 		//menuButtonPanel.setPreferredSize( menuButtonPanel.getPreferredSize() );
-		
-		/* panel for cards */ 
-		cardPanel = new JPanel();
-		scrollPane = new JScrollPane(); 
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-		scrollPane.getHorizontalScrollBar().setUnitIncrement( 20 );
-		scrollPane.getHorizontalScrollBar().setBlockIncrement( 150 );
-		
-		
-		this.add( scrollPane, BorderLayout.CENTER );
-		scrollPane.setVisible( true );
-		scrollPane.setViewportView( cardPanel );
-		
-		/* To prevent a very large screen if player has 6+ cards */
-		scrollPane.setPreferredSize( new Dimension( PREFERRED_WIDTH, PREFERRED_HEIGHT));
-		this.add( menuButtonPanel, BorderLayout.SOUTH );
-		this.setSize( 640, 380 );
-		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
-		
-
 	}
 	
-	private JPanel createCardPanel()
+	private JScrollPane createScrollPane()
 	{	
-		JScrollBar scrollBar = new JScrollBar();
-		JPanel result = new JPanel();
-		result.setBorder( BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
-		result.add( scrollBar );
+		JScrollPane result = new JScrollPane();
+		result.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+		result.getHorizontalScrollBar().setUnitIncrement( 20 );
+		result.getHorizontalScrollBar().setBlockIncrement( 150 );
+		result.setVisible( true );
 		
 		return result;
 		
@@ -105,11 +109,84 @@ public class CardScreenPanel extends JPanel
 		cardPanel.add( newCard );
 	}
 	
-	public void getaSize()
+	public int getNumSelected()
 	{
-		System.out.println( "JSP size:" + scrollPane.getSize() );
-		System.out.println( "cardPanel size:" + cardPanel.getSize() );
-		System.out.println( "this size:" + this.getSize() );
+		int result = 0; 
+		
+		for( Component c : cardPanel.getComponents() )
+		{
+			if( ( (CardComponent)c ).isSelected() )
+				result++;
+		}
+		
+		return result;
+	}
+	public int[] getSelectedIndex()
+	{
+		int[] result = new int[3];
+		int j = 0;
+		
+		for( int i = 0; i < cardPanel.getComponentCount(); i++ )
+		{
+			if( ( (CardComponent)cardPanel.getComponent( i ) ).isSelected() )
+			{
+				result[j] = i;
+				j++;
+			}
+		}
+		
+		if( j != 3 || j > 3 )
+		{
+			System.out.println( "J error, j = " + j );
+			throw new RuntimeException( "Error at getSelectedIndex in CSP " );
+		}
+		
+		return result; 
+	}
+	
+	public Card[] getCards()
+	{
+		Card[] result = new Card[3];
+		int j = 0;
+		
+		for( int i = 0; i < cardPanel.getComponentCount(); i++ )
+		{
+			CardComponent cp = (CardComponent)cardPanel.getComponent( i );
+			if( cp.isSelected() )
+			{
+				result[j] = cp.getCard();
+				j++;
+			}
+		}
+		
+		if( j != 3 || j > 3 )
+			throw new RuntimeException( "Error at getSelectedIndex in CSP " );
+		
+		return result; 
+		
+	}
+	
+	/**
+	 * Enables or disables the accept button.  
+	 * 
+	 * @param b  true to enable, false otherwise.  
+	 */
+	public void setAccept( boolean b )
+	{
+		acceptButton.setEnabled( b );	
+	}
+
+	public void removeSet(int[] selectedIndex )
+	{
+		int j = 0; 
+		for( int i : selectedIndex )
+		{
+			cardPanel.remove( i - j);
+			j++;
+		}
+		acceptButton.setEnabled( false );
+		revalidate();
+		repaint();
 	}
 	
 	/** Testing below */
@@ -130,6 +207,8 @@ public class CardScreenPanel extends JPanel
 	{
 		CardScreenHandler csh = new CardScreenHandler( null );
 		CardScreenPanel csp = new CardScreenPanel( csh );
+		csh.addView( csp );
+		
 		Card testA = new Card( "cannon", "Northeast Territory" );
 		Card testB = new Card( "horse", "Eastern United States" );
 		Card testC = new Card( "troop", "Kamchatka" );
@@ -143,6 +222,8 @@ public class CardScreenPanel extends JPanel
 		csp.addCard( testC );
 		csp.addCard( testA );
 		csp.addCard( testA );
+		csp.addCard( testB );
+		csp.addCard( testC );
 		
 		return csp; 
 	}
@@ -156,6 +237,7 @@ public class CardScreenPanel extends JPanel
 		testFrame.getContentPane().add( csp );
 		testFrame.pack();
 		testFrame.setVisible( true );
-		csp.getaSize();
 	}
+
+	
 }

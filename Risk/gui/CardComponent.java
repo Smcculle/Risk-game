@@ -88,15 +88,16 @@ public class CardComponent extends JPanel
 		return isSelected;
 	}
 	
-	public void toggleSelected()
+	public void setSelected( boolean b )
 	{	
-		if( !isSelected )
+		if( b )
 		{
 			this.setBorder( selectedBorder );
 			isSelected = true; 
 		}
 		
-		else
+		/* does nothing if not selected */
+		else if( isSelected )
 		{
 			this.setBorder( normalBorder );
 			isSelected = false; 
