@@ -22,6 +22,7 @@ import javax.swing.border.EmptyBorder;
 import classes.Territory;
 
 import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,8 +33,9 @@ public class AttackScreenPanel extends JPanel
 {
 	private static final int MAX_ATTACK_DICE = 3; 
 	private static final int MAX_DEFEND_DICE = 2;
-	private static final int TOGGLE_BUTTON_SIZE = 30;
+	private static final String PATH_DIR = "images/";
 	
+	private ActionListener handler; 
 	/* north panel description */
 	private JPanel descriptionPanel;
 	private JLabel descriptionLabel, instructionLabel;
@@ -53,15 +55,21 @@ public class AttackScreenPanel extends JPanel
 	private JPanel menuPanel; 
 	private JButton attackButton, backButton;
 	
+	/* icon panel*/ 
+	private JPanel iconPanel;
+	private JLabel iconLabel;
+	
 	/* defender, attacker information */
 	private Territory attacker;
 	private Territory defender; 
 	
 	/**
 	 * Create the panel.
+	 * @wbp.parser.constructor
 	 */
-	public AttackScreenPanel()
+	public AttackScreenPanel( ActionListener handler )
 	{
+		this.handler = handler; 
 		dummyTerritory();
 		descriptionPanel = getDescriptionPanel();
 		this.setLayout( new BorderLayout(10, 10) );
@@ -75,7 +83,15 @@ public class AttackScreenPanel extends JPanel
 		
 		menuPanel = getMenuPanel();
 		this.add( menuPanel, BorderLayout.SOUTH );
+		
+		iconPanel = new JPanel();
+		iconLabel = getAttackIcon();
+		iconLabel.setBorder(new EmptyBorder(15, 33, 0, 0));
+		iconPanel.add( iconLabel );
+		this.add( iconPanel, BorderLayout.CENTER );
+		
 		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
+		( (AttackScreenHandler)handler ).addView(this);
 	}
 	
 	//TODO erase
@@ -110,6 +126,11 @@ public class AttackScreenPanel extends JPanel
 		
 		menuPanel = getMenuPanel();
 		this.add( menuPanel, BorderLayout.SOUTH );
+		
+		iconPanel = new JPanel();
+		iconLabel = getAttackIcon();
+		iconPanel.add( iconLabel );
+		this.add( iconPanel, BorderLayout.CENTER );
 	}
 
 	/**
@@ -180,12 +201,15 @@ public class AttackScreenPanel extends JPanel
 			attackDiceGroup.add( attackDice[i] );
 			attackPanel.add( attackDice[i] );
 			
-			/* set the last one active */
-			if( i == MAX_ATTACK_DICE - 1 )
-				attackDice[i].setSelected( true );
+			attackDice[i].setActionCommand( Integer.toString( i + 1 ) );
+			attackDice[i].setName( "attack" );
+			
+			/* default state of all dice selected */
+			attackDice[i].setSelected( true );
+			attackDice[i].addActionListener( handler );
 			
 		}
-		attackDice[1].setSelected( true );
+		
 		for( int i = 0; i < MAX_DEFEND_DICE; i++ )
 		{
 			defendDice[i] = new JToggleButton();
@@ -194,10 +218,15 @@ public class AttackScreenPanel extends JPanel
 			defendDice[i].setText( Integer.toString( i + 5 ) );
 			defendDiceGroup.add( defendDice[i] );
 			defendPanel.add( defendDice[i] );
+
+			/* Give name since text will display dice results */
+			defendDice[i].setActionCommand( Integer.toString( i + 1 ) );
+			defendDice[i].setName( "defend" );
 			
-			/* set the last one active */
-			if( i == MAX_DEFEND_DICE - 1)
-				defendDice[i].setSelected( true );
+			/* default state of all dice selected */
+			defendDice[i].setSelected( true );
+			defendDice[i].addActionListener( handler );
+			
 		}
 		
 		result.add( attackPanel, BorderLayout.CENTER );
@@ -213,13 +242,51 @@ public class AttackScreenPanel extends JPanel
 	private JPanel getMenuPanel()
 	{
 		JPanel result = new JPanel();
+		
 		attackButton = new JButton( "Attack" );
+		attackButton.addActionListener( handler );
+		
 		backButton = new JButton( "Quit" );
+		backButton.addActionListener( handler );
 		
 		result.add( attackButton );
 		result.add( backButton );
 		backButton.setPreferredSize( attackButton.getPreferredSize() );
+		
 		return result; 
+	}
+	
+	private JLabel getAttackIcon()
+	{
+		/* construct appropriate path */
+		String pathName = PATH_DIR + "attack.png";
+		
+		/* place image icon onto JLabel and return at scaled size */
+		return new JLabel( new javax.swing.ImageIcon(
+				new javax.swing.ImageIcon(
+				this.getClass().getClassLoader().getResource( pathName ) )
+				.getImage().getScaledInstance( 
+						100, 100, java.awt.Image.SCALE_SMOOTH) ) );
+	}
+	
+	public void setAttackDiceGroup( int numDice )
+	{
+		for( int i = 0; i < attackDiceGroup.size(); i++ )
+		{
+			/* set selected up to numDice, set false afterwards */
+			attackDiceGroup.get( i ).setSelected( i < numDice );
+		}
+		
+	}
+	
+	public void setDefendDiceGroup( int numDice )
+	{
+		for( int i = 0; i < defendDiceGroup.size(); i++ )
+		{
+			/* set selected up to numDice, set false afterwards */
+			defendDiceGroup.get( i ).setSelected( i < numDice );
+		}
+		
 	}
 	
 	//TODO : remove 
