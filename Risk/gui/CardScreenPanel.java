@@ -125,6 +125,13 @@ public class CardScreenPanel extends JPanel
 		cardPanel.add( newCard );
 	}
 	
+	public void removeAllCards()
+	{
+		cardPanel.removeAll();
+		cardPanel.revalidate();
+	}
+	
+	//TODO integrate these card functions  with game engine 
 	public int getNumSelected()
 	{
 		int result = 0; 
@@ -207,6 +214,7 @@ public class CardScreenPanel extends JPanel
 	}
 	
 	/** Testing below****************** */
+	//TODO remove 
 	public static void main( String[] args )
 	{
 		

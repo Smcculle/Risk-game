@@ -51,7 +51,10 @@ public class CardScreenHandler implements ActionListener, MouseListener
 							JInternalFrame.class, (Component)event.getSource() ) );
 
 			if ( jif != null )
+			{
+				view.removeAllCards();
 				jif.dispose();
+			}
 			else
 				SwingUtilities.getWindowAncestor(
 						(Component)event.getSource() ).dispose();
@@ -59,6 +62,7 @@ public class CardScreenHandler implements ActionListener, MouseListener
 
 	}
 	
+	//TODO put in risk game
 	public int getNextTroopCount( int previousTroopCount )	
 	{
 		int result = previousTroopCount;
@@ -123,14 +127,11 @@ public class CardScreenHandler implements ActionListener, MouseListener
 		
 	}
 	
+	//TODO Put in RiskGame 
 	private boolean isValidSet()
 	{
 		boolean result = false;
 		selectedIndex = view.getSelectedIndex();
-
-		System.out.print( "Index is: " );
-		for ( int i : selectedIndex )
-			System.out.print( i + " " );
 
 		System.out.println();
 		Card[] cards = view.getCards();
@@ -148,6 +149,7 @@ public class CardScreenHandler implements ActionListener, MouseListener
 		return result;
 	}
 
+	// TODO put in risk game 
 	private boolean isDistinct( String a, String b, String c )
 	{
 		return ( !a.equals( b ) && !( a.equals( c ) || b.equals( c ) ) );
