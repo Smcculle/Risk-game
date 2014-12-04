@@ -6,41 +6,42 @@
  **/
 package gui;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
+
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.MouseListener;
-
-import javax.swing.ScrollPaneConstants;
-
 import classes.Card;
+
 
 @SuppressWarnings( "serial" )
 public class CardScreenPanel extends JPanel
 {
 	private static final int PREFERRED_WIDTH = 843;
 	private static final int PREFERRED_HEIGHT = 227;
+	private static final int DEFAULT_TROOP_VALUE = 4; 
 	
 	private JLabel chooseSet;
+	private JLabel tradeInLabel;
+	private JPanel southPanel;
 	private JPanel menuButtonPanel;
 	private JButton exitButton;
 	private JButton acceptButton;
 	private JPanel cardPanel;
 	private JScrollPane scrollPane; 
 	private CardScreenHandler handler; 
+	private int tradeInValue;
+
 	
 	public CardScreenPanel( CardScreenHandler handler )
 	{
@@ -53,6 +54,11 @@ public class CardScreenPanel extends JPanel
 		
 		addButtons();
 		
+		/* menu panel and label */
+		southPanel = new JPanel( new BorderLayout() );
+		southPanel.add( menuButtonPanel, BorderLayout.EAST );
+		southPanel.add( tradeInLabel, BorderLayout.WEST );
+		
 		/* panel for cards, scroll panel for view */ 
 		cardPanel = new JPanel();
 		scrollPane = createScrollPane(); 
@@ -61,7 +67,7 @@ public class CardScreenPanel extends JPanel
 		
 		/* To prevent a very large screen if player has 6+ cards */
 		scrollPane.setPreferredSize( new Dimension( PREFERRED_WIDTH, PREFERRED_HEIGHT));
-		this.add( menuButtonPanel, BorderLayout.SOUTH );
+		this.add( southPanel, BorderLayout.SOUTH );
 		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
 		
 
@@ -73,21 +79,31 @@ public class CardScreenPanel extends JPanel
 		menuButtonPanel = new JPanel();
 		menuButtonPanel.setLayout( new FlowLayout( FlowLayout.RIGHT, 5, 5 ) );
 		
+		/* label for troop value */
+		tradeInValue = DEFAULT_TROOP_VALUE;
+		tradeInLabel = new JLabel( "Number of troops from trade in:  "
+				+ tradeInValue );
+		tradeInLabel.setHorizontalAlignment( SwingConstants.LEFT );
+				
 		/* accept button */
 		acceptButton = new JButton( "Accept" );
 		acceptButton.setEnabled( false );
 		acceptButton.addActionListener( handler );
 		menuButtonPanel.add( acceptButton );
 		
-		
 		/* exit button */
 		exitButton = new JButton( "Exit" );
 		exitButton.setPreferredSize( acceptButton.getPreferredSize() );
 		exitButton.addActionListener( handler );
-		// exitButton.addActionListener( handler );
 		menuButtonPanel.add( exitButton );
-		
-		//menuButtonPanel.setPreferredSize( menuButtonPanel.getPreferredSize() );
+				
+	}
+	
+	private void nextTradeInValue()
+	{
+		tradeInValue = handler.getNextTroopCount( tradeInValue );
+		tradeInLabel.setText( "Number of troops from trade in:  "
+				+ tradeInValue );
 	}
 	
 	private JScrollPane createScrollPane()
@@ -178,18 +194,19 @@ public class CardScreenPanel extends JPanel
 
 	public void removeSet(int[] selectedIndex )
 	{
-		int j = 0; 
-		for( int i : selectedIndex )
+		/* iterate in descending order */
+		for ( int i = selectedIndex.length - 1; i >= 0 ; i-- )
 		{
-			cardPanel.remove( i - j);
-			j++;
+			cardPanel.remove( selectedIndex[i] );
 		}
+		
 		acceptButton.setEnabled( false );
+		nextTradeInValue();
 		revalidate();
 		repaint();
 	}
 	
-	/** Testing below */
+	/** Testing below****************** */
 	public static void main( String[] args )
 	{
 		
@@ -223,7 +240,7 @@ public class CardScreenPanel extends JPanel
 		csp.addCard( testA );
 		csp.addCard( testA );
 		csp.addCard( testB );
-		csp.addCard( testC );
+		
 		
 		return csp; 
 	}

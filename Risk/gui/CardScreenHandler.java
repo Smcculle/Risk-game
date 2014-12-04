@@ -58,36 +58,23 @@ public class CardScreenHandler implements ActionListener, MouseListener
 		}
 
 	}
-
-	private boolean isValidSet()
+	
+	public int getNextTroopCount( int previousTroopCount )	
 	{
-		boolean result = false;
-		selectedIndex = view.getSelectedIndex();
-
-		System.out.print( "Index is: " );
-		for ( int i : selectedIndex )
-			System.out.print( i + " " );
-
-		System.out.println();
-		Card[] cards = view.getCards();
-
-		String c0 = cards[0].getType();
-		String c1 = cards[1].getType();
-		String c2 = cards[2].getType();
-
-		/* 3 of a kind */
-		if ( c0.equals( c1 ) && c0.equals( c2 ) && c1.equals( c2 ) )
-			result = true;
+		int result = previousTroopCount;
+		
+		if( previousTroopCount <= 10 )
+			result += 2; 
+		else if( previousTroopCount >= 15 )
+			result += 5; 
+		
+		/* this case only happens for 5th trade in at 12 troops */
 		else
-			result = isDistinct( c0, c1, c2 );
-
-		return result;
+			result += 3; 
+		
+		return result; 
 	}
-
-	private boolean isDistinct( String a, String b, String c )
-	{
-		return ( !a.equals( b ) && !( a.equals( c ) || b.equals( c ) ) );
-	}
+	
 
 	/**
 	 * Used to select one of our cards (JPanel)
@@ -134,6 +121,36 @@ public class CardScreenHandler implements ActionListener, MouseListener
 				view.setAccept( true );
 		}
 		
+	}
+	
+	private boolean isValidSet()
+	{
+		boolean result = false;
+		selectedIndex = view.getSelectedIndex();
+
+		System.out.print( "Index is: " );
+		for ( int i : selectedIndex )
+			System.out.print( i + " " );
+
+		System.out.println();
+		Card[] cards = view.getCards();
+
+		String c0 = cards[0].getType();
+		String c1 = cards[1].getType();
+		String c2 = cards[2].getType();
+
+		/* 3 of a kind */
+		if ( c0.equals( c1 ) && c0.equals( c2 ) && c1.equals( c2 ) )
+			result = true;
+		else
+			result = isDistinct( c0, c1, c2 );
+
+		return result;
+	}
+
+	private boolean isDistinct( String a, String b, String c )
+	{
+		return ( !a.equals( b ) && !( a.equals( c ) || b.equals( c ) ) );
 	}
 
 	/* MouseListener methods that are not used */
