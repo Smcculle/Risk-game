@@ -21,6 +21,9 @@ import java.awt.event.ActionListener;
 public class GameGUI extends JFrame implements Observer
 {
 
+	private RiskGame game;
+	private RiskGameEngine gameEngine;
+	
 	private JPanel currentPanel;
 
 	// START SCREEN
@@ -39,8 +42,7 @@ public class GameGUI extends JFrame implements Observer
 	 * // SELECT TERRITORIES SCREEN private ActionListener
 	 * selectTerritoriesScreenHandler; private JPanel selectTerritoriesScreen;
 	 **/
-	private RiskGameEngine gameEngine;
-	private RiskGame game;
+	
 
 	public GameGUI( RiskGameEngine gameEngine )
 	{	
@@ -87,7 +89,8 @@ public class GameGUI extends JFrame implements Observer
 		this.revalidate();
 		this.repaint();
 	}
-
+	
+	
 	public void update( Observable obs, Object obj )
 	{
 		System.out.println( "In update of GameGUI" );

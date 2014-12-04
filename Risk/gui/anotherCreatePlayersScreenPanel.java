@@ -194,9 +194,12 @@ public class anotherCreatePlayersScreenPanel extends JPanel
 		numPlayersLabel = new JLabel( "Number of players: " );
 		numPlayersLabel.setBorder( lineB );
 		player1Label = new JLabel( "Player 1: " );
+		
+		String s = "images/cannon.png";
+		player1Label = new JLabel(new javax.swing.ImageIcon(getClass().getClassLoader().getResource(s)));
+		
 		player1Label.setBorder( lineB );
 		
-	
 		player2Label = new JLabel( "Player 2: " );
 		player2Label.setBorder( lineB );
 		

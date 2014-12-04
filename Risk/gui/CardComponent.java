@@ -1,0 +1,111 @@
+/**
+ * CSCI 2120 Fall 2014
+ * Risk class CardComponent
+ * @author Shane McCulley
+ * @date Dec 2, 2014
+ **/
+package gui;
+
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+
+import classes.Card;
+
+@SuppressWarnings( "serial" )
+public class CardComponent extends JPanel
+{
+	private static final int PAD_VALUE = 5; 
+	private static final String PATH_DIR = "images/";
+	private JLabel countryName;
+	private JLabel cardIcon;
+	private Card card;
+	private boolean isSelected = false;
+	
+	private CompoundBorder normalBorder;
+	private CompoundBorder selectedBorder;
+	private Border selectedBorder2;
+
+	public CardComponent( Card card )
+	{
+		initBorders();
+		this.card = card;
+		this.setBorder( normalBorder );
+				
+		this.setLayout( new GridBagLayout() );
+		GridBagConstraints constraints = new GridBagConstraints(
+				0, 0, 							// grid x, grid y
+				1, 1, 							// grid width, height
+				0, 0, 							// weight x, weight y
+				GridBagConstraints.CENTER,	 	// anchor
+				GridBagConstraints.NONE, 		// fill
+				new Insets( 10, 10, 10, 10 ), 	// insets
+				0, 0 ); 						// x padding, y padding
+
+		countryName = new JLabel( card.getTerritory() );
+		this.add( countryName, constraints );
+
+		/* create icon and add to 2nd row */
+		cardIcon = getCardIcon();
+		constraints.gridy = 1;
+		this.add( cardIcon, constraints );
+		
+	}
+
+	private void initBorders()
+	{
+		normalBorder = new CompoundBorder(
+				new EmptyBorder( PAD_VALUE, PAD_VALUE, PAD_VALUE, PAD_VALUE), 
+				BorderFactory.createBevelBorder( BevelBorder.RAISED ) );
+		
+		/* ensures cards don't move when selected by empty border */
+		selectedBorder = new CompoundBorder( 
+				new EmptyBorder( 2, 2, 2, 2), 
+				BorderFactory.createLineBorder( Color.RED, PAD_VALUE ) );
+	}
+	
+	private JLabel getCardIcon()
+	{
+		/* construct appropriate path */
+		String pathName = PATH_DIR + card.getType() + ".png";
+		
+		/* place image icon onto JLabel and return */
+		return new JLabel( new javax.swing.ImageIcon(
+				this.getClass().getClassLoader().getResource( pathName ) ) );
+	}
+
+	public boolean isSelected()
+	{
+		return isSelected;
+	}
+	
+	public void toggleSelected()
+	{	
+		if( !isSelected )
+		{
+			this.setBorder( selectedBorder );
+			isSelected = true; 
+		}
+		
+		else
+		{
+			this.setBorder( normalBorder );
+			isSelected = false; 
+		}
+	}
+	
+	public Card getCard()
+	{
+		return this.card;
+	}
+	
+}
