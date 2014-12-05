@@ -235,6 +235,27 @@ public class Player
 
 	}
 
+	public Hand getHand()
+	{
+		return cardHand; 
+	}
+	
+	public void moveTroops( Territory moveFrom, Territory moveTo, int amount )
+	{
+		//TODO remove
+		assert moveFrom.getOccupant() == this;
+		assert moveTo.getOccupant() == this ;
+		
+		System.out.printf("MoveFrom: %d, MoveTo: %d ", 
+				moveFrom.getNumArmies(), moveTo.getNumArmies() );
+		System.out.print( "Moving " + amount + " troops from "
+				+ moveFrom.getName() + " to " + moveTo.getName() );
+		
+		moveFrom.setNumArmies( moveFrom.getNumArmies() - amount );
+		moveTo.setNumArmies( moveTo.getNumArmies() + amount );
+		System.out.printf(". Now moveFrom has %d and moveTo has %d troops%n",
+				moveFrom.getNumArmies(), moveTo.getNumArmies() );
+	}
 	public java.util.ArrayList<Card> turnInSet( int[] set )
 	{
 		return cardHand.turnInSet( set );

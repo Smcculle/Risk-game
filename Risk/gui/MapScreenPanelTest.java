@@ -215,10 +215,10 @@ public class MapScreenPanelTest extends JPanel
 		jif.pack();
 		this.add( jif );
 		jif.setVisible( true );
-		
+				
 		JInternalFrame jif2 = new JInternalFrame();
-		jif2.getContentPane().add( new AttackScreenPanel( 
-				new AttackScreenHandler( null ) ) );
+		jif2.getContentPane().add( new MoveTroopsScreenPanel( 
+				new MoveTroopsScreenHandler( null ) ) );
 		jif2.setLocation( 350, 250 );
 		jif2.pack();
 		this.add( jif2 );

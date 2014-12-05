@@ -40,3 +40,4 @@
 40, New Guinea, Indonesia, Western Australia, Eastern Australia, 1170, 524
 41, Eastern Australia, LotR, Western Australia, New Guinea, 1176, 637
 42, LotR, Eastern Australia, 1242, 652
+
