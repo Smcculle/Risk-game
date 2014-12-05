@@ -53,8 +53,9 @@ public class Dice
 		/* sort attacker's dice in ascending order */
 		Arrays.sort( results, 0, attacking );
 
-		/* sort defender's dice in ascending order */
-		Arrays.sort( results, attacking, attacking + defending );
+		/* sort defender's dice in ascending order.  Add 1 for 0 marker */
+		Arrays.sort( results, attacking, attacking + defending + 1 );
+		
 		return results;
 
 	}

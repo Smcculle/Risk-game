@@ -14,6 +14,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 
+import classes.Dice;
 import engine.RiskGameEngine;
 
 public class AttackScreenHandler implements ActionListener
@@ -32,17 +33,30 @@ public class AttackScreenHandler implements ActionListener
 		this.view = view;
 	}
 
+	//TODO remove 
+	public int[] testResults( int numAttacking, int numDefending )
+	{
+		Dice dice = new Dice();
+		int[] results = dice.roll( numAttacking, numDefending );
+		System.out.print( "Results: ");
+		for( int i : results )
+			System.out.print( i + " ");
+		System.out.println();
+		return results; 
+	}
+	
 	public void actionPerformed( ActionEvent event )
 	{
 		String command = event.getActionCommand();
-		System.out.println( "Event with AC: " + command 
-				+ " with name: " 
-				+ ( (Component)event.getSource() ));
 		
 		if ( command == "Attack" )
 		{
-			System.out.println( "Rolling the dice" );
+			System.out.println( "Rolling the dice. "
+					+ " Attackers: " + view.getNumAttacking() 
+					+ " Defenders: " + view.getNumDefending() );
 			//TODO send results to panel, have panel update itself
+			view.updateResults( testResults( 
+					view.getNumAttacking(), view.getNumDefending() ) );
 		}
 
 		else if ( command == "Quit" )

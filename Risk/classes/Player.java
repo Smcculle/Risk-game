@@ -141,10 +141,12 @@ public class Player
 	 * @param defender a reference to a Territory object that is being attacked
 	 * @param diceResults array containing attacker results in ascending order,
 	 *        0 separator, followed by defender results in ascending order.
+	 * @return true if attacker takes territory, false otherwise 
 	 **/
-	public void attack( Territory attacker, Territory defender,
+	public boolean attack( Territory attacker, Territory defender,
 			int[] diceResults )
 	{
+		boolean result = false; 
 		/* Decrease these as players lose dice rolls */
 		int attackerArmies = attacker.getNumArmies();
 		int defenderArmies = defender.getNumArmies();
@@ -174,6 +176,7 @@ public class Player
 		{
 			attackerArmies -= numAttacking;
 			occupyTerritory( defender, numAttacking );
+			result = true; 
 		}
 
 		else
@@ -182,6 +185,7 @@ public class Player
 		}
 
 		attacker.setNumArmies( attackerArmies );
+		return result; 
 
 	}
 
