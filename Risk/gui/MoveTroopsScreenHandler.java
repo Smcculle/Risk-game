@@ -33,12 +33,15 @@ public class MoveTroopsScreenHandler implements ActionListener,
 	private RiskGameEngine model;
 	private MoveTroopsScreenPanel view;
 	private int[] selectedIndex;
+	private Action verifyTextAction;
 
+	@SuppressWarnings( "serial" )
 	public MoveTroopsScreenHandler( RiskGameEngine model )
 	{
 		this.model = model;
+		createVerifyTextAction();
 	}
-
+	
 	public void addView( MoveTroopsScreenPanel view )
 	{
 		this.view = view;
@@ -77,9 +80,9 @@ public class MoveTroopsScreenHandler implements ActionListener,
 	 * @return an action to verify input on the field.  
 	 */
 	@SuppressWarnings( "serial" )
-	public Action createVerifyTextAction()
+	private void createVerifyTextAction()
 	{
-		Action textFieldAction = new AbstractAction()
+		this.verifyTextAction = new AbstractAction()
 		{
 	            public void actionPerformed( ActionEvent event ) 
 	            {
@@ -103,8 +106,11 @@ public class MoveTroopsScreenHandler implements ActionListener,
 	                }
 	            }
 	    };
-		
-	    return textFieldAction;
+	}
+	
+	public Action getVerifyTextAction()
+	{
+		return verifyTextAction;
 	}
 
 	/*

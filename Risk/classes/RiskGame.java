@@ -7,8 +7,10 @@
 
 package classes;
 
+import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 /**
@@ -49,17 +51,20 @@ public class RiskGame
 		System.out.println( "Game created" );
 	}
 
-	public void createPlayers( List<String> names )
+	public boolean createPlayers( Map<String, Color> playerInfo, 
+			String gameName )
 	{
-		this.name = names.remove( 0 );
-		System.out.println( "Game name: " + this.name );
-		/* random order of game turn */
-		Collections.shuffle( names );
-		
-		for( String name : names )
+		this.name = gameName;
+		System.out.println( "Creating game.  Game name = " + name );
+	
+		int i = 0; 
+		/* random iteration through map shuffles player order */
+		for( Map.Entry<String, Color> entry : playerInfo.entrySet() )
 		{
-			Player player = new Player();
+			System.out.println("Player" + i++ + ": " + entry.getKey() + " color = " + entry.getValue() );
 		}
+		
+		return false; 
 	}
 	/**
 	 * Loads a saved game from serialized objects stored in a file

@@ -7,7 +7,9 @@
 
 package engine;
 
+import java.awt.Color;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 
 import classes.RiskGame;
@@ -68,12 +70,20 @@ public class RiskGameEngine extends Observable
 	 * assign territories state.  
 	 * @param names
 	 */
-	public void createPlayers( List<String> names )
+	public void createPlayers( Map<String, Color> playerInfo, String gameName )
 	{
-		this.state = State.assignTerritories;
-		this.setChanged();
-		this.notifyObservers();
-		game.createPlayers( names );
+		if ( game.createPlayers( playerInfo, gameName  ) ) 
+		{
+			this.state = State.assignTerritories;
+			this.setChanged();
+			this.notifyObservers();
+		}
+		else
+		{
+			System.err.println( "Game creation failed" );
+			//System.exit( 2 );
+		}
+		
 	}
 	
 	public void loadGame( String gameFileName )

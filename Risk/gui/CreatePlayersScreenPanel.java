@@ -8,16 +8,23 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -26,6 +33,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
@@ -35,8 +44,7 @@ import engine.RiskUtils;
 public class CreatePlayersScreenPanel extends JPanel
 {
 
-	private final String[] COMBO_BOX_ITEMS =
-	{ "3", "4", "5", "6" };
+	private final Integer[] COMBO_BOX_ITEMS = { 3, 4, 5, 6 };
 	private final int TEXT_FIELD_LENGTH = 20;
 	private final int MAX_PLAYERS = 6; 
 	private final double SCREEN_OFFSET = 0.33;
@@ -46,12 +54,13 @@ public class CreatePlayersScreenPanel extends JPanel
 	private JLabel gameNameLabel;
 	private JTextField gameNameField;
 	private JLabel numPlayersLabel;
-	private JComboBox<String> numPlayersBox;
+	private JComboBox<Integer> numPlayersBox;
 	
 	/* center panel*/
 	private JPanel playersPanel; 
 	
 	/* center west */
+	private JPanel[] colorPanels;
 	private JButton[] colorButtons;
 	private JLabel[] playerLabels; 
 	
@@ -76,10 +85,9 @@ public class CreatePlayersScreenPanel extends JPanel
 		/* initialize components  */
 		initLabelsAndButtons( handler );
 		initColorChooser( handler );
-		initFields();
+		initFields( (CreatePlayersScreenHandler)handler );
 		initComboBox();
 		
-
 		northPanel = getLabelPanel();
 		this.add( northPanel, BorderLayout.NORTH );
 
@@ -125,11 +133,12 @@ public class CreatePlayersScreenPanel extends JPanel
 				new EmptyBorder( 0, 0, 0, 0 ),
 				BorderFactory.createRaisedBevelBorder() ) ); 
 		playersPanel.setLayout( new GridLayout( 6, 2, 10, 10 ) );
+		colorPanels = new JPanel[MAX_PLAYERS];
 		
 		for( int i = 0; i < playerLabels.length; i++ )
 		{
 			//JPanel colorPanel = new JPanel( new GridLayout( 1, 2, 20, 5 ));
-			JPanel colorPanel = new JPanel( new GridBagLayout() );
+			colorPanels[i] = new JPanel( new GridBagLayout() );
 						
 			GridBagConstraints constraints = new GridBagConstraints();
 			constraints.insets = new Insets(0, 0, 0, 5);
@@ -137,7 +146,7 @@ public class CreatePlayersScreenPanel extends JPanel
 			constraints.gridy = 0; 
 			constraints.anchor = GridBagConstraints.WEST;
 			constraints.weightx = 1; 
-			colorPanel.add( playerLabels[i], constraints );
+			colorPanels[i].add( playerLabels[i], constraints );
 			playerLabels[i].setPreferredSize( 
 					colorButtons[i].getPreferredSize() );
 			
@@ -148,9 +157,9 @@ public class CreatePlayersScreenPanel extends JPanel
 			constraints.weighty = 1; 
 			constraints.insets = new Insets( 0, 0, 0, 40 );
 			constraints.fill = GridBagConstraints.VERTICAL;
-			colorPanel.add( colorButtons[i], constraints );
+			colorPanels[i].add( colorButtons[i], constraints );
 			
-			playersPanel.add( colorPanel );
+			playersPanel.add( colorPanels[i] );
 			playersPanel.add( playerFields[i] );
 		}
 		
@@ -166,6 +175,7 @@ public class CreatePlayersScreenPanel extends JPanel
 
 		nextButton = new JButton( "Next" );
 		nextButton.addActionListener( handler );
+		nextButton.setEnabled( false );
 		menuButtonPanel.add( nextButton );
 		menuButtonPanel.setPreferredSize( menuButtonPanel.getPreferredSize() );
 		
@@ -177,33 +187,45 @@ public class CreatePlayersScreenPanel extends JPanel
 	 * objects.  
 	 * @return a List of names.  
 	 */
-	public List<String> getNames()
+	public Map<String, Color> getInformation()
 	{
-		int numStrings = 
-				Integer.parseInt( (String)numPlayersBox.getSelectedItem() );
+		int numStrings = (int)numPlayersBox.getSelectedItem();
 				
-		List<String> result = new ArrayList<String>();
+		Map<String, Color> result = new HashMap<String, Color>();
 		
-		result.add( gameNameField.getText() ) ;
-		
-		for( int i = 1; i < numStrings; i++ )
+		for( int i = 0; i < numStrings; i++ )
 		{
-			result.add( playerFields[i].getText() );
+			result.put( playerFields[i].getText(), 
+					colorPanels[i].getBackground() );
 		}
 		
 		return result; 
 	}
 	
+	public String getGameName()
+	{
+		return gameNameField.getText();
+	}
+	
 	private void updateComboBox( Object obj )
 	{
-		int numPlayers = Integer.parseInt( (String)obj ) - 1;
+		int numPlayers = (int)obj - 1;
 		for( int i = 3; i < playerLabels.length; i++ )
 		{
 			boolean toShow = numPlayers >= i;
 			playerLabels[i].setVisible( toShow );
 			colorButtons[i].setVisible( toShow );
 			playerFields[i].setVisible( toShow );
+			
+			/* clear fields that are being hidden */
+			if( !toShow )
+			{
+				colorFrame.setDefaultColor( colorPanels[i] );
+				playerFields[i].setText( "" );
+			}
 		}
+		
+		validateFields();
 	}
 
 	/**
@@ -212,29 +234,68 @@ public class CreatePlayersScreenPanel extends JPanel
 	public void setColor( int playerIndex )
 	{
 		
-		/*
-		JOptionPane pane = new JOptionPane( frame, 
-				JOptionPane.PLAIN_MESSAGE, 
-				JOptionPane.DEFAULT_OPTION, null, new Object[]{});
-	     //pane.set.Xxxx(...); // Configure
-	     JDialog dialog = pane.createDialog(null, "Choose a color");
-	     dialog.setVisible( true );
-	     Object selectedValue = pane.getValue();
-	     System.out.println( "Got selectedValue object: " + selectedValue );
-	     //If there is an array of option buttons:
-	      */
 		dialog.setVisible( true );
-		Object selectedValue = colorPane.getValue();
-		System.out.println( "Chose" + selectedValue );
+		JButton selectedButton = (JButton)colorPane.getValue();
+		System.out.println( selectedButton );
+		
+		/* will not fire until a value is chosen in pane */
+		dialog.setVisible( false );
+		
+		if( selectedButton != null )
+		{
+			
+			/* no color has been selected for this player */
+			if( colorPanels[playerIndex].getBackground() == ColorFrame.DEFAULT_COLOR )
+			{
+				colorPanels[playerIndex].setBackground( selectedButton.getBackground() );
+				selectedButton.setBackground( Color.DARK_GRAY );
+				selectedButton.setEnabled( false );
+			}
+			
+			/* a color has already been chosen */
+			else  
+			{
+				/* reset old choice */
+				colorFrame.setDefaultColor( 
+						colorPanels[playerIndex].getBackground() );
+				
+				/* set new choice */
+				colorPanels[playerIndex].setBackground( 
+						selectedButton.getBackground() );
+			}
+			
+		}
+		
+		/* enable next if all fields complete */
+		validateFields();
 	}
-
+	
+	/**
+	 * Determines whether every visible field has data in order to enable
+	 * next button.  
+	 */
+	public void validateFields()
+	{
+		boolean isValid = true; 
+		
+		for( int i = 0; i < (int)numPlayersBox.getSelectedItem(); i++ )
+		{
+			if( playerFields[i].getText().equals("") || 
+					colorPanels[i].getBackground() == ColorFrame.DEFAULT_COLOR )
+			{
+				isValid = false; 
+			}
+		}
+		
+		nextButton.setEnabled( isValid ); 
+	}
 	/**
 	 * Initializes the JComboBox and adds an anonymous item listener to update
 	 * the number of players selected.
 	 */
 	private void initComboBox()
 	{
-		numPlayersBox = new JComboBox<String>( this.COMBO_BOX_ITEMS );
+		numPlayersBox = new JComboBox<Integer>( this.COMBO_BOX_ITEMS );
 		numPlayersBox.addItemListener( new ItemListener()
 		{
 			@Override
@@ -257,6 +318,7 @@ public class CreatePlayersScreenPanel extends JPanel
 	{
 		colorButtons = new JButton[MAX_PLAYERS];
 		playerLabels = new JLabel[MAX_PLAYERS];
+		
 		gameNameLabel = new JLabel( "Game name: " );
 		numPlayersLabel = new JLabel( "Number of players: " );
 		
@@ -278,16 +340,29 @@ public class CreatePlayersScreenPanel extends JPanel
 	/**
 	 * Initializes fields with the proper length and visibility.  
 	 */
-	private void initFields()
+	private void initFields( CreatePlayersScreenHandler handler )
 	{
 		playerFields = new JTextField[MAX_PLAYERS];
-		gameNameField = new JTextField( TEXT_FIELD_LENGTH );
+		gameNameField = new JTextField( "My Risk game", TEXT_FIELD_LENGTH );
 		for( int i = 0; i < playerFields.length; i++ )
 		{
-			playerFields[i] = new JTextField( TEXT_FIELD_LENGTH );
+			playerFields[i] = new JTextField( "", TEXT_FIELD_LENGTH );
+			playerFields[i].setName( Integer.toString( i ) );
 			
 			/* set first 3 visible for default option */
 			playerFields[i].setVisible( i < 3 );
+		
+			
+			/* redirect tab, enter to the next textfield & verify input data */
+			playerFields[i].setFocusTraversalKeysEnabled( false );
+			playerFields[i].getInputMap().put(KeyStroke.getKeyStroke(
+					KeyEvent.VK_TAB, 0), "verify");
+			playerFields[i].getInputMap().put(KeyStroke.getKeyStroke(
+					KeyEvent.VK_ENTER, 0), "verify");
+			playerFields[i].getInputMap().put(KeyStroke.getKeyStroke(
+					"shift TAB"), "verify");
+			playerFields[i].getActionMap().put(
+				"verify", createVerifyAction() );
 		}
 	}
 	
@@ -303,5 +378,37 @@ public class CreatePlayersScreenPanel extends JPanel
 		
 	}
 	
-	
+	/**
+	 * Creates a new verifyAction for each textField.  Having a single
+	 * action for each field did not produce any action events.  
+	 * @return Action to verify fields and switch to next appropriate tab.  
+	 */
+	private Action createVerifyAction()
+	{
+		Action verifyAction = new AbstractAction()
+		{		
+			@Override
+			public void actionPerformed( ActionEvent e )
+			{
+				validateFields();
+				JTextField src = (JTextField)e.getSource();
+				
+				/* go forward 1 if no modifier, otherwise go backwards 1 */
+				int nextField = e.getModifiers() == 0 ?
+						Integer.parseInt( src.getName() ) + 1 :  //true  
+						Integer.parseInt( src.getName() ) - 1; //false
+				
+				/* enforce bounds of [0, MAX_PLAYERS] on nextField*/
+				nextField = (nextField + MAX_PLAYERS ) % MAX_PLAYERS;
+				
+				System.out.println( "Modulo action" + nextField );
+				if ( nextButton.isEnabled() )
+					nextButton.requestFocus();
+				else if( playerFields[nextField].isVisible() )
+					playerFields[nextField].requestFocus();
+				
+			}
+		};
+		return verifyAction;
+	}
 }

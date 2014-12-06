@@ -82,7 +82,6 @@ public class MoveTroopsScreenPanel extends JPanel
 	/**
 	 * Create the panel.
 	 * 
-	 * @wbp.parser.constructor
 	 */
 	public MoveTroopsScreenPanel( MoveTroopsScreenHandler handler )
 	{
@@ -149,9 +148,7 @@ public class MoveTroopsScreenPanel extends JPanel
 		textField.getInputMap().put(KeyStroke.getKeyStroke(
 				KeyEvent.VK_ENTER, 0), "verify"); 
 		textField.getActionMap().put(
-						"verify", handler.createVerifyTextAction() );
-		 
-		  
+						"verify", handler.getVerifyTextAction() );
 		 /*
 		textField.getInputMap().put( KeyStroke.getKeyStroke(
 				KeyEvent.VK_ENTER, 0 ),
