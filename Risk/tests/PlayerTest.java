@@ -34,7 +34,7 @@ public class PlayerTest extends TestCase {
     /* testing hasTerritory method */
     public void hasTerritory()
     {
-    	Territory t1 = new Territory( "t1", null );
+    	Territory t1 = new Territory( "t1", null, null );
     	assertEquals( testPlayer1.hasTerritory(), false );
     	
     	testPlayer1.addTerritory( t1 );
@@ -47,7 +47,7 @@ public class PlayerTest extends TestCase {
     /* testing getNumTerritories */
     public void getNumTerritories()
     {
-    	Territory t1 = new Territory( "t1", null );
+    	Territory t1 = new Territory( "t1", null, null );
     	assertEquals( testPlayer1.getNumTerritories(), 0 );
     	
     	testPlayer1.addTerritory( t1 );
@@ -83,11 +83,11 @@ public class PlayerTest extends TestCase {
     // Testing Player's int getTotalArmies() method
     public void testGetTotalArmies() 
     {
-    	Territory t1 = new Territory("t1", null);
+    	Territory t1 = new Territory("t1", null, null);
     	t1.setNumArmies(1);
-    	Territory t2 = new Territory("t2", null);
+    	Territory t2 = new Territory("t2", null, null);
     	t2.setNumArmies(2);
-    	Territory t3 = new Territory("t3", null);
+    	Territory t3 = new Territory("t3", null, null);
     	t3.setNumArmies(3);
     	
     	/* total armies are 0, they should increase with each territory added */
@@ -114,15 +114,16 @@ public class PlayerTest extends TestCase {
     public void testGetTerritoriesList() 
     {
     	assertEquals( testPlayer1.getTerritoriesList().size(), 0 );
-    	testPlayer1.addTerritory( new Territory() );
+    	testPlayer1.addTerritory( new Territory(null, null, null) );
     	
     	assertTrue( testPlayer1.getTerritoriesList().size() == 1 );
     	
     	HashMap<String, Territory> adj = new HashMap<String, Territory>();
-		adj.put( "1",  new Territory( "T1", null ) );
-		adj.put( "2",  new Territory( "T2", null ) );
+		adj.put( "1",  new Territory( "T1", null, null) );
+		adj.put( "2",  new Territory( "T2", null , null) );
 		
-		Territory t3 = new Territory( "T3", adj );
+		Territory t3 = new Territory( "T3", null, null);
+		t3.setNeighbors( adj );
 		
 		testPlayer1.addTerritory( t3 ); 
 		
@@ -166,15 +167,16 @@ public class PlayerTest extends TestCase {
     public void testAddTerritory() 
     {
     	assertEquals( testPlayer1.getTerritoriesList().size(), 0 );
-    	testPlayer1.addTerritory( new Territory() );
+    	testPlayer1.addTerritory( new Territory(null, null, null) );
     	
     	assertTrue( testPlayer1.getTerritoriesList().size() == 1 );
     	
     	HashMap<String, Territory> adj = new HashMap<String, Territory>();
-		adj.put( "1",  new Territory( "T1", null ) );
-		adj.put( "2",  new Territory( "T2", null ) );
+		adj.put( "1",  new Territory( "T1", null, null ) );
+		adj.put( "2",  new Territory( "T2", null, null ) );
 		
-		Territory t3 = new Territory( "T3", adj );
+		Territory t3 = new Territory( "T3", null , null );
+		t3.setNeighbors( adj );
 		
 		testPlayer1.addTerritory( t3 ); 
 		
@@ -249,16 +251,16 @@ public class PlayerTest extends TestCase {
     public void addTerritory() 
     {
     	assertTrue( testPlayer1.getTerritoriesList() == null );
-    	testPlayer1.addTerritory( new Territory() );
+    	testPlayer1.addTerritory( new Territory(null, null, null) );
     	
     	assertTrue( testPlayer1.getTerritoriesList().size() == 1 );
     	
     	HashMap<String, Territory> adj = new HashMap<String, Territory>();
-		adj.put( "1",  new Territory( "T1", null ) );
-		adj.put( "2",  new Territory( "T2", null ) );
+		adj.put( "1",  new Territory( "T1", null, null ) );
+		adj.put( "2",  new Territory( "T2", null, null ) );
 		
-		Territory t3 = new Territory( "T3", adj );
-		
+		Territory t3 = new Territory( "T3", null, null );
+		t3.setNeighbors( adj );
 		testPlayer1.addTerritory( t3 ); 
 		
 		/*test the territories that come back */
@@ -277,8 +279,8 @@ public class PlayerTest extends TestCase {
     */
     public void testAttack() 
     {
-        Territory t1 = new Territory();
-        Territory t2 = new Territory("t2", null);
+        Territory t1 = new Territory(null, null, null);
+        Territory t2 = new Territory("t2", null, null);
         t1.setNumArmies(100);
         t2.setNumArmies(15);
         
@@ -323,7 +325,7 @@ public class PlayerTest extends TestCase {
         
         /* test attacking with 2 armies */
         Player test3 = new Player("T3");
-        Territory t3 = new Territory("t3", null);
+        Territory t3 = new Territory("t3", null, null);
         test3.addTerritory( t3 );
         t3.setNumArmies( 1 );
         test3.addCard( new Card( "T3", "T3" ) );
@@ -343,7 +345,7 @@ public class PlayerTest extends TestCase {
         
         /* test attacking with 1 army */
         Player test4 = new Player("T4");
-        Territory t4 = new Territory("t4", null);
+        Territory t4 = new Territory("t4", null, null);
         test4.addTerritory( t4 );
         t4.setNumArmies( 1 );
         test4.addCard( new Card( "T4", "T4" ) );
@@ -374,15 +376,15 @@ public class PlayerTest extends TestCase {
     
     public void testMoveTroops( )
 	{
-    	Territory t4 = new Territory( "Test4", null );
+    	Territory t4 = new Territory( "Test4", null, null);
     	t4.setNumArmies( 15 );
     	testPlayer1.addTerritory( t4 );
     	
-    	Territory t5 = new Territory( "Test5", null );
+    	Territory t5 = new Territory( "Test5", null, null );
     	t5.setNumArmies( 20 );
     	testPlayer1.addTerritory( t5 );
     	
-    	Territory t6 = new Territory( "Test6", null );
+    	Territory t6 = new Territory( "Test6", null, null );
     	t6.setNumArmies( 50 );
     	testPlayer2.addTerritory( t6 );
     	

@@ -25,6 +25,7 @@ public class Risk
 		gui.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
 		gui.setSize( GAME_SIZE );
+		gui.setResizable( false );
 		// gui.pack();
 		gui.setVisible( true );
 	}

@@ -121,8 +121,8 @@ public class AttackScreenPanel extends JPanel
 	{
 		attackingPlayer = new Player( "Test 1" );
 		defendingPlayer = new Player( "Test 2" );
-		attacker = new Territory( "Western United States", null );
-		defender = new Territory( "Eastern United States", null );
+		attacker = new Territory( "Western United States", null, null );
+		defender = new Territory( "Eastern United States", null, null );
 		attacker.setNumArmies( 10 );
 		defender.setNumArmies( 7 );
 		attackingPlayer.addTerritory( attacker );
@@ -564,9 +564,9 @@ public class AttackScreenPanel extends JPanel
 		JFrame jf = new JFrame();
 		
 		/* fake territory data to view */
-		Territory attacker = new Territory("Attackistan", null );
+		Territory attacker = new Territory("Attackistan", null, null );
 		attacker.setNumArmies( 15 );
-		Territory defender = new Territory("Defendaria", null );
+		Territory defender = new Territory("Defendaria", null, null );
 		defender.setNumArmies( 10 );
 		
 		AttackScreenPanel asp = new AttackScreenPanel( attacker, defender );

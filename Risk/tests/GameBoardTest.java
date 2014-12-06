@@ -33,14 +33,14 @@ public class GameBoardTest extends TestCase
 	protected void setUp()
 	{
 
-		france = new Territory( "France", null );
-		spain = new Territory( "Spain", null );
+		france = new Territory( "France", null, null );
+		spain = new Territory( "Spain", null, null );
 		HashMap<String, Territory> territories = new HashMap<String, Territory>();
 		territories.put( france.getName(), france );
 		territories.put( spain.getName(), spain );
 
-		europe = new Continent( "Europe", 5, null );
-		asia = new Continent( "Asia", 7, null );
+		europe = new Continent( "Europe", 5 );
+		asia = new Continent( "Asia", 7 );
 		HashMap<String, Continent> continents = new HashMap<String, Continent>();
 		continents.put( europe.getName(), europe );
 		continents.put( asia.getName(), asia );
@@ -49,10 +49,10 @@ public class GameBoardTest extends TestCase
 
 		/* Fresh copy of tests for each method */
 		testContinent = new Continent( null, 0 );
-		testTerritory = new Territory();
+		testTerritory = new Territory(null, null, null);
 
 		testContinentEurope = new Continent( "Europe", 5 );
-		testTerritoryFrance = new Territory( "France", null );
+		testTerritoryFrance = new Territory( "France", null, null );
 
 	}
 

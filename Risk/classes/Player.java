@@ -7,6 +7,7 @@
 
 package classes;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ public class Player
 	private Map<String, Territory> territories;
 	private Map<String, Continent> continents;
 	private Hand cardHand;
+	private Color circleColor;
 
 	public Player()
 	{
@@ -35,7 +37,21 @@ public class Player
 		continents = new HashMap<String, Continent>();
 		cardHand = new Hand();
 	}
+	
+	public Player( String name, Color color )
+	{
+		this( name );
+		circleColor = color; 
+	}
 
+	/**
+	 * @return the player's color
+	 */
+	public Color getColor()
+	{
+		return this.circleColor;
+	}
+	
 	/**
 	 * @return the Player's name
 	 **/

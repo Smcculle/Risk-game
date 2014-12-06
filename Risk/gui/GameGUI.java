@@ -7,14 +7,23 @@
 
 package gui;
 
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 
-import engine.RiskGame;
+import classes.RiskGame;
 import engine.RiskGameEngine;
+import engine.RiskUtils;
 
 import java.util.Observer;
 import java.util.Observable;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.LayoutManager;
 import java.awt.event.ActionListener;
 
 @SuppressWarnings( "serial" )
@@ -69,11 +78,12 @@ public class GameGUI extends JFrame implements Observer
 		 * this.selectTerritoriesScreen = new SelectTerritoriesScreenPanel(
 		 * this.selectTerritoriesScreenHandler );
 		 **/
-		this.currentPanel = this.startScreen;
-		this.getContentPane().add( this.currentPanel );
+		this.currentPanel = this.startScreen;	
+		this.getContentPane().add( currentPanel );
 		this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		
 	}
-
+	
 	/**
 	 * Method called by update to change panels. Removes currentPanel from
 	 * contentPane, adds the argument to contentPane, and repaints.
@@ -102,12 +112,6 @@ public class GameGUI extends JFrame implements Observer
 		{
 			this.game = gameEngine.getGame();
 			System.out.println( "in if of GameGUI update" );
-			/*
-			 * this.getContentPane().remove( this.currentPanel );
-			 * this.currentPanel = this.createGameScreen;
-			 * this.getContentPane().add( this.currentPanel );
-			 * this.revalidate(); this.repaint();
-			 */
 			this.changeScreen( this.createGameScreen );
 		}
 		else if ( state.equals( "loadStartScreen" ) )

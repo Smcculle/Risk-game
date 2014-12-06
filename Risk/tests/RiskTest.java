@@ -95,7 +95,7 @@ public class RiskTest {
 						{
 							tAdj.put( new String(split[i]), myT.get(split[i]) );
 						}
-						myT.put( new String(split[0]), new Territory( split[0], tAdj ) );
+						//myT.put( new String(split[0]), new Territory( split[0], tAdj ) );
 						
 					}
 					

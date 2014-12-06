@@ -7,7 +7,6 @@
 
 package classes;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,16 +23,8 @@ public class Continent
 
 	public Continent( String name, int bonusArmies )
 	{
-		this( name, bonusArmies, new HashMap<String, Territory>() );
-	}
-
-	public Continent( String name, int bonusArmies,
-			Map<String, Territory> territories )
-	{
-		this.name = name;
+		this.name = name; 
 		this.bonusArmies = bonusArmies;
-		occupant = null;
-		this.territories = territories;
 	}
 
 	/**
@@ -68,6 +59,17 @@ public class Continent
 	}
 
 	/**
+	 * Sets which territories are in this continent
+	 * 
+	 * @param territories a Map of territories 
+	 **/
+	public void setTerritories( Map<String, Territory> territories )
+	{
+
+		this.territories = territories; 
+	}
+	
+	/**
 	 * Sets which player owns a continent, if any
 	 * 
 	 * @param occupant a reference to the Player object that now owns this
@@ -96,6 +98,11 @@ public class Continent
 	public Map<String, Territory> getTerritories()
 	{
 		return territories;
+	}
+	
+	public String toString()
+	{
+		return this.name;
 	}
 
 }

@@ -11,55 +11,102 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import engine.Risk;
+import engine.RiskUtils;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 
 @SuppressWarnings("serial")
 public class StartScreenPanel extends JPanel
 {
-
-
+	
+	/* background*/
+	private static final String BACKGROUND_IMAGE = "background.jpg";
+	private BufferedImage backgroundImage;
+	
+	private JFileChooser fileChooser;
+	private ActionListener screenHandler;
+	
+	/* center panel label and buttons */
+	private JPanel centerPanel;
+	private JButton exitButton; 
+	
 	private JLabel createNewGameLabel;
 	private JButton createNewGameButton;
 
 	private JLabel loadSavedGameLabel;
 	private JButton loadSavedGameButton;
 
-	private JFileChooser fileChooser;
-
-	private ActionListener screenHandler;
+	/* welcome label */
+	private JLabel welcomeLabel;
+	
+	 
 
 	public StartScreenPanel( ActionListener handler )
 	{
 		this.screenHandler = handler;
-		this.setLayout( new GridLayout( 4, 1 ) );
+		this.setLayout( new BorderLayout() );
+		this.backgroundImage = RiskUtils.getImage( BACKGROUND_IMAGE );
+		
+		centerPanel = new JPanel( new GridBagLayout() );
+		centerPanel.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.insets = new Insets( 10, 10, 10, 10 );
 		this.setName( "Start Screen" );
 
 		/* new game label and button */
 		createNewGameLabel = new JLabel( "Creates a new Risk Game: " );
-		this.add( createNewGameLabel );
+		centerPanel.add( createNewGameLabel, constraints ) ;
 
 		createNewGameButton = new JButton( "New Game" );
 		createNewGameButton.setActionCommand( "createNewGame" );
 		createNewGameButton.addActionListener( this.screenHandler );
-		this.add( createNewGameButton );
+		centerPanel.add( createNewGameButton, constraints );
 
 		/* load game label and button */
+		constraints.gridy = 1;        // add to 2nd row 
 		loadSavedGameLabel = new JLabel( "Loads a Risk Game saved to file: " );
-		this.add( loadSavedGameLabel );
+		centerPanel.add( loadSavedGameLabel, constraints );
 
 		loadSavedGameButton = new JButton( "Load Game" );
 		loadSavedGameButton.setActionCommand( "loadSavedGame" );
 		loadSavedGameButton.addActionListener( this.screenHandler );
-		this.add( loadSavedGameButton );
-		this.setPreferredSize( Risk.GAME_SIZE );
-
+		centerPanel.add( loadSavedGameButton, constraints );
+		
+		/* add exit button to 3rd row, 2nd column */
+		constraints.gridy = 2; 
+		constraints.gridx = 1; 
+		exitButton = new JButton( "Exit Game");
+		exitButton.setActionCommand( "exitGame" );
+		exitButton.addActionListener( this.screenHandler );
+		exitButton.setPreferredSize( loadSavedGameButton.getPreferredSize() );
+		centerPanel.add( exitButton, constraints );
+		
+		this.add( centerPanel, BorderLayout.CENTER );
+		
+		welcomeLabel = new JLabel( "<html><font size = 7>RiskGame</html");
+		welcomeLabel.setHorizontalAlignment( JLabel.CENTER );
+		
+		this.add( welcomeLabel, BorderLayout.NORTH );
+		
 	}
-
+	
+	
+	/**
+	 * Not implemented:  Opens a file chooser and takes no action afterwards.  
+	 */
 	protected void chooseOpenFile()
 	{
 

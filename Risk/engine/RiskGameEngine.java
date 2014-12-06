@@ -9,6 +9,8 @@ package engine;
 
 import java.util.Observable;
 
+import classes.RiskGame;
+
 /**
  * RiskGameEngine is responsible for the creation of the RiskGame object, either
  * by creating a new game and initializing players or by loading a saved game.
@@ -20,21 +22,17 @@ public class RiskGameEngine extends Observable
 
 	public RiskGameEngine()
 	{
-		this.state = "startScreen";
-		this.game = new RiskGame( "Dummy game" );
+		this.state = "loadStartScreen";
+		game = new RiskGame();
 	}
-
+	
 	public void createNewGame()
 	{
 		System.out.println( "In createNewGame of RiskGameEngine" );
-		this.state = "createNewGame";
+		game.createNewGame();
+		this.state = "createPlayers";
 		this.setChanged();
 		this.notifyObservers();
-	}
-
-	public void makeGame( String gameName )
-	{
-		this.game = new RiskGame( gameName );
 	}
 
 	public void loadSavedGame()

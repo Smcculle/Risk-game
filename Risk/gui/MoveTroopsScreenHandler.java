@@ -91,12 +91,13 @@ public class MoveTroopsScreenHandler implements ActionListener,
 	                if (!textField.isEditValid()) 
 	                { 
 	                    Toolkit.getDefaultToolkit().beep();
-	                    textField.selectAll();
 	                    view.handleInvalidInput();
-	                } else try {                    //The text is valid,
+	                } else try 
+	                {                    //The text is valid,
 	                    textField.commitEdit();     //so use it.
-	                    
-	                } catch (java.text.ParseException e ) 
+	                    view.handleValidInput();
+	                } 
+	                catch (java.text.ParseException e ) 
 	                { 
 	                	System.out.println( e.getMessage() );
 	                }

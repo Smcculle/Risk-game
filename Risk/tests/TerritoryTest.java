@@ -22,22 +22,22 @@ public class TerritoryTest extends TestCase
 	
 	protected void setUp() 
 	{
-		test1 = new Territory();
+		test1 = new Territory( null, null, null);
 		
 		/*initialize adjacencies and add to them */
 		adj = new HashMap<String, Territory>();
-		adj.put( "1",  new Territory( "T1", null ) );
-		adj.put( "2",  new Territory( "T2", null ) );
+		adj.put( "1",  new Territory( "T1", null, null ) );
+		adj.put( "2",  new Territory( "T2", null, null ) );
 		
-		test2 = new Territory( "Test2", adj );
-		
+		test2 = new Territory( "Test2", null, null );
+		test2.setNeighbors( adj );
 		
 	}
 	
 	// tests String getName() method
 	public void testGetName() 
 	{
-		Territory test3 = new Territory("", null);
+		Territory test3 = new Territory("", null, null);
 		
 		assertTrue( test2.getName().equals( "Test2" ) );
 		assertTrue( test3.getName().equals("") );
@@ -47,7 +47,8 @@ public class TerritoryTest extends TestCase
 	//tests HashMap<String, Territory> getNeighbors() method
 	public void testGetNeighbors()
 	{
-		HashMap<String, Territory> neighbors = test2.getNeighbors();
+		HashMap<String, Territory> neighbors = 
+				(HashMap<String, Territory>)test2.getNeighbors();
 		assertTrue( neighbors.size() == 2 );
 		
 		/* make sure the territories are the same */

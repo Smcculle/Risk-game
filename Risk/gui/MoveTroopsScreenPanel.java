@@ -90,7 +90,7 @@ public class MoveTroopsScreenPanel extends JPanel
 		this.setLayout( new BorderLayout( 10, 10 ) );
 		// TODO: remove
 		dummyTerritory();
-
+		
 		descriptionPanel = getDescriptionPanel();
 		this.add( descriptionPanel, BorderLayout.NORTH );
 
@@ -106,6 +106,9 @@ public class MoveTroopsScreenPanel extends JPanel
 		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
 
 		( (MoveTroopsScreenHandler)handler ).addView( this );
+		
+		//TODO: remove
+		initPanel(3);
 	}
 	//TODO REMOVE
 	public void testMove()
@@ -118,7 +121,7 @@ public class MoveTroopsScreenPanel extends JPanel
 	public void initPanel( int minToMove )
 	{
 		int maxToMove = movingFrom.getNumArmies() - 1;
-		errorMessage = "Please enter an integer value from " 
+		errorMessage = "Please enter an integer from " 
 				+ minToMove + " to " + maxToMove;
 		
 		troopSlider.setMinimum( minToMove );
@@ -176,11 +179,20 @@ public class MoveTroopsScreenPanel extends JPanel
 
 	}
 
+	public void handleValidInput()
+	{
+		moveButton.setEnabled( true );
+		moveButton.requestFocus();
+	}
+	
 	public void handleInvalidInput()
 	{
+		textField.selectAll();
+		moveButton.setEnabled( false );
 		JOptionPane.showMessageDialog( this, errorMessage, 
 				"Invalid troop selection", 
 				JOptionPane.ERROR_MESSAGE);	
+		
 	}
 	
 	public void setMaxTroops()
@@ -196,14 +208,15 @@ public class MoveTroopsScreenPanel extends JPanel
 	{
 		textField.setValue( newValue );
 		troopSlider.setValue( newValue );
+		handleValidInput();
 	}
 	
 	// TODO erase
 	private void dummyTerritory()
 	{
 		movingPlayer = new Player( "Test 1" );
-		movingFrom = new Territory( "Western United States", null );
-		movingTo = new Territory( "Eastern United States", null );
+		movingFrom = new Territory( "Western United States", null, null );
+		movingTo = new Territory( "Eastern United States", null, null );
 		movingFrom.setNumArmies( 10 );
 		movingTo.setNumArmies( 7 );
 		movingPlayer.addTerritory( movingFrom );
@@ -337,9 +350,9 @@ public class MoveTroopsScreenPanel extends JPanel
 		JFrame jf = new JFrame();
 
 		/* fake territory data to view */
-		Territory attacker = new Territory( "Attackistan", null );
+		Territory attacker = new Territory( "Attackistan", null, null );
 		attacker.setNumArmies( 15 );
-		Territory defender = new Territory( "Defendaria", null );
+		Territory defender = new Territory( "Defendaria", null, null );
 		defender.setNumArmies( 10 );
 
 		MoveTroopsScreenPanel msp =

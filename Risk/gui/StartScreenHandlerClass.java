@@ -7,8 +7,11 @@
 
 package gui;
 
+import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
+import javax.swing.SwingUtilities;
 
 import engine.RiskGameEngine;
 
@@ -29,17 +32,22 @@ public class StartScreenHandlerClass implements ActionListener
         
         if( command.equals( "createNewGame" ) )
         {
-            System.out.println( "Now if createNewGame" );
+            System.out.println( "Now in if createNewGame" );
             this.model.createNewGame();
         }
+        
         else if( command.equals( "loadSavedGame" ) )
         {
         	System.out.println( "Now if loadSavedGame");
             this.model.loadSavedGame();
         }
+        else if( command.equals( "exitGame" ) )
+        {
+        	System.exit( 0 );
+        }
         else
         {
-            System.out.println( "Invalid command in Start Screen" );
+        	System.out.println( "Invalid command in Start Screen" );
         }
 
     }

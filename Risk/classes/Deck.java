@@ -21,7 +21,8 @@ public class Deck
 
 	public Deck( ArrayList<Card> cards )
 	{
-		this.cards = new ArrayList<Card>( cards );
+		this.cards = cards;
+		shuffle();
 	}
 
 	/**

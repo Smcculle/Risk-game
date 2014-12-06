@@ -7,7 +7,8 @@
 
 package classes;
 
-import java.util.HashMap;
+import java.awt.Point;
+import java.util.Map;
 
 /**
  * Territory class specifying territories on the board GameBoard objects will
@@ -18,18 +19,51 @@ public class Territory
 	private String name;
 	private Player occupant;
 	private int armies;
-	private HashMap<String, Territory> neighbors;
+	private Map<String, Territory> neighbors;
+	private Point circleCenter; 
+	private Continent continent; 
 
-	public Territory()
-	{
-	}
-
-	public Territory( String name, HashMap<String, Territory> neighbors )
+	public Territory( String name, Continent continent, Point circleCenter )
 	{
 		this.name = name;
-		this.neighbors = neighbors;
+		this.circleCenter = circleCenter;
+		this.continent = continent;
 	}
 
+	/**
+	 * Sets neighbors on configuration 
+	 * @param neighbors a Map of adjacencies to this territory.  
+	 */
+	public void setNeighbors( Map<String, Territory> neighbors )
+	{
+		this.neighbors = neighbors;
+	}
+	
+
+	/**  
+	 * @return the continent this territory belongs to.      
+	 */
+	public Continent getContinent()
+	{
+		return continent;  
+	}
+	
+	/**  
+	 * @return the X coordinate of the circle for this territory.     
+	 */
+	public int getCircleX ()
+	{
+		return circleCenter.x;  
+	}
+	
+	/**  
+	 * @return the Y coordinate of the circle for this territory.     
+	 */
+	public int getCircleY ()
+	{
+		return circleCenter.y;  
+	}
+	
 	/**
 	 * @return the name of the territory
 	 **/
@@ -41,7 +75,7 @@ public class Territory
 	/**
 	 * @return an ArrayList of all territories it shares a border with
 	 **/
-	public HashMap<String, Territory> getNeighbors()
+	public Map <String, Territory> getNeighbors()
 	{
 		return neighbors;
 	}
@@ -105,6 +139,11 @@ public class Territory
 	public boolean isAdjacent( String s )
 	{
 		return neighbors.containsKey( s );
+	}
+	
+	public String toString()
+	{
+		return this.name; 
 	}
 
 }// end Territory class

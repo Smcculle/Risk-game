@@ -140,9 +140,10 @@ public class ContinentTest extends TestCase
 	{
 		assertEquals( testContinent.getTerritories().size(), 0 );
 		HashMap<String, Territory> testMap = new HashMap<String, Territory>();
-		testMap.put( "Alaska", new Territory( "Alaska", null ) );
-		testMap.put( "Guam", new Territory( "Guam", null ) );
-		testContinent = new Continent( "Name", 0, testMap );
+		testMap.put( "Alaska", new Territory( "Alaska", null, null ) );
+		testMap.put( "Guam", new Territory( "Guam", null, null ) );
+		testContinent = new Continent( "Name", 0 );
+		testContinent.setTerritories( testMap );
 		
 		assertEquals( testContinent.getTerritories().size(), 2 );
 		HashMap<String, Territory> getTerr = (HashMap<String, Territory>)testContinent.getTerritories();
