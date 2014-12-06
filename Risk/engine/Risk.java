@@ -8,7 +8,10 @@
 package engine;
 
 import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import gui.GameGUI;
+
 import javax.swing.JFrame;
 
 public class Risk
@@ -26,6 +29,8 @@ public class Risk
 
 		gui.setSize( GAME_SIZE );
 		gui.setResizable( false );
+		gui.setLocation( RiskUtils.getStartScreenPosition() );
+		
 		// gui.pack();
 		gui.setVisible( true );
 	}

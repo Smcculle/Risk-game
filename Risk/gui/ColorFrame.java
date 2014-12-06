@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,7 +29,6 @@ import javax.swing.event.ChangeListener;
 public class ColorFrame extends JPanel
 {
 
-	private ActionListener handler; 
 	private JPanel colorPanel;
 	private JButton redButton, blueButton, greenButton, purpleButton,
 			orangeButton, yellowButton, brownButton, pinkButton, grayButton;
@@ -36,57 +36,52 @@ public class ColorFrame extends JPanel
 	public ColorFrame( ActionListener handler )
 	{
 		this.setLayout( new BorderLayout() );
-		initComponents();
+		initComponents( handler );
 		setColors();
 		addToPanel();
 		
 		this.add( colorPanel, BorderLayout.CENTER );
-		((CreatePlayersScreenHandler)handler).setFrame( this );
 	}
 
-	private void initComponents()
+	private void initComponents( ActionListener handler )
 	{
 		colorPanel = new JPanel( new GridLayout(3, 3, 5, 5) );
 		redButton = new JButton();
+		redButton.setActionCommand( "colorChosen" );
+		redButton.addActionListener( handler );
+		
 		blueButton = new JButton();
+		blueButton.setActionCommand( "colorChosen" );
+		blueButton.addActionListener( handler );
+		
 		greenButton = new JButton();
-		purpleButton = new JButton();
-		orangeButton = new JButton();
-		yellowButton = new JButton();
-		brownButton = new JButton();
-		pinkButton = new JButton();
-		grayButton = new JButton();
-		//redButton.addActionListener( handler );
-		//redButton.setActionCommand( "red" );
-		redButton.addChangeListener( new ChangeListener()
-		{
-			
-			@Override
-			public void stateChanged( ChangeEvent e )
-			{
-				System.out.println( "Changed " + e );
-				
-			}
-		} );
-		blueButton.setActionCommand( "wat" );
-		blueButton.addActionListener( new ActionListener()
-		{
-			
-			@Override
-			public void actionPerformed( ActionEvent e )
-			{
-				System.out.println("Pushed button with value " + e.getActionCommand());
-				SwingUtilities.getWindowAncestor( (Component)e.getSource()).setVisible( false ); 
-				
-			}
-		});
+		greenButton.setActionCommand( "colorChosen" );
 		greenButton.addActionListener( handler );
+		
+		purpleButton = new JButton();
+		purpleButton.setActionCommand( "colorChosen" );
 		purpleButton.addActionListener( handler );
+		
+		orangeButton = new JButton();
+		orangeButton.setActionCommand( "colorChosen" );
 		orangeButton.addActionListener( handler );
+		
+		yellowButton = new JButton();
+		yellowButton.setActionCommand( "colorChosen" );
 		yellowButton.addActionListener( handler );
+		
+		brownButton = new JButton();
+		brownButton.setActionCommand( "colorChosen" );
 		brownButton.addActionListener( handler );
+		
+		pinkButton = new JButton();
+		pinkButton.setActionCommand( "colorChosen" );
 		pinkButton.addActionListener( handler );
+		
+		grayButton = new JButton();
+		grayButton.setActionCommand( "colorChosen" );
 		grayButton.addActionListener( handler );
+		
 	}
 	
 	private void setColors()

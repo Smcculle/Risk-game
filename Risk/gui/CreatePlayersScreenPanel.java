@@ -21,12 +21,15 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+
+import engine.RiskUtils;
 
 @SuppressWarnings( "serial" )
 public class CreatePlayersScreenPanel extends JPanel
@@ -36,46 +39,62 @@ public class CreatePlayersScreenPanel extends JPanel
 	{ "3", "4", "5", "6" };
 	private final int TEXT_FIELD_LENGTH = 20;
 	private final int MAX_PLAYERS = 6; 
+	private final double SCREEN_OFFSET = 0.33;
 	
+	/* north panel */
+	private JPanel northPanel; 
 	private JLabel gameNameLabel;
 	private JTextField gameNameField;
-	private JPanel labelPanel; 
-	
-	private JButton[] colorButtons;
-	private ColorFrame frame;  
-	
 	private JLabel numPlayersLabel;
 	private JComboBox<String> numPlayersBox;
+	
+	/* center panel*/
 	private JPanel playersPanel; 
+	
+	/* center west */
+	private JButton[] colorButtons;
 	private JLabel[] playerLabels; 
+	
+	/* center east */
 	private JTextField[] playerFields;
 	
-
-	JPanel menuButtonPanel;
+	/* south */
+	private JPanel menuButtonPanel;
 	private JButton backButton;
 	private JButton nextButton;
-
+	
+	/* color chooser */
+	private JOptionPane colorPane; 
+	private ColorFrame colorFrame; 
+	private JDialog dialog; 
+	
 	public CreatePlayersScreenPanel( ActionListener handler )
 	{
-		frame = new ColorFrame( handler );
 		
 		this.setLayout( new BorderLayout( 0, 15 ) );
 		
-		/* initialize JLabels, JTextFields, and comboBox */
+		/* initialize components  */
 		initLabelsAndButtons( handler );
+		initColorChooser( handler );
 		initFields();
 		initComboBox();
+		
 
-		labelPanel = getLabelPanel();
-		this.add( labelPanel, BorderLayout.NORTH );
+		northPanel = getLabelPanel();
+		this.add( northPanel, BorderLayout.NORTH );
 
 		playersPanel = getPlayersPanel();
 		this.add( playersPanel, BorderLayout.CENTER );
-	
+		
+		
 		menuButtonPanel = getMenuButtonPanel( handler );
 		this.add( menuButtonPanel, BorderLayout.SOUTH );
 		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
 		this.setPreferredSize( this.getPreferredSize() );
+		
+		/* set the dialog to appear closer to the center of the JFrame */
+		dialog.setLocation( RiskUtils.getRelativeScreenLocation( 
+				SCREEN_OFFSET, SCREEN_OFFSET ) );
 		
 		( (CreatePlayersScreenHandler)handler ).setView( this );
 		
@@ -153,6 +172,11 @@ public class CreatePlayersScreenPanel extends JPanel
 		return menuButtonPanel;
 	}
 	
+	/**
+	 * Collects the list of names from the GUI for creation of player 
+	 * objects.  
+	 * @return a List of names.  
+	 */
 	public List<String> getNames()
 	{
 		int numStrings = 
@@ -168,6 +192,40 @@ public class CreatePlayersScreenPanel extends JPanel
 		}
 		
 		return result; 
+	}
+	
+	private void updateComboBox( Object obj )
+	{
+		int numPlayers = Integer.parseInt( (String)obj ) - 1;
+		for( int i = 3; i < playerLabels.length; i++ )
+		{
+			boolean toShow = numPlayers >= i;
+			playerLabels[i].setVisible( toShow );
+			colorButtons[i].setVisible( toShow );
+			playerFields[i].setVisible( toShow );
+		}
+	}
+
+	/**
+	 * Called by pressing the choose color button 
+	 */
+	public void setColor( int playerIndex )
+	{
+		
+		/*
+		JOptionPane pane = new JOptionPane( frame, 
+				JOptionPane.PLAIN_MESSAGE, 
+				JOptionPane.DEFAULT_OPTION, null, new Object[]{});
+	     //pane.set.Xxxx(...); // Configure
+	     JDialog dialog = pane.createDialog(null, "Choose a color");
+	     dialog.setVisible( true );
+	     Object selectedValue = pane.getValue();
+	     System.out.println( "Got selectedValue object: " + selectedValue );
+	     //If there is an array of option buttons:
+	      */
+		dialog.setVisible( true );
+		Object selectedValue = colorPane.getValue();
+		System.out.println( "Chose" + selectedValue );
 	}
 
 	/**
@@ -191,17 +249,6 @@ public class CreatePlayersScreenPanel extends JPanel
 
 	}
 
-	private void updateComboBox( Object obj )
-	{
-		int numPlayers = Integer.parseInt( (String)obj ) - 1;
-		for( int i = 3; i < playerLabels.length; i++ )
-		{
-			boolean toShow = numPlayers >= i;
-			playerLabels[i].setVisible( toShow );
-			colorButtons[i].setVisible( toShow );
-			playerFields[i].setVisible( toShow );
-		}
-	}
 
 	/**
 	 * Initializes labels with the strings to display and default visible.  
@@ -243,5 +290,18 @@ public class CreatePlayersScreenPanel extends JPanel
 			playerFields[i].setVisible( i < 3 );
 		}
 	}
-
+	
+	private void initColorChooser( ActionListener handler )
+	{
+		colorFrame = new ColorFrame( handler );
+		/* blank object array replaces default buttons */
+		colorPane = new JOptionPane( colorFrame, 
+				JOptionPane.PLAIN_MESSAGE, 
+				JOptionPane.DEFAULT_OPTION, null, new Object[]{});
+		
+		dialog = colorPane.createDialog( null, "Choose a color" );
+		
+	}
+	
+	
 }
