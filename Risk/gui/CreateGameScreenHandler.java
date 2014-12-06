@@ -29,7 +29,7 @@ public class CreateGameScreenHandler implements ActionListener
         if( command.equals( "createGame" ) )
         {
             System.out.println( "Creating players now" );
-            this.model.createPlayers();
+            //this.model.createPlayers();
         }
         
         else if ( command.equals( "Back" ) )

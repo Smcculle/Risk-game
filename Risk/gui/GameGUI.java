@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 
 import classes.RiskGame;
 import engine.RiskGameEngine;
+import engine.RiskGameEngine.State;
 import engine.RiskUtils;
 
 import java.util.Observer;
@@ -104,22 +105,23 @@ public class GameGUI extends JFrame implements Observer
 	public void update( Observable obs, Object obj )
 	{
 		System.out.println( "In update of GameGUI" );
-		String state = gameEngine.getState();
+		State state = gameEngine.getState();
 		System.out.println( "New state of game engine: " + state );
 
-		// Update the panel in the JFrame to reflect the current state
+		/* Update the panel in the JFrame to reflect the current state
 		if ( state.equals( "createNewGame" ) )
 		{
 			this.game = gameEngine.getGame();
 			System.out.println( "in if of GameGUI update" );
 			this.changeScreen( this.createGameScreen );
 		}
-		else if ( state.equals( "loadStartScreen" ) )
+		else*/ 
+		if ( state == State.loadStartScreen ) 
 		{
 			System.out.println( "Moving to startScreen in GUI" );
 			this.changeScreen( this.startScreen );
 		}
-		else if ( state.equals( "loadSavedGame" ) )
+		else if ( state == State.loadSavedGame ) 
 		{
 			System.out.println( "Loading saved game in GameGUI" );
 			System.out.println( currentPanel.getName() );
@@ -127,7 +129,7 @@ public class GameGUI extends JFrame implements Observer
 				( (StartScreenPanel)currentPanel ).chooseOpenFile();
 
 		}
-		else if ( state.equals( "createPlayers" ) )
+		else if ( state == State.createPlayers ) 
 		{
 			System.out.println( "In createPlayers GameGUI " );
 			this.changeScreen( createPlayersScreen );

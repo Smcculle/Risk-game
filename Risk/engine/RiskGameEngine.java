@@ -7,6 +7,7 @@
 
 package engine;
 
+import java.util.List;
 import java.util.Observable;
 
 import classes.RiskGame;
@@ -18,44 +19,63 @@ import classes.RiskGame;
 public class RiskGameEngine extends Observable
 {
 	private RiskGame game;
-	private String state;
+	private State state;
+	
+	public enum State{ 
+		loadStartScreen(1), loadSavedGame(2), createPlayers(3), 
+		assignTerritories(4), placeArmies(5), turnInCards(6), attack(7),
+		fortify(8);
+		
+		public final int value; 
+		
+		State( int value ) 
+		{
+			this.value = value; 
+		}
+	}
 
 	public RiskGameEngine()
 	{
-		this.state = "loadStartScreen";
+		this.state = State.loadStartScreen;
 		game = new RiskGame();
 	}
 	
-	public void createNewGame()
-	{
-		System.out.println( "In createNewGame of RiskGameEngine" );
-		game.createNewGame();
-		this.state = "createPlayers";
-		this.setChanged();
-		this.notifyObservers();
-	}
-
 	public void loadSavedGame()
 	{
-		this.state = "loadSavedGame";
+		this.state = State.loadSavedGame;
 		this.setChanged();
 		this.notifyObservers();
 	}
 	
 	public void loadStartScreen()
 	{
-		this.state = "loadStartScreen";
+		this.state = State.loadStartScreen;
 		this.setChanged();
 		this.notifyObservers();
 	}
 	
-	public void createPlayers()
+	public void createNewGame()
 	{
-		this.state = "createPlayers";
+		System.out.println( "In createNewGame of RiskGameEngine" );
+		game.createNewGame();
+		this.state = State.createPlayers;
 		this.setChanged();
 		this.notifyObservers();
-		
 	}
+
+	/**
+	 * Creates the player objects received from GUI and advances to 
+	 * assign territories state.  
+	 * @param names
+	 */
+	public void createPlayers( List<String> names )
+	{
+		this.state = State.assignTerritories;
+		this.setChanged();
+		this.notifyObservers();
+		game.createPlayers( names );
+	}
+	
 	public void loadGame( String gameFileName )
 	{
 		// Read & De-Serialize a game object
@@ -67,7 +87,7 @@ public class RiskGameEngine extends Observable
 		return this.game;
 	}
 
-	public String getState()
+	public State getState()
 	{
 		return this.state;
 	}

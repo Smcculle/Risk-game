@@ -8,64 +8,48 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.FieldView;
 
 @SuppressWarnings( "serial" )
 public class CreatePlayersScreenPanel extends JPanel
 {
 
-	private final String[] COMBO_BOX_ITEMS = { "3", "4", "5", "6" };
+	private final String[] COMBO_BOX_ITEMS =
+	{ "3", "4", "5", "6" };
 	private final int TEXT_FIELD_LENGTH = 20;
-	private ActionListener handler;
-
+	private final int MAX_PLAYERS = 6; 
+	
 	private JLabel gameNameLabel;
 	private JTextField gameNameField;
-
+	private JPanel labelPanel; 
+	
+	private JButton[] colorButtons;
+	private ColorFrame frame;  
+	
 	private JLabel numPlayersLabel;
 	private JComboBox<String> numPlayersBox;
-
-	private JLabel player1Label;
-	private JTextField player1Field;
-
-	private JLabel player2Label;
-	private JTextField player2Field;
-
-	private JLabel player3Label;
-	private JTextField player3Field;
-
-	private JLabel player4Label;
-	private JTextField player4Field;
-
-	private JLabel player5Label;
-	private JTextField player5Field;
-
-	private JLabel player6Label;
-	private JTextField player6Field;
+	private JPanel playersPanel; 
+	private JLabel[] playerLabels; 
+	private JTextField[] playerFields;
+	
 
 	JPanel menuButtonPanel;
 	private JButton backButton;
@@ -73,79 +57,117 @@ public class CreatePlayersScreenPanel extends JPanel
 
 	public CreatePlayersScreenPanel( ActionListener handler )
 	{
-		// TODO Auto-generated constructor stub
-		// super( new CardLayout() );
-		this.handler = handler;
-
-		/*
-		 * CardLayoutDemo demo = new CardLayoutDemo();
-		 * demo.addComponentToPane();
-		 */
-		//this.setLayout( new GridLayout( 11, 2, 10, 10 ) );
-		this.setLayout( new BorderLayout(0, 15) );
-		/* initialize JLabels and JTextFields */
-		initLabels();
+		frame = new ColorFrame( handler );
+		
+		this.setLayout( new BorderLayout( 0, 15 ) );
+		
+		/* initialize JLabels, JTextFields, and comboBox */
+		initLabelsAndButtons( handler );
 		initFields();
 		initComboBox();
-		
-		JPanel topPanel = new JPanel();
-		topPanel.setBorder( BorderFactory.createRaisedBevelBorder() );
-	
-		topPanel.add( gameNameLabel );
-		topPanel.add( gameNameField );
 
-		topPanel.add( numPlayersLabel );
-		topPanel.add( numPlayersBox );
-		JPanel outP = new JPanel( new BorderLayout() );
-		outP.add( topPanel, BorderLayout.CENTER );
-		//this.add( new JLabel() );
-		//this.add( new JLabel() );
-		//topPanel.setPreferredSize( topPanel.getPreferredSize() );
-		//topPanel.setMinimumSize( topPanel.getPreferredSize() );
-		this.add( outP, BorderLayout.NORTH );
+		labelPanel = getLabelPanel();
+		this.add( labelPanel, BorderLayout.NORTH );
+
+		playersPanel = getPlayersPanel();
+		this.add( playersPanel, BorderLayout.CENTER );
+	
+		menuButtonPanel = getMenuButtonPanel( handler );
+		this.add( menuButtonPanel, BorderLayout.SOUTH );
+		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
+		this.setPreferredSize( this.getPreferredSize() );
 		
+		( (CreatePlayersScreenHandler)handler ).setView( this );
+		
+	}
+
+	private JPanel getLabelPanel()
+	{
+		JPanel innerPanel = new JPanel();
+		
+		innerPanel.setBorder( BorderFactory.createRaisedBevelBorder() );
+
+		innerPanel.add( gameNameLabel );
+		innerPanel.add( gameNameField );
+
+		innerPanel.add( numPlayersLabel );
+		innerPanel.add( numPlayersBox );
+		
+		JPanel labelPanel = new JPanel( new BorderLayout() );
+		labelPanel.add( innerPanel, BorderLayout.CENTER );
+		
+		return labelPanel; 
+	}
+	
+	private JPanel getPlayersPanel()
+	{
 		JPanel playersPanel = new JPanel();
 		playersPanel.setBorder( new CompoundBorder(
-				new EmptyBorder( 10, 0, 10, 0 ), 
-				BorderFactory.createRaisedBevelBorder() ) );
+				new EmptyBorder( 0, 0, 0, 0 ),
+				BorderFactory.createRaisedBevelBorder() ) ); 
 		playersPanel.setLayout( new GridLayout( 6, 2, 10, 10 ) );
-		playersPanel.add( player1Label );
-		playersPanel.add( player1Field );
-
-		playersPanel.add( player2Label );
-		playersPanel.add( player2Field );
-
-		playersPanel.add( player3Label );
-		playersPanel.add( player3Field );
-
-		playersPanel.add( player4Label );
-		playersPanel.add( player4Field );
-
-		playersPanel.add( player5Label );
-		playersPanel.add( player5Field );
-
-		playersPanel.add( player6Label );
-		playersPanel.add( player6Field );
-		//playersPanel.setPreferredSize( playersPanel.getPreferredSize() );
-		this.add( playersPanel, BorderLayout.CENTER );
-		//this.add( new JLabel() );
-		//this.add( new JLabel() );
-		//this.add( new JLabel() );
-
-		menuButtonPanel = new JPanel( new GridLayout( 1, 3, 15, 0 ) );
+		
+		for( int i = 0; i < playerLabels.length; i++ )
+		{
+			//JPanel colorPanel = new JPanel( new GridLayout( 1, 2, 20, 5 ));
+			JPanel colorPanel = new JPanel( new GridBagLayout() );
+						
+			GridBagConstraints constraints = new GridBagConstraints();
+			constraints.insets = new Insets(0, 0, 0, 5);
+			constraints.gridx = 0;
+			constraints.gridy = 0; 
+			constraints.anchor = GridBagConstraints.WEST;
+			constraints.weightx = 1; 
+			colorPanel.add( playerLabels[i], constraints );
+			playerLabels[i].setPreferredSize( 
+					colorButtons[i].getPreferredSize() );
+			
+			constraints = new GridBagConstraints();
+			constraints.gridy = 0;
+			constraints.anchor = GridBagConstraints.CENTER;
+			constraints.gridx = 2;
+			constraints.weighty = 1; 
+			constraints.insets = new Insets( 0, 0, 0, 40 );
+			constraints.fill = GridBagConstraints.VERTICAL;
+			colorPanel.add( colorButtons[i], constraints );
+			
+			playersPanel.add( colorPanel );
+			playersPanel.add( playerFields[i] );
+		}
+		
+		return playersPanel;
+	}
+	private JPanel getMenuButtonPanel( ActionListener handler )
+	{
+		JPanel menuButtonPanel = new JPanel( new GridLayout( 1, 3, 15, 0 ) );
 		backButton = new JButton( "Back" );
 		backButton.addActionListener( handler );
 		menuButtonPanel.add( new JLabel() );
 		menuButtonPanel.add( backButton );
-		
+
 		nextButton = new JButton( "Next" );
 		nextButton.addActionListener( handler );
 		menuButtonPanel.add( nextButton );
 		menuButtonPanel.setPreferredSize( menuButtonPanel.getPreferredSize() );
-		this.add( menuButtonPanel, BorderLayout.SOUTH );
-		//this.setSize( 640, 380 );
-		this.setBorder( new EmptyBorder(10, 10, 10, 10) );
-		this.setPreferredSize( this.getPreferredSize() );
+		
+		return menuButtonPanel;
+	}
+	
+	public List<String> getNames()
+	{
+		int numStrings = 
+				Integer.parseInt( (String)numPlayersBox.getSelectedItem() );
+				
+		List<String> result = new ArrayList<String>();
+		
+		result.add( gameNameField.getText() ) ;
+		
+		for( int i = 1; i < numStrings; i++ )
+		{
+			result.add( playerFields[i].getText() );
+		}
+		
+		return result; 
 	}
 
 	/**
@@ -166,194 +188,60 @@ public class CreatePlayersScreenPanel extends JPanel
 				}
 			}
 		} );
-		
-	} 
+
+	}
 
 	private void updateComboBox( Object obj )
 	{
-		int numPlayers = Integer.parseInt( (String)obj );
-		player4Label.setVisible( numPlayers >= 4 );
-		player5Label.setVisible( numPlayers >= 5 );
-		player6Label.setVisible( numPlayers >= 6 );
-
-		player4Field.setVisible( numPlayers >= 4 );
-		player5Field.setVisible( numPlayers >= 5 );
-		player6Field.setVisible( numPlayers >= 6 );
-
+		int numPlayers = Integer.parseInt( (String)obj ) - 1;
+		for( int i = 3; i < playerLabels.length; i++ )
+		{
+			boolean toShow = numPlayers >= i;
+			playerLabels[i].setVisible( toShow );
+			colorButtons[i].setVisible( toShow );
+			playerFields[i].setVisible( toShow );
+		}
 	}
 
 	/**
-	 * Initializes labels with the strings to display.
+	 * Initializes labels with the strings to display and default visible.  
 	 */
-	private void initLabels()
+	private void initLabelsAndButtons( ActionListener handler )
 	{
-		Border lineB = BorderFactory.createLineBorder( Color.BLACK );
+		colorButtons = new JButton[MAX_PLAYERS];
+		playerLabels = new JLabel[MAX_PLAYERS];
 		gameNameLabel = new JLabel( "Game name: " );
-		gameNameLabel.setBorder( lineB );
 		numPlayersLabel = new JLabel( "Number of players: " );
-		numPlayersLabel.setBorder( lineB );
-		player1Label = new JLabel( "Player 1: " );
-		player1Label.setBorder( lineB );
 		
-	
-		player2Label = new JLabel( "Player 2: " );
-		player2Label.setBorder( lineB );
-		
-		player3Label = new JLabel( "Player 3: " );
-		player3Label.setBorder( lineB );
-		
-		player4Label = new JLabel( "Player 4: " );
-		player4Label.setBorder( lineB );
-		player5Label = new JLabel( "Player 5: " );
-		player5Label.setBorder( lineB );
-		player6Label = new JLabel( "Player 6: " );
-		player6Label.setBorder( lineB );
-
-		/* default option of 3 players on JComboBox */
-
-		player4Label.setVisible( false );
-		player5Label.setVisible( false );
-		player6Label.setVisible( false );
+		for( int i = 0; i < 6; i++ )
+		{
+			playerLabels[i] = new JLabel( "Player " + (i+1) + ": ");
+			colorButtons[i] = new JButton( "Pick a color");
+			
+			colorButtons[i].addActionListener( handler );
+			colorButtons[i].setName( Integer.toString( i ) );
+			colorButtons[i].setActionCommand( "chooseColor" );
+			
+			/* set default of 3 visible */
+			playerLabels[i].setVisible( i < 3 );
+			colorButtons[i].setVisible( i < 3 );
+		}
 	}
-
+	
+	/**
+	 * Initializes fields with the proper length and visibility.  
+	 */
 	private void initFields()
 	{
-
+		playerFields = new JTextField[MAX_PLAYERS];
 		gameNameField = new JTextField( TEXT_FIELD_LENGTH );
-		player1Field = new JTextField( TEXT_FIELD_LENGTH );
-		player2Field = new JTextField( TEXT_FIELD_LENGTH );
-		player3Field = new JTextField( TEXT_FIELD_LENGTH );
-		player4Field = new JTextField( TEXT_FIELD_LENGTH );
-		player5Field = new JTextField( TEXT_FIELD_LENGTH );
-		player6Field = new JTextField( TEXT_FIELD_LENGTH );
-	
-		/* default option of 3 players on JComboBox */
-		player4Field.setVisible( false );
-		player5Field.setVisible( false );
-		player6Field.setVisible( false );
-	}
-
-	public static void main( String[] args )
-	{
-		System.out.println( "Tested it " );
-		CreatePlayersScreenHandler handler = new CreatePlayersScreenHandler(
-				null );
-		CreatePlayersScreenPanel sp = new CreatePlayersScreenPanel( handler );
-		sp.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
-		JFrame frame = new JFrame( "Test frame" );
-
-		JPanel spj = testGridBag();
-		
-		frame.getContentPane().add( spj );
-		//frame.pack();
-		frame.setVisible( true );
-		
-		frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		Dimension minSize = new Dimension(640, 380);
-		
-		frame.setPreferredSize( minSize );
-		frame.setMinimumSize( minSize );
-		frame.setLocationRelativeTo( null );
-		
-	}
-
-	private static JPanel testGridBag()
-	{
-		CreatePlayersScreenPanel sp = new CreatePlayersScreenPanel(
-				new CreatePlayersScreenHandler( null ) );
-
-		GridBagConstraints c = new GridBagConstraints();
-		
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = 0;
-		c.gridwidth = 1;
-		c.gridheight = 1; 
-		c.weightx = 0.1;
-		c.weighty = 0.1;
-		c.insets =  new Insets( 0, 10, 10, 10 );
-		JPanel thisz = new JPanel( new GridBagLayout() );
-		
-		thisz.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
-	
-		// first column components 
-		c.anchor = GridBagConstraints.EAST;
-		thisz.add( sp.gameNameLabel, c);
-		c.gridx = 1; 
-		thisz.add( new JLabel(), c);
-		c.gridx = 0; 
-		c.gridy = 1;
-		c.insets = new Insets( 5, 10, 5, 10);
-		thisz.add( sp.numPlayersLabel, c);
-		
-		c.gridy = 3;
-		c.weightx = 0.05;
-		c.weighty = 0.05;
-		thisz.add( sp.player1Label, c);
-		
-		c.gridy++;
-		thisz.add( sp.player2Label, c);
-		
-		c.gridy++;
-		thisz.add( sp.player3Label, c);
-		
-		c.gridy++;
-		thisz.add( sp.player4Label, c);
-		
-		c.gridy++;
-		thisz.add( sp.player5Label, c);
-		
-		c.gridy++;
-		thisz.add( sp.player6Label, c);
-		
-		//Second column components 
-		c.gridy = 0;
-		c.gridx = 1;
-		c.anchor = GridBagConstraints.WEST;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridwidth = 3; 
-		thisz.add( sp.gameNameField, c);
-	
-		c.gridy++;
-		thisz.add( sp.numPlayersBox, c);
-		
-		c.gridy += 2; 
-		thisz.add( sp.player1Field, c);
-		
-		c.gridy++;
-		thisz.add( sp.player2Field, c);
-
-		c.gridy++;
-		thisz.add( sp.player3Field, c);
-
-		c.gridy++;
-		thisz.add( sp.player4Field, c);
-
-		c.gridy++;
-		thisz.add( sp.player5Field, c);
-
-		c.gridy++;
-		thisz.add( sp.player6Field, c);
-
-		c.gridx = 2; 
-		c.gridy = 10;
-		c.gridwidth = 2; 
-		c.anchor = GridBagConstraints.PAGE_END;
-		sp.menuButtonPanel = new JPanel( new GridLayout( 1, 3, 20, 0 ) );
-		sp.backButton = new JButton( "Back" );
-		sp.backButton.addActionListener( sp.handler );
-		sp.menuButtonPanel.add( new JLabel() );
-		sp.menuButtonPanel.add( sp.backButton );
-		
-		sp.nextButton = new JButton( "Next" );
-		sp.nextButton.addActionListener( sp.handler );
-		sp.menuButtonPanel.add( sp.nextButton );
-
-		thisz.add( sp.menuButtonPanel, c);
-		
-		
-		return thisz;
-		
+		for( int i = 0; i < playerFields.length; i++ )
+		{
+			playerFields[i] = new JTextField( TEXT_FIELD_LENGTH );
+			
+			/* set first 3 visible for default option */
+			playerFields[i].setVisible( i < 3 );
+		}
 	}
 
 }

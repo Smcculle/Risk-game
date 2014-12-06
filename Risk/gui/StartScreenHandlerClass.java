@@ -7,49 +7,42 @@
 
 package gui;
 
-import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
-import javax.swing.SwingUtilities;
-
 import engine.RiskGameEngine;
 
 public class StartScreenHandlerClass implements ActionListener
 {
-    private RiskGameEngine model;
+	private RiskGameEngine model;
 
-    public StartScreenHandlerClass( RiskGameEngine gameEngine )
-    {
-        this.model = gameEngine;
-    }
+	public StartScreenHandlerClass( RiskGameEngine gameEngine )
+	{
+		this.model = gameEngine;
+	}
 
-    public void actionPerformed( ActionEvent event )
-    {
-        System.out.print( "In action performed for start screen, " );
-        String command = event.getActionCommand();
-        System.out.print( "command received: " + command + ". ");
-        
-        if( command.equals( "createNewGame" ) )
-        {
-            System.out.println( "Now in if createNewGame" );
-            this.model.createNewGame();
-        }
-        
-        else if( command.equals( "loadSavedGame" ) )
-        {
-        	System.out.println( "Now if loadSavedGame");
-            this.model.loadSavedGame();
-        }
-        else if( command.equals( "exitGame" ) )
-        {
-        	System.exit( 0 );
-        }
-        else
-        {
-        	System.out.println( "Invalid command in Start Screen" );
-        }
+	public void actionPerformed( ActionEvent event )
+	{
+		String command = event.getActionCommand();
 
-    }
-    
+		if ( command.equals( "createNewGame" ) )
+		{
+			System.out.println( "Now in createNewGame" );
+			model.createNewGame();
+		}
+
+		else if ( command.equals( "loadSavedGame" ) )
+		{
+			model.loadSavedGame();
+		}
+		else if ( command.equals( "exitGame" ) )
+		{
+			System.exit( 0 );
+		}
+		else
+		{
+			System.out.println( "Invalid command in Start Screen" );
+		}
+
+	}
+
 }

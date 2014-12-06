@@ -30,6 +30,8 @@ import java.awt.event.ItemListener;
 import java.awt.FlowLayout;
 import java.awt.Component;
 import javax.swing.Box;
+import java.awt.ComponentOrientation;
+import javax.swing.SwingConstants;
 
 public class anotherCreatePlayersScreenPanel extends JPanel
 {
@@ -45,6 +47,7 @@ public class anotherCreatePlayersScreenPanel extends JPanel
 	private JComboBox<String> numPlayersBox;
 
 	private JLabel player1Label;
+	private JLabel player1Label_1;
 	private JTextField player1Field;
 
 	private JLabel player2Label;
@@ -108,7 +111,40 @@ public class anotherCreatePlayersScreenPanel extends JPanel
 				new EmptyBorder( 10, 0, 10, 0 ), 
 				BorderFactory.createRaisedBevelBorder() ) );
 		playersPanel.setLayout( new GridLayout( 6, 2, 10, 10 ) );
-		playersPanel.add( player1Label );
+		
+		GridBagLayout gbl_gridPanel = new GridBagLayout();
+		JPanel gridPanel = new JPanel( gbl_gridPanel );
+		//gridPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		JButton color = new JButton( "Pick a color" );
+		GridBagConstraints c = new GridBagConstraints();
+		c.insets = new Insets(0, 0, 0, 5);
+		c.gridx = 0;
+		c.gridy = 0; 
+		c.anchor = GridBagConstraints.WEST;
+		c.weightx = 1; 
+		//playersPanel.add( player1Label );
+		
+		//player1Label = new JLabel(new javax.swing.ImageIcon(getClass().getClassLoader().getResource(s)));
+		
+		player1Label_1 = new JLabel( "Player 1: ");
+		player1Label_1.setVerticalTextPosition(SwingConstants.BOTTOM);
+		player1Label_1.setPreferredSize(new Dimension(87, 23));
+		player1Label_1.setHorizontalTextPosition(SwingConstants.LEFT);
+		player1Label_1.setHorizontalAlignment(SwingConstants.LEFT);
+		
+		
+		player1Label.setPreferredSize( color.getPreferredSize() );
+		gridPanel.add( player1Label, c);
+		
+		GridBagConstraints c2 = new GridBagConstraints();
+		c2.gridy = 0;
+		c2.anchor = GridBagConstraints.CENTER;
+		c2.gridx = 2;
+		c2.weighty = 1; 
+		c2.insets = new Insets( 0, 0, 0, 80 );
+		gridPanel.add( color, c2 );
+		
+		playersPanel.add( gridPanel );
 		playersPanel.add( player1Field );
 
 		playersPanel.add( player2Label );
@@ -194,11 +230,9 @@ public class anotherCreatePlayersScreenPanel extends JPanel
 		numPlayersLabel = new JLabel( "Number of players: " );
 		numPlayersLabel.setBorder( lineB );
 		player1Label = new JLabel( "Player 1: " );
+		player1Label.setBorder( lineB );
 		
 		String s = "images/cannon.png";
-		player1Label = new JLabel(new javax.swing.ImageIcon(getClass().getClassLoader().getResource(s)));
-		
-		player1Label.setBorder( lineB );
 		
 		player2Label = new JLabel( "Player 2: " );
 		player2Label.setBorder( lineB );
@@ -293,7 +327,7 @@ public class anotherCreatePlayersScreenPanel extends JPanel
 		c.gridy = 3;
 		c.weightx = 0.05;
 		c.weighty = 0.05;
-		thisz.add( sp.player1Label, c);
+		thisz.add( sp.player1Label_1, c);
 		
 		c.gridy++;
 		thisz.add( sp.player2Label, c);
