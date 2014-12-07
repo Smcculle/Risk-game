@@ -51,6 +51,7 @@ import javax.swing.border.EmptyBorder;
 
 import classes.Player;
 import classes.Territory;
+import engine.RiskUtils;
 
 @SuppressWarnings( "serial" )
 public class MapScreenPanelTest extends JPanel
@@ -129,16 +130,25 @@ public class MapScreenPanelTest extends JPanel
 	private static final int CIRCLE_HEIGHT = 24;
 	private static final int CIRCLE_WIDTH = 26;
 	private Queue<String> numberQueue;
-	private JInternalFrame jif;
+	
+	
 	
 	/* north panel */
 	private JPanel menuPanel;
+	private JLabel infoLabel;
+	private JComboBox<String> actionFromBox; 
+	private JComboBox<String> actionToBox; 
 	
 	/* map information */
 	private Map<String, Territory> territories;
 	
-	private JComboBox<String> actionFromBox; 
-	private JComboBox<String> actionToBox; 
+	/* JInternalFrame panels */
+	private JInternalFrame cardFrame;
+	private CardScreenPanel cardScreenPanel;
+	
+	private AttackScreenPanel attackScreenPanel;
+	private MoveTroopsScreenPanel moveTroopsScreenPanel;
+	private JInternalFrame attackFrame; 
 	
 	/**
 	 * Create the panel.
@@ -146,17 +156,20 @@ public class MapScreenPanelTest extends JPanel
 	public MapScreenPanelTest( ActionListener handler )
 	{
 		this.handler = handler; 
-		jif = new JInternalFrame();
-		//jif.setSize(423, 340);
-		jif.setLocation(273, 160);
 		
+		cardFrame = new JInternalFrame();
+		//cardFrame.setLocation(273, 160);
+		cardFrame.setLocation( RiskUtils.getRelativeScreenLocation( 0.10, 0.0 ) );
+		
+		attackFrame = new JInternalFrame();
+		attackFrame.setLocation( RiskUtils.getRelativeScreenLocation( 0.33, 0.33 ) );
 		
 		circlesToDraw = new HashMap<Point, Territory>();
 		
 		
 		final MapImage map = new MapImage();
 		this.img = map; 	
-		JButton testButton = new JButton( "Test me " );
+		JButton cardButton = new JButton( "Cards" );
 		//adding to panel above testButton.setBounds(215, 5, 75, 23);
 		//setLayout(null);
 		JLabel testLabel = new JLabel( "Test label:" );
@@ -168,7 +181,7 @@ public class MapScreenPanelTest extends JPanel
 		menuPanel.setBounds(0, 0, 1280, 40);
 		
 		//this.add( testLabel );
-		testButton.addActionListener( new ActionListener()
+		cardButton.addActionListener( new ActionListener()
 		{
 			@Override
 			public void actionPerformed( ActionEvent e )
@@ -182,7 +195,7 @@ public class MapScreenPanelTest extends JPanel
 					//circlesToDraw.put( key, value );
 					repaint();
 				}
-				jif.setVisible( !jif.isVisible() );
+				cardFrame.setVisible( !cardFrame.isVisible() );
 			}
 		} );
 		//adding to panel above this.add( testButton );				
@@ -190,7 +203,7 @@ public class MapScreenPanelTest extends JPanel
 		actionFromBox = new JComboBox<String>();
 		actionFromBox.setName( "actionFromBox" );
 		actionFromBox.setBounds(425, 11, 200, 22);
-		
+		actionFromBox.setPreferredSize( new Dimension( 200, 22) );
 		//for( String s : getComboString() )
 		//	actionFromBox.addItem( s );
 		setLayout(null);
@@ -199,12 +212,19 @@ public class MapScreenPanelTest extends JPanel
 		actionFromBox.setOpaque( false );
 		//comboBox.setBounds(240, 59, 200, 20);
 		//adding to panel above add(comboBox);
-		menuPanel.add( testButton );
+		menuPanel.add( cardButton );
 		
-		Component horizontalStrut = Box.createHorizontalStrut(350);
+		Component horizontalStrut = Box.createHorizontalStrut(50);
 		horizontalStrut.setMaximumSize(new Dimension(50, 32767));
 		horizontalStrut.setMinimumSize(new Dimension(50, 0));
 		menuPanel.add(horizontalStrut);
+		
+		infoLabel = new JLabel("");
+		infoLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		menuPanel.add(infoLabel);
+		
+		Component horizontalStrut_2 = Box.createHorizontalStrut(300);
+		menuPanel.add(horizontalStrut_2);
 		menuPanel.add( actionFromBox );
 		
 		actionToBox = new JComboBox<String>( );
@@ -216,6 +236,7 @@ public class MapScreenPanelTest extends JPanel
 		menuPanel.add(horizontalStrut_1);
 		
 		menuPanel.add( actionToBox );
+		actionToBox.setVisible( false );
 		//this.setLayout( new BorderLayout() );
 		
 		this.add( menuPanel );
@@ -252,16 +273,6 @@ public class MapScreenPanelTest extends JPanel
 		return img.mapOverlay;
 	}
 	
-	public void initActionFromBox( Map<String, Territory> territories )
-	{
-		this.territories = territories; 
-		
-		for( String s : territories.keySet() )
-		{
-			actionFromBox.addItem( s );
-		}
-		actionFromBox.addActionListener( handler );
-	}
 	
 	//TODO remove
 	/*
@@ -336,14 +347,178 @@ public class MapScreenPanelTest extends JPanel
 		return color;
 	}
 	
+	public void placedArmy()
+	{
+		
+	}
+	
+	/**
+	 * Initializes the attack panel from territory selected in actionFromBox
+	 * to territory in actionToBox.  
+	 */
+	public void attack()
+	{
+		
+		/* get territories from each box */
+		Territory attacker = 
+				territories.get( (String)actionFromBox.getSelectedItem() );
+		Territory defender = 
+				territories.get( (String)actionToBox.getSelectedItem() );
+		
+		attackScreenPanel.attack( attacker, defender );
+		attackFrame.setVisible( true );
+	}
+	public void setMap( Map<String, Territory> territories )
+	{
+		this.territories = territories; 
+		initActionFromBox( territories );
+	}
+	
+	/**
+	 * Fills the actionFromBox with territories for choosing by the 
+	 * current player.  
+	 * 
+	 * @param territories A list of territories to put in the box.  
+	 */
+	public void initActionFromBox( Map<String, Territory> territories )
+	{
+		actionFromBox.removeActionListener( handler );
+		actionFromBox.removeAllItems(); 
+		
+		for( String s : territories.keySet() )
+		{
+			actionFromBox.addItem( s );
+		}
+		
+		actionFromBox.addActionListener( handler );
+	}
+	
 	/**
 	 * Sets the panel color of the current player to give visual feedback 
-	 * of whose turn it is.  
+	 * of whose turn it is.
+	 *   
 	 * @param currentPlayer new Player that is the currentPlayer.  
 	 */
 	public void setNextPlayer( Player currentPlayer )
 	{
 		menuPanel.setBackground( currentPlayer.getColor() );
+		
+	}
+	
+	/**
+	 * Sets the values of the actionFromBox with the territories of the player.
+	 *  
+	 * @param currentPlayer the current Player.   
+	 */
+	public void assignArmies( Player currentPlayer )
+	{
+		setNextPlayer( currentPlayer );
+		initActionFromBox( currentPlayer.getTerritoriesList() );
+		setLabelPlaceArmies( currentPlayer );
+		
+	}
+
+	//TODO Distinction not needed 
+	public void placeArmies( Player currentPlayer )
+	{
+		assignArmies( currentPlayer );
+	}
+	
+	public void setLabelPlaceArmies( Player currentPlayer )
+	{
+		infoLabel.setText( currentPlayer.getName() + " place your armies.  " 
+				+ currentPlayer.getUnplacedArmies() + " left."  );
+		repaint();
+	}
+	
+	public void setLabelAttack( Player currentPlayer )
+	{
+		infoLabel.setText( currentPlayer.getName() + " begin attack phase" );
+		repaint();
+	}
+	
+	
+	public void showMoveTroopsScreen()
+	{
+		moveTroopsScreenPanel.moveTroops( 
+				attackScreenPanel.getAttacker(), 
+				attackScreenPanel.getDefender());
+		attackFrame.getContentPane().remove( attackScreenPanel );
+		attackFrame.getContentPane().add( moveTroopsScreenPanel );
+		attackFrame.revalidate();
+		attackFrame.repaint();
+		
+	}
+	/**
+	 * Brings up the card screen for the current player.  If the player
+	 * must trade cards, the exit will be disabled from the window.  
+	 */
+	public void showCards( Player currentPlayer, boolean mustTradeCards )
+	{
+		cardScreenPanel.setPlayer( currentPlayer, mustTradeCards );
+		
+	}
+	/**
+	 * Sets up the JComboBox for attack state.  
+	 */
+	public void initActionToBox( String attackingTerritory )
+	{
+		Territory attackingFrom = territories.get( attackingTerritory );
+		Map<String, Territory> choices = attackingFrom.getNeighbors(); 
+		actionToBox.removeActionListener( handler );
+		actionToBox.removeAllItems(); 
+		
+		for( String s : choices.keySet() )
+		{
+			actionToBox.addItem( s );
+		}
+		
+		actionToBox.addActionListener( handler );	
+	}
+	
+	public void showAttackBox( Player currentPlayer )
+	{
+		actionToBox.setVisible( true );
+		actionToBox.setPreferredSize( actionFromBox.getPreferredSize() );
+		setLabelAttack( currentPlayer );
+	}
+	
+	/**
+	 * Sets the attack screen panel that was initialized in the GUI.
+	 * @param panel the attack screen panel initialized in GUI.  
+	 */
+	public void setAttackScreenPanel( AttackScreenPanel panel )
+	{
+		this.attackScreenPanel = panel; 
+		
+		attackFrame.getContentPane().add( panel );
+		attackFrame.pack();
+		this.add( attackFrame );
+		//jif.setVisible( true );
+
+	}
+	
+	/**
+	 * Sets the card screen panel that was initialized in the GUI.
+	 * @param panel the card screen panel initialized in GUI.  
+	 */
+	public void setCardScreenPanel( CardScreenPanel panel )
+	{
+		this.cardScreenPanel = panel;
+		
+		cardFrame.getContentPane().add( panel );
+		cardFrame.pack();
+		this.add( cardFrame );
+		//jif.setVisible( true );
+	}
+	
+	/**
+	 * Sets the move troops screen panel that was initialized in the GUI.
+	 * @param panel the move troops screen panel initialized in GUI.  
+	 */
+	public void setMoveTroopsScreenPanel( MoveTroopsScreenPanel panel )
+	{
+		this.moveTroopsScreenPanel = panel;
 	}
 	
 	public static void createGUI()

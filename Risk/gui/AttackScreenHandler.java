@@ -49,7 +49,7 @@ public class AttackScreenHandler implements ActionListener
 	{
 		String command = event.getActionCommand();
 		
-		if ( command == "Attack" )
+		if ( command.equals("Attack") )
 		{
 			System.out.println( "Rolling the dice. "
 					+ " Attackers: " + view.getNumAttacking() 
@@ -57,9 +57,16 @@ public class AttackScreenHandler implements ActionListener
 			//TODO send results to panel, have panel update itself
 			view.updateResults( testResults( 
 					view.getNumAttacking(), view.getNumDefending() ) );
+			model.notifyObservers( "repaint" );
 		}
-
-		else if ( command == "Quit" )
+		
+		/* notify GUI to update the list of player's territories */
+		else if( command.equals("captured") ) 
+		{
+			model.notifyObservers( command );
+		}
+		
+		else if ( command.equals("Quit") )
 		{
 			/* closes the internal frame that contains this screen */
 			JInternalFrame jif =

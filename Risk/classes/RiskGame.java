@@ -11,9 +11,11 @@ import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 
 import engine.RiskUtils;
+import engine.RiskGameEngine.State;
 
 /**
  * RiskGame holds the core classes of Risk and enforces gameplay rules.    
@@ -23,6 +25,9 @@ public class RiskGame
 	/* Risk default provide 35 armies for 3 players to 20 armies for 6*/
 	private final int MAX_ARMIES = 50; 
 	private final int LESS_EACH_PLAYER = 5;
+	private final int CARD_LIMIT = 5;
+	private final int BASE_REINFORCEMENT = 3; 
+	
 	
 	/* instance variables */
 	private ConcreteQueue<Player> players; 
@@ -32,11 +37,13 @@ public class RiskGame
 	private Dice dice; 
 	private RiskGameLoader gameLoader; 
 	private String name; 
+	private boolean mustTradeCards; 
 	public int t = 0;
 	
 	public RiskGame ()
 	{
 		dice = new Dice();
+		mustTradeCards = false; 
 	}
 	
 	/**
@@ -91,6 +98,32 @@ public class RiskGame
 	}
 	
 	/**
+	 * Calculates the base reinforcements for the current player.  
+	 * 
+	 * @return integer number of troop reinforcements. 
+	 */
+	private int calcReinforcements()
+	{
+		if( currentPlayer.getHandSize() >= CARD_LIMIT )
+			mustTradeCards = true; 
+		
+		int result = BASE_REINFORCEMENT;
+		
+		result += (int)(currentPlayer.getTerritoriesList().size() / 3 );
+		
+		System.out.printf("New troop for %s. Base 3 now %d %n", currentPlayer, result);
+		
+		for ( Entry<String, Continent> entry : 
+			currentPlayer.getContinentsList().entrySet() )
+		{
+			Continent continent = entry.getValue();
+			result += continent.getNumBonusArmies();
+		}
+		System.out.printf("Count now %d %n", result);
+		
+		return result; 
+	}
+	/**
 	 * Sets a new player as the current player.  Inserts currentPlayer into 
 	 * the queue and dequeues the next player.  
 	 */
@@ -120,6 +153,29 @@ public class RiskGame
 		RiskUtils.printM( currentPlayer.getTerritoriesList() );
 		
 	}
+	
+	/**
+	 * Increase the troop count by 1 in a territory, decrease currentPlayer
+	 * troop count by 1.  
+	 * 
+	 * @param territory the String key of a territory.  
+	 */
+	public void incrementTroops( String territory )
+	{
+		gameBoard.getTerritoryByName( territory ).incrementTroops();
+		currentPlayer.decrementArmies();
+		
+	}
+	
+	/**
+	 * Gives the player 1 troop for every 3 territories plus continent bonus.  
+	 * Game state is placeArmies.  
+	 */
+	public void placeArmies()
+	{
+		currentPlayer.addArmies( calcReinforcements() );
+	}
+	
 	/**
 	 * Loads a saved game from serialized objects stored in a file
 	 * 
@@ -164,6 +220,19 @@ public class RiskGame
 	public Player getCurrentPlayer()
 	{
 		return currentPlayer;
+	}
+	
+	/**
+	 * Turns in cards from the current player with the associated indices 
+	 */
+	public void turnInSet( int[] set )
+	{
+		currentPlayer.turnInSet( set );
+	}
+	
+	public boolean getCardStatus()
+	{
+		return this.mustTradeCards;
 	}
 
 	private void takeTurn()

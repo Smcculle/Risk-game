@@ -22,6 +22,8 @@ public class CardScreenHandler implements ActionListener, MouseListener
 {
 	private RiskGameEngine model;
 	private CardScreenPanel view;
+	
+	/* cards selected by user from panel */
 	private int[] selectedIndex; 
 	
 	public CardScreenHandler( RiskGameEngine model )
@@ -41,6 +43,7 @@ public class CardScreenHandler implements ActionListener, MouseListener
 		if ( command == "Accept" )
 		{
 			view.removeSet( selectedIndex );
+			model.turnInCards( selectedIndex );
 		}
 
 		if ( command == "Exit" )

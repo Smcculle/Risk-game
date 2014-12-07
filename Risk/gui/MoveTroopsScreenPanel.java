@@ -88,7 +88,7 @@ public class MoveTroopsScreenPanel extends JPanel
 		this.handler = handler;
 		this.setLayout( new BorderLayout( 10, 10 ) );
 		// TODO: remove
-		dummyTerritory();
+		//dummyTerritory();
 		
 		descriptionPanel = getDescriptionPanel();
 		this.add( descriptionPanel, BorderLayout.NORTH );
@@ -107,7 +107,7 @@ public class MoveTroopsScreenPanel extends JPanel
 		( (MoveTroopsScreenHandler)handler ).addView( this );
 		
 		//TODO: remove
-		initPanel(3);
+		//initPanel(3);
 	}
 	//TODO REMOVE
 	public void testMove()
@@ -208,16 +208,23 @@ public class MoveTroopsScreenPanel extends JPanel
 		handleValidInput();
 	}
 	
-	// TODO erase
-	private void dummyTerritory()
+	/**
+	 * Initializes move panel with the information provided.  
+	 * 
+	 * @param movingFrom territory troops are moving from
+	 * @param movingTo territory troops are moving to 
+	 */
+	public void moveTroops( Territory movingFrom, Territory movingTo )
 	{
-		movingPlayer = new Player( "Test 1" );
+		movingPlayer = movingFrom.getOccupant();
 		movingFrom = new Territory( "Western United States", null, null );
 		movingTo = new Territory( "Eastern United States", null, null );
 		movingFrom.setNumArmies( 10 );
 		movingTo.setNumArmies( 7 );
 		movingPlayer.addTerritory( movingFrom );
 		movingPlayer.addTerritory( movingTo );
+		
+		setLabelText();
 
 		// TODO test value
 	}
@@ -228,13 +235,8 @@ public class MoveTroopsScreenPanel extends JPanel
 	private JPanel getDescriptionPanel()
 	{
 		JPanel result = new JPanel( new BorderLayout() );
-		descriptionLabel = new JLabel(
-				"<html>"
-						+ "<font size = \"4\">Moving from "
-						+ "<font size = \"5\">" + movingFrom.getName()
-						+ "<font size = \"4\">" + " to "
-						+ "<font size = \"5\">" + movingTo.getName()
-						+ "</html>" );
+		descriptionLabel = new JLabel(); 
+				
 		descriptionLabel.setBorder(
 				BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
 
@@ -242,7 +244,16 @@ public class MoveTroopsScreenPanel extends JPanel
 
 		return result;
 	}
-
+	
+	private void setDescriptionPanel()
+	{
+		descriptionLabel.setText( "<html>"
+						+ "<font size = \"4\">Moving from "
+						+ "<font size = \"5\">" + movingFrom.getName()
+						+ "<font size = \"4\">" + " to "
+						+ "<font size = \"5\">" + movingTo.getName()
+						+ "</html>" );
+	}
 	/**
 	 * @return the label panel for center west.
 	 */
@@ -254,7 +265,7 @@ public class MoveTroopsScreenPanel extends JPanel
 
 		result.add( movingFromLabel );
 		result.add( movingToLabel );
-		setLabelText();
+		
 
 		return result;
 	}

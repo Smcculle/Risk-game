@@ -46,7 +46,21 @@ public class GameGUI extends JFrame implements Observer
 	
 	// MAIN MAP SCREEN 
 	private MapScreenHandler mapScreenHandler; 
-	private JPanel mapScreen;
+	private MapScreenPanelTest mapScreen;
+	
+	/* internal frames to the main map screen below */
+	
+	// CARD SCREEN
+	private CardScreenHandler cardHandler;
+	private CardScreenPanel cardScreen;
+	
+	// ATTACK SCREEN
+	private ActionListener attackHandler;
+	private JPanel attackScreen;
+	
+	//FORTIFY SCREEN 
+	private MoveTroopsScreenHandler moveTroopsHandler;
+	private MoveTroopsScreenPanel moveTroopsScreen;
 
 	/**
 	 * // SELECT TERRITORIES SCREEN private ActionListener
@@ -59,8 +73,8 @@ public class GameGUI extends JFrame implements Observer
 		//this.setPreferredSize( new java.awt.Dimension( 1000, 800 ) );
 		this.gameEngine = gameEngine;
 		// START SCREEN INIT
-		this.startScreenHandler = new StartScreenHandler( this.gameEngine );
-		this.startScreen = new StartScreenPanel( this.startScreenHandler );
+		this.startScreenHandler = new StartScreenHandler( gameEngine );
+		this.startScreen = new StartScreenPanel( startScreenHandler );
 
 		// CREATE PLAYERS SCREEN INIT
 		this.createPlayersScreenHandler = new CreatePlayersScreenHandler(
@@ -69,8 +83,26 @@ public class GameGUI extends JFrame implements Observer
 				this.createPlayersScreenHandler );
 		
 		//MAIN MAP SCREEN 
-		mapScreenHandler = new MapScreenHandler( this.gameEngine );
+		mapScreenHandler = new MapScreenHandler( gameEngine );
 		mapScreen = new MapScreenPanelTest( mapScreenHandler );
+		
+		/* all panels below are internal frames to the main map screen */
+		//CARD SCREEN 
+		cardHandler = new CardScreenHandler( gameEngine );
+		cardScreen = new CardScreenPanel( cardHandler );
+		mapScreen.setCardScreenPanel( cardScreen );
+		
+		//ATTACK SCREEN 
+		AttackScreenHandler attackScreenHandler = 
+				new AttackScreenHandler( gameEngine );
+		AttackScreenPanel attackScreen = 
+				new AttackScreenPanel( attackScreenHandler);
+		mapScreen.setAttackScreenPanel( attackScreen );
+		
+		//FORTIFY SCREEN 
+		moveTroopsHandler = new MoveTroopsScreenHandler( gameEngine );
+		moveTroopsScreen = new MoveTroopsScreenPanel( moveTroopsHandler );
+		mapScreen.setMoveTroopsScreenPanel( moveTroopsScreen );
 		
 		/**
 		 * // SELECT TERRITORIES SCREEN INIT this.selectTerritoriesScreenHandler
@@ -103,7 +135,7 @@ public class GameGUI extends JFrame implements Observer
 	
 	public void update( Observable obs, Object obj )
 	{
-		System.out.println( "In update of GameGUI" );
+		System.out.println( "\nIn update of GameGUI" );
 		State state = gameEngine.getState();
 		System.out.println( "New state of game engine: " + state );
 
@@ -136,12 +168,35 @@ public class GameGUI extends JFrame implements Observer
 		else if( state == State.assignTerritories )
 		{
 			this.game = gameEngine.getGame();
+			
 			System.out.println( "Assigning territories" );
 			this.changeScreen( mapScreen );
 			this.pack();
 			this.setLocation( RiskUtils.getRelativeScreenLocation( 0.10, 0.0) );
-			mapScreenHandler.initializeMap( );
+			mapScreenHandler.initializeMap();
+					
+		}
+		else if( state == State.assignArmies )
+		{
+			mapScreenHandler.assignArmies();
+		}
+		else if( state == State.placeArmies )
+		{
+			mapScreenHandler.placeArmies(); 
+		}
+		else if( state == State.attack )
+		{
+			System.out.println( "In notify observers, object = " + obj );
 			
+			//TODO check it 
+			if( obj instanceof String )
+			{
+				if( obj.equals( "captured"))
+					mapScreenHandler.updateCapturedState();
+			}
+			else
+				mapScreenHandler.attack();
+
 		}
 
 		/**

@@ -302,6 +302,22 @@ public class Player
 		return territories.size();
 	}
 	
+	/**
+	 * Decreases the amount of armies by 1.  
+	 */
+	public void decrementArmies()
+	{
+		this.numArmies--;
+	}
+	
+	/**
+	 * Increases the amount of armies by 1.  
+	 */
+	public void incrementArmies()
+	{
+		this.numArmies++;
+	}
+	
 	//TODO remove
 	public String toString()
 	{

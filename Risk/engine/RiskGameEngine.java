@@ -26,8 +26,8 @@ public class RiskGameEngine extends Observable
 	
 	public enum State{ 
 		loadStartScreen(1), loadSavedGame(2), createPlayers(3), 
-		assignTerritories(4), placeArmies(5), turnInCards(6), attack(7),
-		fortify(8);
+		assignTerritories(4), assignArmies(5), placeArmies(6), turnInCards(7), attack(8),
+		fortify(9);
 		
 		public final int value; 
 		
@@ -84,7 +84,69 @@ public class RiskGameEngine extends Observable
 			System.err.println( "Game creation failed" );
 			//System.exit( 2 );
 		}
+	}
+	
+	/**
+	 * Advance the state to assignArmies 
+	 */
+	public void assignArmies()
+	{
+		this.state = State.assignArmies;
+		this.setChanged();
+		this.notifyObservers();
+	}
+	
+	/**
+	 * Begin first stage of a player's turn 
+	 */
+	public void placeArmies()
+	{
+		this.state = State.placeArmies;
+		game.placeArmies();
+		this.setChanged();
+		this.notifyObservers();
 		
+	}
+	
+	/**
+	 * Sets attack state, allows player to attack until finished 
+	 */
+	public void attack()
+	{
+		 this.state = State.attack;
+		 this.setChanged();
+		 this.notifyObservers();
+	}
+
+	/**
+	 * Call RiskGame method to set up the next player.  
+	 */
+	public Player getNextPlayer()
+	{
+		return game.getNextPlayer();
+	}
+	
+	/**
+	 * Call RiskGame method to get current player 
+	 */
+	public Player getCurrentPlayer()
+	{
+		return game.getCurrentPlayer();
+	}
+
+	/** 
+	 * Calls RiskGame method to add territory to the current player.  
+	 * @param territory String name of territory to add. 
+	 */
+	public void addTerritory( String territory )
+	{
+		if( game.getCurrentPlayer() != null )
+			game.addTerritory( territory );
+		
+	}
+	public void incrementTroops( String territory )
+	{
+		game.incrementTroops( territory );
 	}
 	
 	public void loadGame( String gameFileName )
@@ -102,23 +164,19 @@ public class RiskGameEngine extends Observable
 	{
 		return this.state;
 	}
-
-	/**
-	 * Call RiskGame method to set up the next player.  
-	 */
-	public Player getNextPlayer()
+	
+	public void turnInCards( int[] set )
 	{
-		return game.getNextPlayer();
+		this.game.turnInSet( set );
 	}
-
-	/** 
-	 * Calls RiskGame method to add territory to the current player.  
-	 * @param territory String name of territory to add. 
-	 */
-	public void addTerritory( String territory )
+	public boolean getCardStatus()
 	{
-		if( game.getCurrentPlayer() != null )
-			game.addTerritory( territory );
+		return game.getCardStatus();
+	}
+	
+	//TODO ??????
+	public void takeTurn()
+	{
 		
 	}
 

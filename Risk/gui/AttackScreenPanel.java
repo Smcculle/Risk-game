@@ -16,6 +16,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
@@ -82,27 +83,21 @@ public class AttackScreenPanel extends JPanel
 	public AttackScreenPanel( ActionListener handler )
 	{
 		this.handler = handler; 
-		// TODO: remove
-		dummyTerritory();
 		
-		/* set default to maximum, constrain by available armies */
-		this.numAttacking = attacker.getNumArmies() > MAX_ATTACK_DICE ?
-				MAX_ATTACK_DICE : attacker.getNumArmies() - 1;
-		this.numDefending = defender.getNumArmies() >= MAX_DEFEND_DICE ?
-				MAX_DEFEND_DICE : defender.getNumArmies();
-		attackDiceEnabled = MAX_ATTACK_DICE; 
-		defendDiceEnabled = MAX_DEFEND_DICE;
-		
+		/* north panel description  */
 		descriptionPanel = getDescriptionPanel();
 		this.setLayout( new BorderLayout(10, 10) );
 		this.add( descriptionPanel, BorderLayout.NORTH );
 		
+		/* west panel country/player name, troop values*/
 		labelPanel = getLabelPanel();
 		this.add( labelPanel, BorderLayout.WEST );
 		
+		/* east panel dice */
 		dicePanel = getDicePanel();
 		this.add( dicePanel, BorderLayout.EAST );
 		
+		/* south panel menu buttons */
 		menuPanel = getMenuPanel();
 		this.add( menuPanel, BorderLayout.SOUTH );
 		
@@ -116,23 +111,32 @@ public class AttackScreenPanel extends JPanel
 		( (AttackScreenHandler)handler ).addView(this);
 	}
 	
-	//TODO erase
-	private void dummyTerritory()
-	{
-		attackingPlayer = new Player( "Test 1" );
-		defendingPlayer = new Player( "Test 2" );
-		attacker = new Territory( "Western United States", null, null );
-		defender = new Territory( "Eastern United States", null, null );
-		attacker.setNumArmies( 10 );
-		defender.setNumArmies( 7 );
-		attackingPlayer.addTerritory( attacker );
-		defendingPlayer.addTerritory( defender );
-	}
-	
 	/**
-	 * @param attacker2
-	 * @param defender2
+	 * Initializes attacking panel with necessary information.  
+	 * 
+	 * @param attackingFrom Territory currentPlayer is attacking from. 
+	 * @param attackingTo Territory currentPlayer is attacking.  
 	 */
+	public void attack( Territory attackingFrom, Territory attackingTo )
+	{
+		attackingPlayer = attackingFrom.getOccupant();
+		defendingPlayer = attackingTo.getOccupant();
+		attacker = attackingFrom;
+		defender = attackingTo;
+		
+		/* set default to maximum, constrain by available armies */
+		this.numAttacking = attacker.getNumArmies() > MAX_ATTACK_DICE ?
+				MAX_ATTACK_DICE : attacker.getNumArmies() - 1;
+		this.numDefending = defender.getNumArmies() >= MAX_DEFEND_DICE ?
+				MAX_DEFEND_DICE : defender.getNumArmies();
+		attackDiceEnabled = MAX_ATTACK_DICE; 
+		defendDiceEnabled = MAX_DEFEND_DICE;
+		
+		setDescriptionLabel();
+		setLabelText();
+		setDicePanel();
+		attackButton.setEnabled( true );
+	}
 	
 	//TODO clean constructor 
 	public AttackScreenPanel( Territory attacker, Territory defender )
@@ -165,13 +169,7 @@ public class AttackScreenPanel extends JPanel
 	private JPanel getDescriptionPanel()
 	{
 		JPanel result = new JPanel( new BorderLayout() );
-		descriptionLabel = new JLabel(
-				"<html>"
-				+ "<font size = \"4\">Attacking from "
-				+ "<font size = \"5\">" + attacker.getName() 
-				+ "<font size = \"4\">" + " to "
-				+ "<font size = \"5\">" + defender.getName() 
-				+ "</html>");
+		descriptionLabel = new JLabel();
 		descriptionLabel.setBorder( 
 				BorderFactory.createBevelBorder(BevelBorder.LOWERED ) );
 		
@@ -180,6 +178,16 @@ public class AttackScreenPanel extends JPanel
 		return result; 
 	}
 	
+	private void setDescriptionLabel()
+	{
+		descriptionLabel.setText( 
+				"<html>"
+				+ "<font size = \"4\">Attacking from "
+				+ "<font size = \"5\">" + attacker.getName() 
+				+ "<font size = \"4\">" + " to "
+				+ "<font size = \"5\">" + defender.getName() 
+				+ "</html>");
+	}
 	/**
 	 * @return the label panel for center west.  
 	 */
@@ -191,7 +199,7 @@ public class AttackScreenPanel extends JPanel
 		
 		result.add( attackerLabel );
 		result.add( defenderLabel );
-		setLabelText();
+
 		
 		return result;
 	}
@@ -211,6 +219,39 @@ public class AttackScreenPanel extends JPanel
 		
 	}
 	
+	private void setDicePanel()
+	{
+		int attackerArmies = attacker.getNumArmies();
+		int defenderArmies = defender.getNumArmies();
+		
+		for( int i = 0; i < MAX_ATTACK_DICE; i++ )
+		{
+			
+			/* default state of all dice selected if possible */
+			if( attackerArmies > i + 1 )
+				attackDice[i].setSelected( true );
+			else
+			{
+				attackDice[i].setEnabled( false );
+				attackDiceEnabled--;
+			}
+		}
+		
+		for( int i = 0; i < MAX_DEFEND_DICE; i++ )
+		{
+
+			/* default state of all dice selected if possible */
+			if( defenderArmies > i )
+				defendDice[i].setSelected( defenderArmies > i );
+			else
+			{
+				defendDice[i].setEnabled( false );
+				defendDiceEnabled--;
+			}
+		}
+	}
+	
+	
 	private JPanel getDicePanel()
 	{
 		attackDice = new JToggleButton[ MAX_ATTACK_DICE ];
@@ -223,8 +264,7 @@ public class AttackScreenPanel extends JPanel
 		attackDiceGroup = new ArrayList<JToggleButton>( MAX_ATTACK_DICE );
 		defendDiceGroup = new ArrayList<JToggleButton>( MAX_DEFEND_DICE );
 		
-		int attackerArmies = attacker.getNumArmies();
-		int defenderArmies = defender.getNumArmies();
+		
 		
 		for( int i = 0; i < MAX_ATTACK_DICE; i++ )
 		{
@@ -238,14 +278,14 @@ public class AttackScreenPanel extends JPanel
 			attackDice[i].setActionCommand( Integer.toString( i + 1 ) );
 			attackDice[i].setName( "attack" );
 			
-			/* default state of all dice selected if possible */
+			/* default state of all dice selected if possible 
 			if( attackerArmies > i + 1 )
 				attackDice[i].setSelected( true );
 			else
 			{
 				attackDice[i].setEnabled( false );
 				attackDiceEnabled--;
-			}
+			}*/
 			attackDice[i].addActionListener( handler );
 			
 		}
@@ -263,7 +303,7 @@ public class AttackScreenPanel extends JPanel
 			defendDice[i].setActionCommand( Integer.toString( i + 1 ) );
 			defendDice[i].setName( "defend" );
 			
-			/* default state of all dice selected if possible */
+			/* default state of all dice selected if possible 
 			if( defenderArmies > i )
 				defendDice[i].setSelected( defenderArmies > i );
 			else
@@ -271,7 +311,7 @@ public class AttackScreenPanel extends JPanel
 				defendDice[i].setEnabled( false );
 				defendDiceEnabled--;
 			}
-			defendDice[i].addActionListener( handler );
+			defendDice[i].addActionListener( handler );*/
 			
 		}
 		
@@ -338,18 +378,29 @@ public class AttackScreenPanel extends JPanel
 		
 		this.numDefending = numDice;
 	}
+	//TODO: Possibly remove
+	public Territory getAttacker()
+	{
+		return this.attacker;
+	}
 	
+	public Territory getDefender()
+	{
+		return this.defender;
+	}
 	//TODO: Remove test player
 	public void updateResults( int[] diceResults )
 	{
 		updateDiceText( diceResults );
-		
 		
 		if( attackingPlayer.attack( attacker, defender, diceResults ) )
 		{
 			attackButton.setEnabled( false );
 			setDefendDiceGroup( 0 );
 			attackDiceEnabled = 0;
+			JOptionPane.showMessageDialog( null, "You captured the territory" );
+			handler.actionPerformed( new ActionEvent(this, 
+					ActionEvent.ACTION_PERFORMED, "captured") );
 		}
 		else
 		{

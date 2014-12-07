@@ -17,11 +17,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+
 import classes.Card;
+import classes.Player;
 
 
 @SuppressWarnings( "serial" )
@@ -30,17 +33,25 @@ public class CardScreenPanel extends JPanel
 	private static final int PREFERRED_WIDTH = 843;
 	private static final int PREFERRED_HEIGHT = 227;
 	private static final int DEFAULT_TROOP_VALUE = 4; 
+	private static final int MAX_CARDS = 5; 
 	
-	private JLabel chooseSet;
+	private CardScreenHandler handler; 
+	
+	/* menu panel and label */
 	private JLabel tradeInLabel;
 	private JPanel southPanel;
 	private JPanel menuButtonPanel;
+	
+	/* panel for cards, scroll panel for view */
+	private JPanel cardPanel;
+	private JScrollPane scrollPane;
+	private JLabel chooseSet;
 	private JButton exitButton;
 	private JButton acceptButton;
-	private JPanel cardPanel;
-	private JScrollPane scrollPane; 
-	private CardScreenHandler handler; 
+	
+	/* current value of cards */
 	private int tradeInValue;
+	private Player currentPlayer;
 
 	
 	public CardScreenPanel( CardScreenHandler handler )
@@ -69,8 +80,7 @@ public class CardScreenPanel extends JPanel
 		scrollPane.setPreferredSize( new Dimension( PREFERRED_WIDTH, PREFERRED_HEIGHT));
 		this.add( southPanel, BorderLayout.SOUTH );
 		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
-		
-
+	
 	}
 	
 	private void addButtons()
@@ -118,11 +128,21 @@ public class CardScreenPanel extends JPanel
 		
 	}
 	
-	public void addCard( Card c )
+	/**
+	 * Sets the cards of the current player.  
+	 * 
+	 * @param currentPlayer the current player.  
+	 */
+	public void setPlayer( Player currentPlayer, boolean mustTradeCards )
 	{
-		CardComponent newCard = new CardComponent( c );
-		newCard.addMouseListener( handler );
-		cardPanel.add( newCard );
+		this.currentPlayer = currentPlayer;
+		removeAllCards();
+		
+		for( Card c : currentPlayer.getHand() ) 
+		{
+			addCard( c );
+		}
+		exitButton.setEnabled( !mustTradeCards );
 	}
 	
 	public void removeAllCards()
@@ -131,6 +151,13 @@ public class CardScreenPanel extends JPanel
 		cardPanel.revalidate();
 	}
 	
+	public void addCard( Card c )
+	{
+		CardComponent newCard = new CardComponent( c );
+		newCard.addMouseListener( handler );
+		cardPanel.add( newCard );
+	}
+		
 	//TODO integrate these card functions  with game engine 
 	public int getNumSelected()
 	{
@@ -199,7 +226,7 @@ public class CardScreenPanel extends JPanel
 		acceptButton.setEnabled( b );	
 	}
 
-	public void removeSet(int[] selectedIndex )
+	public void removeSet( int[] selectedIndex )
 	{
 		/* iterate in descending order */
 		for ( int i = selectedIndex.length - 1; i >= 0 ; i-- )
@@ -207,7 +234,14 @@ public class CardScreenPanel extends JPanel
 			cardPanel.remove( selectedIndex[i] );
 		}
 		
+		/* current player receives troops equal to trade in value */
+		currentPlayer.addArmies( tradeInValue );
 		acceptButton.setEnabled( false );
+		
+		/* allow player to leave if they have less than MAX_CARDS cards */
+		if( currentPlayer.getHandSize() < MAX_CARDS )
+			exitButton.setEnabled( true );
+		
 		nextTradeInValue();
 		revalidate();
 		repaint();

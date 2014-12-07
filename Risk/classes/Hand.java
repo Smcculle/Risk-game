@@ -8,12 +8,13 @@
 package classes;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @interface HandInterface specifying a hand of cards held by a specific player
  *            Player objects will contain Hand objects
  **/
-public class Hand
+public class Hand implements Iterable<Card>
 {
 	private ArrayList<Card> cards;
 
@@ -79,6 +80,12 @@ public class Hand
 	public int size()
 	{
 		return cards.size();
+	}
+
+	@Override
+	public Iterator<Card> iterator()
+	{
+		return cards.iterator();
 	}
 
 }

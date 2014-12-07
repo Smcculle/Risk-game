@@ -154,6 +154,14 @@ public class Territory
 	}
 	
 	/**
+	 * Increase the number of armies by 1.  
+	 */
+	public void incrementTroops()
+	{
+		this.armies++;
+	}
+	
+	/**
 	 * Passes color value from occupant to map.  
 	 * @return Color specifies owner of territory by circle color.     
 	 */
