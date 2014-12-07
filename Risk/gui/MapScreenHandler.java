@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 
 import classes.Card;
 import classes.Continent;
@@ -23,6 +24,7 @@ import classes.Player;
 import classes.RiskGame;
 import classes.Territory;
 import engine.RiskGameEngine;
+import engine.RiskUtils;
 import engine.RiskGameEngine.State;
 
 
@@ -38,6 +40,7 @@ public class MapScreenHandler implements ActionListener
 		this.model = model; 
 	}
 	
+	@SuppressWarnings( "unchecked" )
 	@Override
 	public void actionPerformed( ActionEvent event )
 	{
@@ -52,6 +55,10 @@ public class MapScreenHandler implements ActionListener
 				handleActionFrom( (JComboBox<String>)source, event );
 			else if ( source.getName().equals( "actionToBox"))
 				handleActionTo( (JComboBox<String>)source, event );
+		}
+		else if( event.getActionCommand().equals( "endTurn" ))
+		{
+			System.out.printf( "Ending turn ");
 		}
 	}
 	
@@ -166,8 +173,25 @@ public class MapScreenHandler implements ActionListener
 	}
 	
 	/**
-	 * Game state in attack, player can attack adjacent countries until 
-	 * finished.  
+	 * Update map data with new troop values, close troop panel, update
+	 * comboBox with new territory if necessary.  
+	 */
+	public void updateMove()
+	{
+		Player currentPlayer = model.getCurrentPlayer();
+		view.updateMove( currentPlayer );
+	}
+	
+	/**
+	 * Calls revalidate and repaint on the map.  
+	 */
+	public void updateMap()
+	{
+		view.updateMap();
+	}
+	/**
+	 * Updates actionFromBox with a list of territories player can attack from. 
+	 * Must have at least 2 armies to attack from a territory.  
 	 */
 	public void attack()
 	{
@@ -181,8 +205,17 @@ public class MapScreenHandler implements ActionListener
 	public void updateCapturedState()
 	{
 		Player currentPlayer = model.getCurrentPlayer();
-		view.initActionFromBox( currentPlayer.getTerritoriesList() );
 		view.showMoveTroopsScreen();
+		view.updateAttackBox( currentPlayer );
+	}
+	
+	/**
+	 * Only updates possible attack locations from currentPlayer
+	 */
+	public void updateAttackBox()
+	{
+		Player currentPlayer = model.getCurrentPlayer();
+		view.updateAttackBox( currentPlayer );
 	}
 	
 	/**
@@ -194,5 +227,7 @@ public class MapScreenHandler implements ActionListener
 	{
 		this.view = view; 
 	}
+
+	
 
 }

@@ -22,17 +22,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import classes.Territory;
 import engine.RiskGameEngine;
 
 
 public class MoveTroopsScreenHandler implements ActionListener,
 												ChangeListener
-
 {
 
 	private RiskGameEngine model;
 	private MoveTroopsScreenPanel view;
-	private int[] selectedIndex;
 	private Action verifyTextAction;
 
 	@SuppressWarnings( "serial" )
@@ -53,9 +52,10 @@ public class MoveTroopsScreenHandler implements ActionListener,
 		String command = event.getActionCommand();
 
 		if ( command == "Move" )
-		{
-			//TODO:  Would call player move here.  
-			view.testMove();
+		{  
+			/* calls handler's moveTroops method with data from fields */
+			view.callMoveTroops();
+			//SwingUtilities.getWindowAncestor( event.getSource() );
 		}
 		
 		else if ( command == "Min" )
@@ -72,6 +72,10 @@ public class MoveTroopsScreenHandler implements ActionListener,
 		}
 	}
 	
+	public void moveTroops( Territory movingFrom, Territory movingTo, int numMoving)
+	{
+		model.moveTroops( movingFrom, movingTo, numMoving );
+	}
 	/**
 	 * Creates an action for the textfield to verify correct input when 
 	 * the specified key set in MTSP is pressed.   

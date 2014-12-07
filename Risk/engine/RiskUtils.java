@@ -26,6 +26,7 @@ import javax.swing.JLabel;
  */
 public final class RiskUtils
 {
+	public final static Dimension GAME_SIZE = new Dimension( 512, 347 );
 	private static final String PATH_DIR = "images/";
 	private static final double START_POSITION = 0.25; 
 	
@@ -37,12 +38,14 @@ public final class RiskUtils
 		System.out.printf("Print map-> ");
 		for ( Entry<K, V> entry : map.entrySet() )
 		{
-			K key = entry.getKey();
+			
 			V value = entry.getValue();
-			System.out.printf("key=%s, value=%s; ", 
-					key, value );
+			System.out.printf("%s ", value );
 		}
+		System.out.printf("%n");
 	}
+	
+	
 	/**
 	 * Returns an image icon from the images folder.  
 	 * 

@@ -57,13 +57,15 @@ public class AttackScreenHandler implements ActionListener
 			//TODO send results to panel, have panel update itself
 			view.updateResults( testResults( 
 					view.getNumAttacking(), view.getNumDefending() ) );
-			model.notifyObservers( "repaint" );
+			model.sendGUIMessage( "update" );
+			
 		}
 		
 		/* notify GUI to update the list of player's territories */
 		else if( command.equals("captured") ) 
 		{
-			model.notifyObservers( command );
+			/* pass captured message to model to call appropriate methods*/
+			model.sendGUIMessage( command );
 		}
 		
 		else if ( command.equals("Quit") )
@@ -76,9 +78,9 @@ public class AttackScreenHandler implements ActionListener
 			if ( jif != null )
 				jif.dispose();
 
-			else
-				SwingUtilities.getWindowAncestor(
-						(Component)event.getSource() ).dispose();
+			/* map needs to update, player may not be able to attack from
+			  a previous location due to loss of troops. */  
+			 model.sendGUIMessage( "updateAttackBox" );
 		}
 		
 		/* else it is a toggle button */

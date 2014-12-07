@@ -109,9 +109,12 @@ public class RiskGame
 		
 		int result = BASE_REINFORCEMENT;
 		
-		result += (int)(currentPlayer.getTerritoriesList().size() / 3 );
-		
-		System.out.printf("New troop for %s. Base 3 now %d %n", currentPlayer, result);
+		result = Math.max( 
+				(currentPlayer.getTerritoriesList().size() / 3 ), 
+				BASE_REINFORCEMENT );
+				
+		System.out.printf("%d troop for %s with %d country %n", 
+				result, currentPlayer, currentPlayer.getTerritoriesList().size());
 		
 		for ( Entry<String, Continent> entry : 
 			currentPlayer.getContinentsList().entrySet() )
@@ -142,7 +145,7 @@ public class RiskGame
 	{
 		Territory newTerritory = gameBoard.getTerritoryByName( territory );
 		currentPlayer.addTerritory( newTerritory );
-		newTerritory.setOccupant( currentPlayer );
+		//newTerritory.setOccupant( currentPlayer );
 		
 		System.out.printf("Player %s adding territory %s. Armies from %d to "
 				, currentPlayer.getName(), territory, currentPlayer.getUnplacedArmies());
@@ -166,6 +169,7 @@ public class RiskGame
 		currentPlayer.decrementArmies();
 		
 	}
+	
 	
 	/**
 	 * Gives the player 1 troop for every 3 territories plus continent bonus.  
@@ -237,6 +241,21 @@ public class RiskGame
 
 	private void takeTurn()
 	{
+	}
+
+	/**
+	 * Reduces the number of troops in territory movingFrom by numMoving, 
+	 * increases the troops in movingTo by numMoving.  
+	 * 
+	 * @param movingFrom Territory starting move
+	 * @param movingTo Territory ending move 
+	 * @param numMoving int number of troops moving 
+	 */
+	public void moveTroops( Territory movingFrom, Territory movingTo,
+			int numMoving )
+	{
+		currentPlayer.moveTroops( movingFrom, movingTo, numMoving );
+		
 	}
 	
 }

@@ -37,11 +37,11 @@ public class Player
 		continents = new HashMap<String, Continent>();
 		cardHand = new Hand();
 	}
-	
+
 	public Player( String name, Color color )
 	{
 		this( name );
-		circleColor = color; 
+		circleColor = color;
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class Player
 	{
 		return this.circleColor;
 	}
-	
+
 	/**
 	 * @return the Player's name
 	 **/
@@ -103,6 +103,7 @@ public class Player
 
 	/**
 	 * Used to add territories to the player's list of controlled territories
+	 * and set the occupant of that territory.
 	 * 
 	 * @param newTerritory a reference to the Territory object the player now
 	 *        controls
@@ -152,20 +153,22 @@ public class Player
 	 * Resolves the action of an attack by decreasing troops and reassigning
 	 * territories as needed.
 	 * 
-	 * @param attacker a reference to a Territory object the player is attacking
-	 *        from
-	 * @param defender a reference to a Territory object that is being attacked
+	 * @param attackingFrom a reference to a Territory object the player is
+	 *        attacking from
+	 * @param attackingTo a reference to a Territory object that is being
+	 *        attacked
 	 * @param diceResults array containing attacker results in ascending order,
 	 *        0 separator, followed by defender results in ascending order.
-	 * @return true if attacker takes territory, false otherwise 
+	 * @return true if attacker takes territory, false otherwise
 	 **/
-	public boolean attack( Territory attacker, Territory defender,
+	public boolean attack( Territory attackingFrom, Territory attackingTo,
 			int[] diceResults )
 	{
-		boolean result = false; 
+		boolean result = false;
+
 		/* Decrease these as players lose dice rolls */
-		int attackerArmies = attacker.getNumArmies();
-		int defenderArmies = defender.getNumArmies();
+		int attackerArmies = attackingFrom.getNumArmies();
+		int defenderArmies = attackingTo.getNumArmies();
 
 		int numAttacking = findSeparator( diceResults );
 
@@ -190,18 +193,16 @@ public class Player
 
 		if ( defenderArmies == 0 )
 		{
-			attackerArmies -= numAttacking;
-			occupyTerritory( defender, numAttacking );
-			result = true; 
+			occupyTerritory( attackingTo, numAttacking );
+			result = true;
 		}
 
-		else
-		{
-			defender.setNumArmies( defenderArmies );
-		}
-
-		attacker.setNumArmies( attackerArmies );
-		return result; 
+		
+		
+		attackingTo.setNumArmies( defenderArmies );
+		attackingFrom.setNumArmies( attackerArmies );
+		
+		return result;
 
 	}
 
@@ -231,7 +232,8 @@ public class Player
 
 	/**
 	 * Takes control of territory captured and checks for elimination. If a
-	 * player is eliminated, gain their cards.
+	 * player is eliminated, gain their cards. Army moving minimum restrictions
+	 * handled in GUI.
 	 * 
 	 * @param defender the country to take control of for this player.
 	 * @param numAttacking Number of troops attacking that must be moved into
@@ -241,9 +243,7 @@ public class Player
 	{
 		Player defendingPlayer = defender.getOccupant();
 		defendingPlayer.removeTerritory( defender );
-
-		defender.setNumArmies( numAttacking );
-		defender.setOccupant( this );
+		this.addTerritory( defender );
 
 		/* handle defeated case, take cards */
 		if ( !defendingPlayer.hasTerritory() )
@@ -253,25 +253,32 @@ public class Player
 
 	public Hand getHand()
 	{
-		return cardHand; 
+		return cardHand;
 	}
-	
-	public void moveTroops( Territory moveFrom, Territory moveTo, int amount )
+
+	/**
+	 * Moves armies from one territory to another.
+	 * 
+	 * @param movingFrom Territory where armies will decrease by amount
+	 * @param movingTo Territory where armies will increase by amount
+	 * @param amount int amount of troops to swap.
+	 */
+	public void moveTroops( Territory movingFrom, Territory movingTo, int amount )
 	{
-		//TODO remove
-		assert moveFrom.getOccupant() == this;
-		assert moveTo.getOccupant() == this ;
-		
-		System.out.printf("MoveFrom: %d, MoveTo: %d ", 
-				moveFrom.getNumArmies(), moveTo.getNumArmies() );
+		assert movingFrom.getOccupant() == this;
+		assert movingTo.getOccupant() == this;
+
+		System.out.printf( "MoveFrom: %d, MoveTo: %d ",
+				movingFrom.getNumArmies(), movingTo.getNumArmies() );
 		System.out.print( "Moving " + amount + " troops from "
-				+ moveFrom.getName() + " to " + moveTo.getName() );
-		
-		moveFrom.setNumArmies( moveFrom.getNumArmies() - amount );
-		moveTo.setNumArmies( moveTo.getNumArmies() + amount );
-		System.out.printf(". Now moveFrom has %d and moveTo has %d troops%n",
-				moveFrom.getNumArmies(), moveTo.getNumArmies() );
+				+ movingFrom.getName() + " to " + movingTo.getName() );
+
+		movingFrom.setNumArmies( movingFrom.getNumArmies() - amount );
+		movingTo.setNumArmies( movingTo.getNumArmies() + amount );
+		System.out.printf( ". Now moveFrom has %d and moveTo has %d troops%n",
+				movingFrom.getNumArmies(), movingTo.getNumArmies() );
 	}
+
 	public java.util.ArrayList<Card> turnInSet( int[] set )
 	{
 		return cardHand.turnInSet( set );
@@ -301,27 +308,27 @@ public class Player
 	{
 		return territories.size();
 	}
-	
+
 	/**
-	 * Decreases the amount of armies by 1.  
+	 * Decreases the amount of armies by 1.
 	 */
 	public void decrementArmies()
 	{
 		this.numArmies--;
 	}
-	
+
 	/**
-	 * Increases the amount of armies by 1.  
+	 * Increases the amount of armies by 1.
 	 */
 	public void incrementArmies()
 	{
 		this.numArmies++;
 	}
-	
-	//TODO remove
+
+	// TODO remove
 	public String toString()
 	{
-		return this.name;
+		return (this.name + this.hashCode());
 	}
 
 } // end Player class

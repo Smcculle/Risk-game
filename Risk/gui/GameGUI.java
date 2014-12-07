@@ -8,6 +8,7 @@
 package gui;
 
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 
@@ -36,6 +37,7 @@ public class GameGUI extends JFrame implements Observer
 	
 	private JPanel currentPanel;
 
+	
 	// START SCREEN
 	private ActionListener startScreenHandler;
 	private JPanel startScreen;
@@ -135,10 +137,12 @@ public class GameGUI extends JFrame implements Observer
 	
 	public void update( Observable obs, Object obj )
 	{
-		System.out.println( "\nIn update of GameGUI" );
+		System.out.print( "\nIn update of GameGUI->" );
 		State state = gameEngine.getState();
-		System.out.println( "New state of game engine: " + state );
-
+		System.out.println( "New state of game engine: " + state ); 
+		
+		if( obj != null )
+			System.out.printf(" with object " + obj + " of class " + obj.getClass() );
 		/* Update the panel in the JFrame to reflect the current state
 		if ( state.equals( "createNewGame" ) )
 		{
@@ -186,17 +190,39 @@ public class GameGUI extends JFrame implements Observer
 		}
 		else if( state == State.attack )
 		{
-			System.out.println( "In notify observers, object = " + obj );
+			System.out.println( "In notify observers attack state, object = " + obj );
 			
 			//TODO check it 
-			if( obj instanceof String )
+			if( obj instanceof String) 
 			{
-				if( obj.equals( "captured"))
+				if ( obj.equals( "captured") )
 					mapScreenHandler.updateCapturedState();
+				
+				else if( obj.equals( "troopsMoved" )) 
+					mapScreenHandler.updateMove();
+			
+				else if( obj.equals( "updateAttackBox") )
+					mapScreenHandler.updateAttackBox();
+				
+				else
+				{
+					System.out.printf("Calling update map %n");
+					mapScreenHandler.updateMap();
+				}
+					
 			}
 			else
+			{
+				System.out.println( "Object not string, call attack");
 				mapScreenHandler.attack();
+			}
 
+		}
+		else if( state == State.failedInit)
+		{
+			JOptionPane.showMessageDialog( null, "Game creation failed. "
+					+ "Exiting." );
+			System.exit ( state.value );
 		}
 
 		/**

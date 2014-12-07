@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 
 public class Risk
 {
-	public final static Dimension GAME_SIZE = new Dimension( 512, 347 );
+	
 
 	public static void main( String[] args )
 	{
@@ -27,7 +27,7 @@ public class Risk
 
 		gui.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
-		gui.setSize( GAME_SIZE );
+		gui.setSize( RiskUtils.GAME_SIZE);
 		gui.setResizable( false );
 		gui.setLocation( RiskUtils.getStartScreenPosition() );
 		

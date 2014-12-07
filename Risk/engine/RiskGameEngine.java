@@ -12,8 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 
+import javax.swing.JOptionPane;
+
 import classes.Player;
 import classes.RiskGame;
+import classes.Territory;
 
 /**
  * RiskGameEngine is responsible for the creation of the RiskGame object, either
@@ -25,7 +28,7 @@ public class RiskGameEngine extends Observable
 	private State state;
 	
 	public enum State{ 
-		loadStartScreen(1), loadSavedGame(2), createPlayers(3), 
+		failedInit(-1), loadStartScreen(1), loadSavedGame(2), createPlayers(3), 
 		assignTerritories(4), assignArmies(5), placeArmies(6), turnInCards(7), attack(8),
 		fortify(9);
 		
@@ -81,8 +84,9 @@ public class RiskGameEngine extends Observable
 		}
 		else
 		{
-			System.err.println( "Game creation failed" );
-			//System.exit( 2 );
+			this.state = State.failedInit;
+			this.setChanged();
+			this.notifyObservers();
 		}
 	}
 	
@@ -117,6 +121,15 @@ public class RiskGameEngine extends Observable
 		 this.setChanged();
 		 this.notifyObservers();
 	}
+	
+	/**
+	 * Notifies observer that map needs to be updated 
+	 */
+	public void sendGUIMessage( String message )
+	{
+		this.setChanged();
+		this.notifyObservers( message );
+	}
 
 	/**
 	 * Call RiskGame method to set up the next player.  
@@ -149,6 +162,21 @@ public class RiskGameEngine extends Observable
 		game.incrementTroops( territory );
 	}
 	
+	/**
+	 * Calls RiskGame method for the current player to move troops. 
+	 * 
+	 * @param movingFrom Territory starting move
+	 * @param movingTo Territory ending move 
+	 * @param numMoving int number of troops moving 
+	 */
+	public void moveTroops( Territory movingFrom, Territory movingTo,
+			int numMoving )
+	{
+		game.moveTroops( movingFrom, movingTo, numMoving );
+		this.setChanged();
+		this.notifyObservers( "troopsMoved" );
+	}
+
 	public void loadGame( String gameFileName )
 	{
 		// Read & De-Serialize a game object
@@ -180,4 +208,5 @@ public class RiskGameEngine extends Observable
 		
 	}
 
+	
 }

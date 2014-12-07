@@ -65,7 +65,7 @@ public class MoveTroopsScreenPanel extends JPanel
 	/* center buttons, slider */
 	private JPanel sliderPanel;
 	private JPanel choicePanel;
-	private JFormattedTextField textField;
+	private JFormattedTextField numMovingField;
 	private JSlider troopSlider;
 	private JButton minButton;
 	private JButton maxButton;
@@ -109,15 +109,22 @@ public class MoveTroopsScreenPanel extends JPanel
 		//TODO: remove
 		//initPanel(3);
 	}
-	//TODO REMOVE
-	public void testMove()
+	
+	
+	/**
+	 * Passes move data from panel through handler to 
+	 * the model to call move on the current player.  
+	 */
+	public void callMoveTroops()
 	{
-		movingPlayer.moveTroops( movingFrom, movingTo, 
-				Integer.parseInt( textField.getText() ) );
+		handler.moveTroops( movingFrom, movingTo, 
+				Integer.parseInt( numMovingField.getText() ) );
+		
 	}
+	
 	// TODO tie this in with good transition attack-> move panel, and fortify
 	// i,e., add territories moving from, to here
-	public void initPanel( int minToMove )
+	private void initPanel( int minToMove )
 	{
 		int maxToMove = movingFrom.getNumArmies() - 1;
 		errorMessage = "Please enter an integer from " 
@@ -142,12 +149,12 @@ public class MoveTroopsScreenPanel extends JPanel
 		DefaultFormatterFactory nfFactory = 
 				new DefaultFormatterFactory( formatter );
 		  
-		textField.setFormatterFactory( nfFactory );
+		numMovingField.setFormatterFactory( nfFactory );
 		  
 		  
-		textField.getInputMap().put(KeyStroke.getKeyStroke(
+		numMovingField.getInputMap().put(KeyStroke.getKeyStroke(
 				KeyEvent.VK_ENTER, 0), "verify"); 
-		textField.getActionMap().put(
+		numMovingField.getActionMap().put(
 						"verify", handler.getVerifyTextAction() );
 		 /*
 		textField.getInputMap().put( KeyStroke.getKeyStroke(
@@ -184,7 +191,7 @@ public class MoveTroopsScreenPanel extends JPanel
 	
 	public void handleInvalidInput()
 	{
-		textField.selectAll();
+		numMovingField.selectAll();
 		moveButton.setEnabled( false );
 		JOptionPane.showMessageDialog( this, errorMessage, 
 				"Invalid troop selection", 
@@ -203,7 +210,7 @@ public class MoveTroopsScreenPanel extends JPanel
 	}
 	public void setTextField( int newValue )
 	{
-		textField.setValue( newValue );
+		numMovingField.setValue( newValue );
 		troopSlider.setValue( newValue );
 		handleValidInput();
 	}
@@ -214,17 +221,13 @@ public class MoveTroopsScreenPanel extends JPanel
 	 * @param movingFrom territory troops are moving from
 	 * @param movingTo territory troops are moving to 
 	 */
-	public void moveTroops( Territory movingFrom, Territory movingTo )
+	public void moveTroops( Territory movingFrom, Territory movingTo, int minToMove )
 	{
 		movingPlayer = movingFrom.getOccupant();
-		movingFrom = new Territory( "Western United States", null, null );
-		movingTo = new Territory( "Eastern United States", null, null );
-		movingFrom.setNumArmies( 10 );
-		movingTo.setNumArmies( 7 );
-		movingPlayer.addTerritory( movingFrom );
-		movingPlayer.addTerritory( movingTo );
-		
+		this.movingFrom = movingFrom;
+		this.movingTo = movingTo;
 		setLabelText();
+		initPanel( minToMove );
 
 		// TODO test value
 	}
@@ -297,11 +300,11 @@ public class MoveTroopsScreenPanel extends JPanel
 		/* value will be set in init based on territories */
 		troopSlider = new JSlider();
 		troopSlider.addChangeListener( handler );
-		textField = new JFormattedTextField();
+		numMovingField = new JFormattedTextField();
 		//textField.addActionListener( handler );
-		textField.setActionCommand( "textField" );
-		textField.setColumns( 3 );
-		textField.setAlignmentX( CENTER_ALIGNMENT );
+		numMovingField.setActionCommand( "textField" );
+		numMovingField.setColumns( 3 );
+		numMovingField.setAlignmentX( CENTER_ALIGNMENT );
 
 		innerPanel.add( minButton );
 		innerPanel.add( troopSlider );
@@ -311,7 +314,7 @@ public class MoveTroopsScreenPanel extends JPanel
 		instructionLabel = new JLabel( "Troops to move:" );
 		instructionLabel.setHorizontalAlignment( JLabel.CENTER );
 		choicePanel.add( instructionLabel );
-		choicePanel.add( textField );
+		choicePanel.add( numMovingField );
 
 		result.add( choicePanel, BorderLayout.NORTH );
 

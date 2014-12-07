@@ -6,44 +6,34 @@
  **/
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.PixelGrabber;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.JComboBox;
-import javax.swing.JScrollBar;
 
 import java.awt.FlowLayout;
-import java.awt.Rectangle;
 
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.BevelBorder;
@@ -131,13 +121,16 @@ public class MapScreenPanelTest extends JPanel
 	private static final int CIRCLE_WIDTH = 26;
 	private Queue<String> numberQueue;
 	
-	
-	
 	/* north panel */
 	private JPanel menuPanel;
 	private JLabel infoLabel;
 	private JComboBox<String> actionFromBox; 
-	private JComboBox<String> actionToBox; 
+	private JComboBox<String> actionToBox;
+	private JButton endTurnButton;
+	private Component labelSpace; 
+	private Component comboBoxSpace;
+	private Component endTurnSpace;
+	
 	
 	/* map information */
 	private Map<String, Territory> territories;
@@ -149,20 +142,21 @@ public class MapScreenPanelTest extends JPanel
 	private AttackScreenPanel attackScreenPanel;
 	private MoveTroopsScreenPanel moveTroopsScreenPanel;
 	private JInternalFrame attackFrame; 
-	
+	private JPanel currentAttackFramePanel; 
 	/**
 	 * Create the panel.
 	 */
 	public MapScreenPanelTest( ActionListener handler )
 	{
 		this.handler = handler; 
+		currentAttackFramePanel = new JPanel();
 		
 		cardFrame = new JInternalFrame();
 		//cardFrame.setLocation(273, 160);
 		cardFrame.setLocation( RiskUtils.getRelativeScreenLocation( 0.10, 0.0 ) );
 		
 		attackFrame = new JInternalFrame();
-		attackFrame.setLocation( RiskUtils.getRelativeScreenLocation( 0.33, 0.33 ) );
+		attackFrame.setLocation( RiskUtils.getRelativeScreenLocation( 0.15, 0.15 ) );
 		
 		circlesToDraw = new HashMap<Point, Territory>();
 		
@@ -203,7 +197,7 @@ public class MapScreenPanelTest extends JPanel
 		actionFromBox = new JComboBox<String>();
 		actionFromBox.setName( "actionFromBox" );
 		actionFromBox.setBounds(425, 11, 200, 22);
-		actionFromBox.setPreferredSize( new Dimension( 200, 22) );
+		actionFromBox.setPreferredSize( new Dimension( 150, 22) );
 		//for( String s : getComboString() )
 		//	actionFromBox.addItem( s );
 		setLayout(null);
@@ -215,16 +209,16 @@ public class MapScreenPanelTest extends JPanel
 		menuPanel.add( cardButton );
 		
 		Component horizontalStrut = Box.createHorizontalStrut(50);
-		horizontalStrut.setMaximumSize(new Dimension(50, 32767));
-		horizontalStrut.setMinimumSize(new Dimension(50, 0));
+		//horizontalStrut.setMaximumSize(new Dimension(50, 32767));
+		//horizontalStrut.setMinimumSize(new Dimension(50, 0));
 		menuPanel.add(horizontalStrut);
 		
 		infoLabel = new JLabel("");
 		infoLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		menuPanel.add(infoLabel);
 		
-		Component horizontalStrut_2 = Box.createHorizontalStrut(300);
-		menuPanel.add(horizontalStrut_2);
+		labelSpace = Box.createHorizontalStrut(300);
+		menuPanel.add(labelSpace);
 		menuPanel.add( actionFromBox );
 		
 		actionToBox = new JComboBox<String>( );
@@ -232,14 +226,23 @@ public class MapScreenPanelTest extends JPanel
 	//	actionToBox.addItem( "Western United States" );
 		
 		
-		Component horizontalStrut_1 = Box.createHorizontalStrut(5);
-		menuPanel.add(horizontalStrut_1);
+		comboBoxSpace = Box.createHorizontalStrut(5);
+		menuPanel.add(comboBoxSpace);
 		
 		menuPanel.add( actionToBox );
 		actionToBox.setVisible( false );
 		//this.setLayout( new BorderLayout() );
 		
 		this.add( menuPanel );
+		
+		endTurnSpace = Box.createHorizontalStrut(20);
+		
+		menuPanel.add(endTurnSpace);
+		
+		endTurnButton = new JButton("End Turn");
+		endTurnButton.setActionCommand( "endTurn" );
+		endTurnButton.addActionListener( handler );
+		menuPanel.add(endTurnButton);
 		/**
 		JInternalFrame jif = new JInternalFrame();
 		JDesktopPane jdp = new JDesktopPane();
@@ -310,7 +313,6 @@ public class MapScreenPanelTest extends JPanel
 	protected void paintComponent( Graphics g )
 	{
 		
-		System.out.println ( "Big daddy paint now " );
 		g.drawImage( img.getImg(), 0, 40, null );
 		
 		for( Map.Entry<Point, Territory> entry : circlesToDraw.entrySet() )
@@ -347,9 +349,22 @@ public class MapScreenPanelTest extends JPanel
 		return color;
 	}
 	
-	public void placedArmy()
+	/**
+	 * Revalidate and repaint the main Map.  
+	 */
+	public void updateMap()
 	{
-		
+		this.revalidate();
+		this.repaint();
+	}
+	
+	/**
+	 * Update map data with new troop values and close troop panel.
+	 */
+	public void updateMove( Player currentPlayer )
+	{
+		attackFrame.setVisible( false );
+		updateAttackBox( currentPlayer );
 	}
 	
 	/**
@@ -358,16 +373,35 @@ public class MapScreenPanelTest extends JPanel
 	 */
 	public void attack()
 	{
-		
 		/* get territories from each box */
 		Territory attacker = 
 				territories.get( (String)actionFromBox.getSelectedItem() );
 		Territory defender = 
 				territories.get( (String)actionToBox.getSelectedItem() );
 		
+		/* initialize panel with data */
 		attackScreenPanel.attack( attacker, defender );
+		
+		this.changeAttackFrameContent( attackScreenPanel );
 		attackFrame.setVisible( true );
+		
 	}
+	
+	private void changeAttackFrameContent( JPanel newContent )
+	{
+		attackFrame.getContentPane().remove( currentAttackFramePanel );
+		currentAttackFramePanel = newContent; 
+		attackFrame.getContentPane().add( currentAttackFramePanel );
+		attackFrame.pack();
+		attackFrame.revalidate();
+		attackFrame.repaint();
+	}
+	
+	/**
+	 * Initialization method at start of game to construct game board.  
+	 * 
+	 * @param territories list of territories from gameboard.  
+	 */
 	public void setMap( Map<String, Territory> territories )
 	{
 		this.territories = territories; 
@@ -391,8 +425,17 @@ public class MapScreenPanelTest extends JPanel
 		}
 		
 		actionFromBox.addActionListener( handler );
+		this.updateMap();
 	}
 	
+	/**
+	 * Updates label with appropriate text for assigning territories and 
+	 * sets the current player.  
+	 */
+	public void assignTerritories( Player currentPlayer )
+	{
+		setNextPlayer( currentPlayer );
+	}
 	/**
 	 * Sets the panel color of the current player to give visual feedback 
 	 * of whose turn it is.
@@ -424,29 +467,40 @@ public class MapScreenPanelTest extends JPanel
 		assignArmies( currentPlayer );
 	}
 	
+	public void setLabelAssignTerritories( Player currentPlayer )
+	{
+		infoLabel.setText( currentPlayer.getName() + ", choose a territory "
+				+ "from the box." );
+		repaint();
+	}
 	public void setLabelPlaceArmies( Player currentPlayer )
 	{
-		infoLabel.setText( currentPlayer.getName() + " place your armies.  " 
+		infoLabel.setText( currentPlayer.getName() + ", place your armies.  " 
 				+ currentPlayer.getUnplacedArmies() + " left."  );
+
 		repaint();
 	}
 	
 	public void setLabelAttack( Player currentPlayer )
 	{
-		infoLabel.setText( currentPlayer.getName() + " begin attack phase" );
+		infoLabel.setText( currentPlayer.getName() + ", begin attack phase" );
 		repaint();
+		
 	}
 	
 	
 	public void showMoveTroopsScreen()
 	{
+		/* player must move a minimum of troops based on # of dice rolled*/
 		moveTroopsScreenPanel.moveTroops( 
 				attackScreenPanel.getAttacker(), 
-				attackScreenPanel.getDefender());
-		attackFrame.getContentPane().remove( attackScreenPanel );
-		attackFrame.getContentPane().add( moveTroopsScreenPanel );
-		attackFrame.revalidate();
-		attackFrame.repaint();
+				attackScreenPanel.getDefender(), 
+				attackScreenPanel.getNumAttacking() );
+		
+		attackFrame.setVisible( false );
+		
+		this.changeAttackFrameContent( moveTroopsScreenPanel );
+		attackFrame.show();
 		
 	}
 	/**
@@ -459,28 +513,60 @@ public class MapScreenPanelTest extends JPanel
 		
 	}
 	/**
-	 * Sets up the JComboBox for attack state.  
+	 * Sets up the actionToBox for attack state.  
 	 */
 	public void initActionToBox( String attackingTerritory )
 	{
 		Territory attackingFrom = territories.get( attackingTerritory );
-		Map<String, Territory> choices = attackingFrom.getNeighbors(); 
+		Player attackingPlayer = attackingFrom.getOccupant();
+		Map<String, Territory> choices = attackingFrom.getNeighbors();
+		
 		actionToBox.removeActionListener( handler );
 		actionToBox.removeAllItems(); 
 		
-		for( String s : choices.keySet() )
+		/* check ownership before adding to box */
+		for( Territory t : choices.values() )
 		{
-			actionToBox.addItem( s );
+			if( t.getOccupant() != attackingPlayer )
+			actionToBox.addItem( t.getName() );
 		}
 		
 		actionToBox.addActionListener( handler );	
 	}
 	
+	/**
+	 * Shows the actionToBox and populates actionFromBox with list of 
+	 * territories that a player can attack from. 
+	 * 
+	 * @param currentPlayer
+	 */
 	public void showAttackBox( Player currentPlayer )
 	{
 		actionToBox.setVisible( true );
 		actionToBox.setPreferredSize( actionFromBox.getPreferredSize() );
 		setLabelAttack( currentPlayer );
+		updateAttackBox ( currentPlayer );
+	}
+	
+	/**
+	 * Populates actionFromBox with the current player's territories that
+	 * have more than 1 army present.  
+	 * 
+	 * @param currentPlayer
+	 */
+	public void updateAttackBox( Player currentPlayer )
+	{
+		actionFromBox.removeActionListener( handler );
+		actionFromBox.removeAllItems(); 
+		for( Territory t : currentPlayer.getTerritoriesList().values() )
+		{
+			System.out.printf( "%s ", t);
+			if( t.getNumArmies() > 1 )
+				actionFromBox.addItem( t.getName() );
+		}
+		
+		actionFromBox.addActionListener( handler );
+		this.updateMap();
 	}
 	
 	/**
@@ -490,7 +576,8 @@ public class MapScreenPanelTest extends JPanel
 	public void setAttackScreenPanel( AttackScreenPanel panel )
 	{
 		this.attackScreenPanel = panel; 
-		
+		currentAttackFramePanel = panel;
+		//TODO :check
 		attackFrame.getContentPane().add( panel );
 		attackFrame.pack();
 		this.add( attackFrame );

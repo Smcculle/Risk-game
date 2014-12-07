@@ -15,6 +15,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -34,9 +35,12 @@ import java.util.List;
 
 import javax.swing.border.BevelBorder;
 
+import engine.RiskUtils;
+
 @SuppressWarnings( "serial" )
 public class AttackScreenPanel extends JPanel
 {
+	// 454, 267 
 	private static final int MAX_ATTACK_DICE = 3; 
 	private static final int MAX_DEFEND_DICE = 2;
 	private static final String PATH_DIR = "images/";
@@ -76,9 +80,9 @@ public class AttackScreenPanel extends JPanel
 	private int attackDiceEnabled;
 	private int numDefending;
 	private int defendDiceEnabled;
+	
 	/**
 	 * Create the panel.
-	 * @wbp.parser.constructor
 	 */
 	public AttackScreenPanel( ActionListener handler )
 	{
@@ -109,6 +113,7 @@ public class AttackScreenPanel extends JPanel
 		
 		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
 		( (AttackScreenHandler)handler ).addView(this);
+		//this.setPreferredSize( RiskUtils.GAME_SIZE );
 	}
 	
 	/**
@@ -132,18 +137,22 @@ public class AttackScreenPanel extends JPanel
 		attackDiceEnabled = MAX_ATTACK_DICE; 
 		defendDiceEnabled = MAX_DEFEND_DICE;
 		
+		System.out.println( "initializing attack, with num attacking and num defending as " 
+				+ numAttacking + " and " + numDefending );
 		setDescriptionLabel();
 		setLabelText();
 		setDicePanel();
 		attackButton.setEnabled( true );
+		System.out.println( this.getSize() );
 	}
 	
 	//TODO clean constructor 
 	public AttackScreenPanel( Territory attacker, Territory defender )
 	{
-		this.attacker = attacker;
-		this.defender = defender; 
+		this( null );
+		attack( attacker, defender );
 		
+		/*
 		descriptionPanel = getDescriptionPanel();
 		this.setLayout( new BorderLayout() );
 		this.add( descriptionPanel, BorderLayout.NORTH );
@@ -160,7 +169,7 @@ public class AttackScreenPanel extends JPanel
 		iconPanel = new JPanel();
 		iconLabel = getAttackIcon();
 		iconPanel.add( iconLabel );
-		this.add( iconPanel, BorderLayout.CENTER );
+		this.add( iconPanel, BorderLayout.CENTER );*/
 	}
 
 	/**
@@ -169,11 +178,11 @@ public class AttackScreenPanel extends JPanel
 	private JPanel getDescriptionPanel()
 	{
 		JPanel result = new JPanel( new BorderLayout() );
-		descriptionLabel = new JLabel();
+		descriptionLabel = new JLabel( "", JLabel.CENTER );
 		descriptionLabel.setBorder( 
 				BorderFactory.createBevelBorder(BevelBorder.LOWERED ) );
 		
-		result.add( descriptionLabel, BorderLayout.WEST );
+		result.add( descriptionLabel, BorderLayout.CENTER );
 		
 		return result; 
 	}
@@ -229,9 +238,15 @@ public class AttackScreenPanel extends JPanel
 			
 			/* default state of all dice selected if possible */
 			if( attackerArmies > i + 1 )
+			{
+				attackDice[i].setEnabled( true );
 				attackDice[i].setSelected( true );
+				attackDice[i].setText( "" );
+			}
 			else
 			{
+				attackDice[i].setText( "" );
+				attackDice[i].setSelected( false );
 				attackDice[i].setEnabled( false );
 				attackDiceEnabled--;
 			}
@@ -242,9 +257,17 @@ public class AttackScreenPanel extends JPanel
 
 			/* default state of all dice selected if possible */
 			if( defenderArmies > i )
-				defendDice[i].setSelected( defenderArmies > i );
+			{
+				defendDice[i].setText( "");
+				defendDice[i].setEnabled( true );
+				defendDice[i].setSelected( true );
+				
+			}
+			
 			else
 			{
+				defendDice[i].setText( "" );
+				defendDice[i].setSelected( false );
 				defendDice[i].setEnabled( false );
 				defendDiceEnabled--;
 			}
@@ -272,6 +295,7 @@ public class AttackScreenPanel extends JPanel
 			//attackDice[i].setPreferredSize( new Dimension
 			//		( TOGGLE_BUTTON_SIZE, TOGGLE_BUTTON_SIZE ) );
 			attackDice[i].setText( Integer.toString( i + 1 ) );
+			attackDice[i].setPreferredSize( attackDice[i].getPreferredSize() );
 			attackDiceGroup.add( attackDice[i] );
 			attackPanel.add( attackDice[i] );
 			
@@ -295,10 +319,10 @@ public class AttackScreenPanel extends JPanel
 			defendDice[i] = new JToggleButton();
 			//defendDice[i].setPreferredSize( new Dimension
 			//		( TOGGLE_BUTTON_SIZE, TOGGLE_BUTTON_SIZE ) );
-			defendDice[i].setText( Integer.toString( i + 5 ) );
+			defendDice[i].setText( Integer.toString( i + 1 ) );
 			defendDiceGroup.add( defendDice[i] );
 			defendPanel.add( defendDice[i] );
-
+			defendDice[i].setPreferredSize( defendDice[i].getPreferredSize() );
 			/* Give name since text will display dice results */
 			defendDice[i].setActionCommand( Integer.toString( i + 1 ) );
 			defendDice[i].setName( "defend" );
@@ -392,13 +416,17 @@ public class AttackScreenPanel extends JPanel
 	public void updateResults( int[] diceResults )
 	{
 		updateDiceText( diceResults );
+		boolean capturedTerritory = 
+				attackingPlayer.attack( attacker, defender, diceResults );
 		
-		if( attackingPlayer.attack( attacker, defender, diceResults ) )
+		if( capturedTerritory )
 		{
 			attackButton.setEnabled( false );
 			setDefendDiceGroup( 0 );
 			attackDiceEnabled = 0;
-			JOptionPane.showMessageDialog( null, "You captured the territory" );
+			RiskUtils.printM( attackingPlayer.getTerritoriesList() );
+			JOptionPane.showMessageDialog( null, "You captured the territory!"); 
+					 
 			handler.actionPerformed( new ActionEvent(this, 
 					ActionEvent.ACTION_PERFORMED, "captured") );
 		}
@@ -406,13 +434,20 @@ public class AttackScreenPanel extends JPanel
 		{
 			checkAttackerBounds();
 			checkDefenderBounds();
+			setLabelText();
 		}
 		
-		setLabelText();
+		
 		revalidate();
 		repaint();
 		
 	}
+	/**
+	 * Handles parsing results and updating the view with highlighting of 
+	 * winner and losers.  
+	 * 
+	 * @param diceResults
+	 */
 	private void updateDiceText( int[] diceResults )
 	{
 		/* highest attack rolls start at separator-1 and decrease to index 0 */
@@ -615,17 +650,29 @@ public class AttackScreenPanel extends JPanel
 		JFrame jf = new JFrame();
 		
 		/* fake territory data to view */
-		Territory attacker = new Territory("Attackistan", null, null );
+		Player p1 = new Player( "Tony" );
+		Player p2 = new Player( "Pizza" );
+		Territory attacker = new Territory("W", null, null );
 		attacker.setNumArmies( 15 );
-		Territory defender = new Territory("Defendaria", null, null );
+		p1.addTerritory( attacker );
+		Territory defender = new Territory("E", null, null );
 		defender.setNumArmies( 10 );
+		p2.addTerritory( defender );
 		
-		AttackScreenPanel asp = new AttackScreenPanel( attacker, defender );
-		jf.getContentPane().add( asp );
+		JInternalFrame jif = new JInternalFrame();
+		//AttackScreenPanel asp = new AttackScreenPanel( attacker, defender );
+		AttackScreenPanel asp = new AttackScreenPanel( null );
+		jf.getContentPane().setLayout( null );
+		jf.getContentPane().add(  jif );
+		jif.add ( asp );
+		jif.pack();
+		jif.setVisible( true );
 		jf.pack();
 		jf.setVisible( true );
 		jf.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		
+		System.out.println(  "frame:" +  jf.getSize() );
+		asp.attack( attacker, defender );
+		jif.pack();
 	}
 	
 
