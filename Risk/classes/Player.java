@@ -301,5 +301,11 @@ public class Player
 	{
 		return territories.size();
 	}
+	
+	//TODO remove
+	public String toString()
+	{
+		return this.name;
+	}
 
 } // end Player class

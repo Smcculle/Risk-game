@@ -49,6 +49,9 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 
+import classes.Player;
+import classes.Territory;
+
 @SuppressWarnings( "serial" )
 public class MapScreenPanelTest extends JPanel
 {
@@ -116,28 +119,39 @@ public class MapScreenPanelTest extends JPanel
 		}
 		
 	}
+
+	private ActionListener handler;
 	
 	/* instance variables */
 	private MapImage img;  
-	private Map<Point, String> circlesToDraw;
+	private Map<Point, Territory> circlesToDraw;
 	private static final int CIRCLE_DIAMETER = 25;
 	private static final int CIRCLE_HEIGHT = 24;
 	private static final int CIRCLE_WIDTH = 26;
 	private Queue<String> numberQueue;
 	private JInternalFrame jif;
+	
+	/* north panel */
 	private JPanel menuPanel;
+	
+	/* map information */
+	private Map<String, Territory> territories;
+	
+	private JComboBox<String> actionFromBox; 
+	private JComboBox<String> actionToBox; 
 	
 	/**
 	 * Create the panel.
 	 */
-	public MapScreenPanelTest()
+	public MapScreenPanelTest( ActionListener handler )
 	{
+		this.handler = handler; 
 		jif = new JInternalFrame();
 		//jif.setSize(423, 340);
 		jif.setLocation(273, 160);
 		
 		
-		circlesToDraw = new HashMap<Point, String>();
+		circlesToDraw = new HashMap<Point, Territory>();
 		
 		
 		final MapImage map = new MapImage();
@@ -159,12 +173,13 @@ public class MapScreenPanelTest extends JPanel
 			@Override
 			public void actionPerformed( ActionEvent e )
 			{
-				for( Map.Entry<Point, String> entry : circlesToDraw.entrySet() )
+				for( Map.Entry<Point, Territory> entry : circlesToDraw.entrySet() )
 				{
 					Point key = entry.getKey();
-					String value = entry.getValue();
-					value = Integer.toString( (Integer.parseInt( value ) + 1 ) );
-					circlesToDraw.put( key, value );
+					Territory value = entry.getValue();
+					System.out.printf("Outdated event fired");
+					//value = Integer.toString( (Integer.parseInt( value ) + 1 ) );
+					//circlesToDraw.put( key, value );
 					repaint();
 				}
 				jif.setVisible( !jif.isVisible() );
@@ -172,14 +187,16 @@ public class MapScreenPanelTest extends JPanel
 		} );
 		//adding to panel above this.add( testButton );				
 		
-		JComboBox<String> comboBox = new JComboBox<String>();
-		comboBox.setBounds(425, 11, 200, 22);
-		for( String s : getComboString() )
-			comboBox.addItem( s );
+		actionFromBox = new JComboBox<String>();
+		actionFromBox.setName( "actionFromBox" );
+		actionFromBox.setBounds(425, 11, 200, 22);
+		
+		//for( String s : getComboString() )
+		//	actionFromBox.addItem( s );
 		setLayout(null);
 		//adding to panel above setLayout(null);
 		
-		comboBox.setOpaque( false );
+		actionFromBox.setOpaque( false );
 		//comboBox.setBounds(240, 59, 200, 20);
 		//adding to panel above add(comboBox);
 		menuPanel.add( testButton );
@@ -188,15 +205,17 @@ public class MapScreenPanelTest extends JPanel
 		horizontalStrut.setMaximumSize(new Dimension(50, 32767));
 		horizontalStrut.setMinimumSize(new Dimension(50, 0));
 		menuPanel.add(horizontalStrut);
-		menuPanel.add( comboBox );
+		menuPanel.add( actionFromBox );
 		
-		JComboBox<String> defendBox = new JComboBox<String>( );
-		defendBox.addItem( "Western United States" );
+		actionToBox = new JComboBox<String>( );
+		actionToBox.setName( "actionToBox" );
+	//	actionToBox.addItem( "Western United States" );
+		
 		
 		Component horizontalStrut_1 = Box.createHorizontalStrut(5);
 		menuPanel.add(horizontalStrut_1);
 		
-		menuPanel.add( defendBox );
+		menuPanel.add( actionToBox );
 		//this.setLayout( new BorderLayout() );
 		
 		this.add( menuPanel );
@@ -211,6 +230,7 @@ public class MapScreenPanelTest extends JPanel
 		jif.requestFocusInWindow();
 		*/
 		
+		/*
 		jif.getContentPane().add( CardScreenPanel.initTest() );
 		jif.pack();
 		this.add( jif );
@@ -223,6 +243,8 @@ public class MapScreenPanelTest extends JPanel
 		jif2.pack();
 		this.add( jif2 );
 		jif2.setVisible( true );
+		*/
+		( (MapScreenHandler)handler ).addView(this);
 		
 	}
 	public BufferedImage getOverlay()
@@ -230,11 +252,34 @@ public class MapScreenPanelTest extends JPanel
 		return img.mapOverlay;
 	}
 	
+	public void initActionFromBox( Map<String, Territory> territories )
+	{
+		this.territories = territories; 
+		
+		for( String s : territories.keySet() )
+		{
+			actionFromBox.addItem( s );
+		}
+		actionFromBox.addActionListener( handler );
+	}
+	
+	//TODO remove
+	/*
 	public void addCircle( int x, int y ) 
 	{
-		Random random = new Random();
-		int troop = random.nextInt( 50 );
 		circlesToDraw.put( new Point( x, y ), Integer.toString( troop ));
+	}*/
+	
+	/**
+	 * Adds a territory's circle to list of circles to draw.  
+	 */
+	public void addCircle( String newTerritory )
+	{
+		Territory territory = territories.get( newTerritory );
+		circlesToDraw.put( territory.getCircleCenter(), territory);
+		
+		System.out.printf( "New circle of %s added successfully", territory);
+		repaint();
 	}
 	
 	@Override
@@ -257,11 +302,11 @@ public class MapScreenPanelTest extends JPanel
 		System.out.println ( "Big daddy paint now " );
 		g.drawImage( img.getImg(), 0, 40, null );
 		
-		for( Map.Entry<Point, String> entry : circlesToDraw.entrySet() )
+		for( Map.Entry<Point, Territory> entry : circlesToDraw.entrySet() )
 		{
 			Point p = entry.getKey();
-			String s = entry.getValue();
-			g.setColor( getColor() );
+			Territory t = entry.getValue();
+			g.setColor( t.getColor() );
 			
 			/*
 			int x = p.x - (CIRCLE_DIAMETER / 2 );
@@ -274,7 +319,8 @@ public class MapScreenPanelTest extends JPanel
 			
 			g.setColor( java.awt.Color.BLACK );
 			//g.drawString( s, p.x + 5, p.y + 5 );
-			drawCenteredText( g, p.x, p.y, 13.0f, s );
+			drawCenteredText( g, p.x, p.y, 13.0f, 
+					Integer.toString(t.getNumArmies() ));
 		}
 		
 	}
@@ -289,12 +335,23 @@ public class MapScreenPanelTest extends JPanel
 		
 		return color;
 	}
+	
+	/**
+	 * Sets the panel color of the current player to give visual feedback 
+	 * of whose turn it is.  
+	 * @param currentPlayer new Player that is the currentPlayer.  
+	 */
+	public void setNextPlayer( Player currentPlayer )
+	{
+		menuPanel.setBackground( currentPlayer.getColor() );
+	}
+	
 	public static void createGUI()
 	{
 		System.out.println( "Launched" );
 		JFrame f = new JFrame( "Main window" );
 		f.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		MapScreenPanelTest mps = new MapScreenPanelTest();
+		MapScreenPanelTest mps = new MapScreenPanelTest( new MapScreenHandler( null ));
 		mps.addMouseListener( mps.new MapMouseListener() );
 		f.getContentPane().add( mps );
 		f.pack();
@@ -361,7 +418,8 @@ public class MapScreenPanelTest extends JPanel
 		g.drawString(text, cornerX, cornerY);  // Draw the string.
 		
 	}
-
+	
+	
 	public class MapMouseListener implements MouseListener
 	{
 		
@@ -373,7 +431,7 @@ public class MapScreenPanelTest extends JPanel
 			System.out.println( "Mouse click at x,y = " + e.getX() + "," + e.getY() );	
 			MapScreenPanelTest mps = (MapScreenPanelTest)e.getSource();
 			System.out.println( "RBG in overlay is " + mps.getOverlay().getRGB( e.getX(), e.getY() - 40 )) ;
-			mps.addCircle( e.getX(), e.getY() );
+			//mps.addCircle( e.getX(), e.getY() );
 			
 			java.awt.Color c = new java.awt.Color( img.mapOverlay.getRGB( x, y - 40) );
 			System.out.println( " Blue is : " + c.getBlue() ) ;

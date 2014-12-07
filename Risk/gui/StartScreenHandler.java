@@ -11,11 +11,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import engine.RiskGameEngine;
 
-public class StartScreenHandlerClass implements ActionListener
+public class StartScreenHandler implements ActionListener
 {
 	private RiskGameEngine model;
 
-	public StartScreenHandlerClass( RiskGameEngine gameEngine )
+	public StartScreenHandler( RiskGameEngine gameEngine )
 	{
 		this.model = gameEngine;
 	}

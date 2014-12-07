@@ -64,7 +64,7 @@ public class CreatePlayersScreenHandler implements ActionListener
 		else if( command.equals( "chooseColor") )
 		{
 			JButton source = (JButton)event.getSource();
-		   
+		    System.out.println( "Oops choosey " + source.getName() );
 			/* sets the color for player number in getName() */
 			view.setColor( Integer.parseInt( source.getName() ) );
 		}

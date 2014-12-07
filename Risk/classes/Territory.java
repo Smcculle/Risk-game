@@ -48,6 +48,13 @@ public class Territory
 		return continent;  
 	}
 	
+	/**
+	 * @return a Point identifying center of circle to draw for this territory.
+	 */
+	public Point getCircleCenter()
+	{
+		return circleCenter;
+	}
 	/**  
 	 * @return the X coordinate of the circle for this territory.     
 	 */
@@ -144,6 +151,15 @@ public class Territory
 	public String toString()
 	{
 		return this.name; 
+	}
+	
+	/**
+	 * Passes color value from occupant to map.  
+	 * @return Color specifies owner of territory by circle color.     
+	 */
+	public java.awt.Color getColor()
+	{
+		return occupant.getColor();
 	}
 
 }// end Territory class

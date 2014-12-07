@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 
+import classes.Player;
 import classes.RiskGame;
 
 /**
@@ -100,6 +101,25 @@ public class RiskGameEngine extends Observable
 	public State getState()
 	{
 		return this.state;
+	}
+
+	/**
+	 * Call RiskGame method to set up the next player.  
+	 */
+	public Player getNextPlayer()
+	{
+		return game.getNextPlayer();
+	}
+
+	/** 
+	 * Calls RiskGame method to add territory to the current player.  
+	 * @param territory String name of territory to add. 
+	 */
+	public void addTerritory( String territory )
+	{
+		if( game.getCurrentPlayer() != null )
+			game.addTerritory( territory );
+		
 	}
 
 }

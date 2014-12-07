@@ -40,13 +40,13 @@ public class GameGUI extends JFrame implements Observer
 	private ActionListener startScreenHandler;
 	private JPanel startScreen;
 
-	// CREATE GAME SCREEN
-	private ActionListener createGameScreenHandler;
-	private JPanel createGameScreen;
-
 	// CREATE PLAYERS SCREEN
 	private ActionListener createPlayersScreenHandler;
 	private JPanel createPlayersScreen;
+	
+	// MAIN MAP SCREEN 
+	private MapScreenHandler mapScreenHandler; 
+	private JPanel mapScreen;
 
 	/**
 	 * // SELECT TERRITORIES SCREEN private ActionListener
@@ -59,20 +59,19 @@ public class GameGUI extends JFrame implements Observer
 		//this.setPreferredSize( new java.awt.Dimension( 1000, 800 ) );
 		this.gameEngine = gameEngine;
 		// START SCREEN INIT
-		this.startScreenHandler = new StartScreenHandlerClass( this.gameEngine );
+		this.startScreenHandler = new StartScreenHandler( this.gameEngine );
 		this.startScreen = new StartScreenPanel( this.startScreenHandler );
-
-		// CREATE GAME SCREEN INIT
-		this.createGameScreenHandler = new CreateGameScreenHandler(
-				this.gameEngine );
-		this.createGameScreen = new CreateGameScreenPanel(
-				this.createGameScreenHandler );
 
 		// CREATE PLAYERS SCREEN INIT
 		this.createPlayersScreenHandler = new CreatePlayersScreenHandler(
 				this.gameEngine );
 		this.createPlayersScreen = new CreatePlayersScreenPanel(
 				this.createPlayersScreenHandler );
+		
+		//MAIN MAP SCREEN 
+		mapScreenHandler = new MapScreenHandler( this.gameEngine );
+		mapScreen = new MapScreenPanelTest( mapScreenHandler );
+		
 		/**
 		 * // SELECT TERRITORIES SCREEN INIT this.selectTerritoriesScreenHandler
 		 * = new SelectTerritoriesScreenHandlerClass( this.model );
@@ -133,6 +132,16 @@ public class GameGUI extends JFrame implements Observer
 		{
 			System.out.println( "In createPlayers GameGUI " );
 			this.changeScreen( createPlayersScreen );
+		}
+		else if( state == State.assignTerritories )
+		{
+			this.game = gameEngine.getGame();
+			System.out.println( "Assigning territories" );
+			this.changeScreen( mapScreen );
+			this.pack();
+			this.setLocation( RiskUtils.getRelativeScreenLocation( 0.10, 0.0) );
+			mapScreenHandler.initializeMap( );
+			
 		}
 
 		/**
