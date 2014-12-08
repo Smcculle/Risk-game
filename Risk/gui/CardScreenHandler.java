@@ -89,7 +89,6 @@ public class CardScreenHandler implements ActionListener, MouseListener
 	@Override
 	public void mousePressed( MouseEvent event )
 	{
-		System.out.println( "Mouseevent in CSH, source: " + event.getSource() );
 
 		if ( event.getSource() instanceof CardComponent )
 		{
@@ -136,7 +135,6 @@ public class CardScreenHandler implements ActionListener, MouseListener
 		boolean result = false;
 		selectedIndex = view.getSelectedIndex();
 
-		System.out.println();
 		Card[] cards = view.getCards();
 
 		String c0 = cards[0].getType();

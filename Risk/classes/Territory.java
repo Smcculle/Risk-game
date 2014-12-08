@@ -20,8 +20,8 @@ public class Territory
 	private Player occupant;
 	private int armies;
 	private Map<String, Territory> neighbors;
-	private Point circleCenter; 
-	private Continent continent; 
+	private Point circleCenter;
+	private Continent continent;
 
 	public Territory( String name, Continent continent, Point circleCenter )
 	{
@@ -31,23 +31,23 @@ public class Territory
 	}
 
 	/**
-	 * Sets neighbors on configuration 
-	 * @param neighbors a Map of adjacencies to this territory.  
+	 * Sets neighbors on configuration
+	 * 
+	 * @param neighbors a Map of adjacencies to this territory.
 	 */
 	public void setNeighbors( Map<String, Territory> neighbors )
 	{
 		this.neighbors = neighbors;
 	}
-	
 
-	/**  
-	 * @return the continent this territory belongs to.      
+	/**
+	 * @return the continent this territory belongs to.
 	 */
 	public Continent getContinent()
 	{
-		return continent;  
+		return continent;
 	}
-	
+
 	/**
 	 * @return a Point identifying center of circle to draw for this territory.
 	 */
@@ -55,22 +55,23 @@ public class Territory
 	{
 		return circleCenter;
 	}
-	/**  
-	 * @return the X coordinate of the circle for this territory.     
+
+	/**
+	 * @return the X coordinate of the circle for this territory.
 	 */
-	public int getCircleX ()
+	public int getCircleX()
 	{
-		return circleCenter.x;  
+		return circleCenter.x;
 	}
-	
-	/**  
-	 * @return the Y coordinate of the circle for this territory.     
+
+	/**
+	 * @return the Y coordinate of the circle for this territory.
 	 */
-	public int getCircleY ()
+	public int getCircleY()
 	{
-		return circleCenter.y;  
+		return circleCenter.y;
 	}
-	
+
 	/**
 	 * @return the name of the territory
 	 **/
@@ -82,7 +83,7 @@ public class Territory
 	/**
 	 * @return an ArrayList of all territories it shares a border with
 	 **/
-	public Map <String, Territory> getNeighbors()
+	public Map<String, Territory> getNeighbors()
 	{
 		return neighbors;
 	}
@@ -147,23 +148,24 @@ public class Territory
 	{
 		return neighbors.containsKey( s );
 	}
-	
+
 	public String toString()
 	{
-		return this.name; 
+		return this.name;
 	}
-	
+
 	/**
-	 * Increase the number of armies by 1.  
+	 * Increase the number of armies by 1.
 	 */
 	public void incrementTroops()
 	{
 		this.armies++;
 	}
-	
+
 	/**
-	 * Passes color value from occupant to map.  
-	 * @return Color specifies owner of territory by circle color.     
+	 * Passes color value from occupant to map.
+	 * 
+	 * @return Color specifies owner of territory by circle color.
 	 */
 	public java.awt.Color getColor()
 	{

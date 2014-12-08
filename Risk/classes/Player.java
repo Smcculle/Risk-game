@@ -272,16 +272,8 @@ public class Player
 	{
 		assert movingFrom.getOccupant() == this;
 		assert movingTo.getOccupant() == this;
-
-		System.out.printf( "MoveFrom: %d, MoveTo: %d ",
-				movingFrom.getNumArmies(), movingTo.getNumArmies() );
-		System.out.print( "Moving " + amount + " troops from "
-				+ movingFrom.getName() + " to " + movingTo.getName() );
-
 		movingFrom.setNumArmies( movingFrom.getNumArmies() - amount );
 		movingTo.setNumArmies( movingTo.getNumArmies() + amount );
-		System.out.printf( ". Now moveFrom has %d and moveTo has %d troops%n",
-				movingFrom.getNumArmies(), movingTo.getNumArmies() );
 	}
 
 	public java.util.ArrayList<Card> turnInSet( int[] set )

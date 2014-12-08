@@ -26,7 +26,6 @@ public class StartScreenHandler implements ActionListener
 
 		if ( command.equals( "createNewGame" ) )
 		{
-			System.out.println( "Now in createNewGame" );
 			model.createNewGame();
 		}
 

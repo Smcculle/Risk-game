@@ -13,29 +13,18 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import engine.Risk;
-import engine.RiskUtils;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 
 @SuppressWarnings("serial")
 public class StartScreenPanel extends JPanel
 {
-	
-	/* background*/
-	private static final String BACKGROUND_IMAGE = "background.jpg";
-	private BufferedImage backgroundImage;
-	
+		
 	private JFileChooser fileChooser;
 	private ActionListener screenHandler;
 	
@@ -58,7 +47,6 @@ public class StartScreenPanel extends JPanel
 	{
 		this.screenHandler = handler;
 		this.setLayout( new BorderLayout() );
-		this.backgroundImage = RiskUtils.getImage( BACKGROUND_IMAGE );
 		
 		centerPanel = new JPanel( new GridBagLayout() );
 		centerPanel.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );

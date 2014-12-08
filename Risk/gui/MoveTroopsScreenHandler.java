@@ -10,9 +10,6 @@ import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFormattedTextField;
@@ -25,22 +22,20 @@ import javax.swing.event.ChangeListener;
 import classes.Territory;
 import engine.RiskGameEngine;
 
-
 public class MoveTroopsScreenHandler implements ActionListener,
-												ChangeListener
+		ChangeListener
 {
 
 	private RiskGameEngine model;
 	private MoveTroopsScreenPanel view;
 	private Action verifyTextAction;
 
-	@SuppressWarnings( "serial" )
 	public MoveTroopsScreenHandler( RiskGameEngine model )
 	{
 		this.model = model;
 		createVerifyTextAction();
 	}
-	
+
 	public void addView( MoveTroopsScreenPanel view )
 	{
 		this.view = view;
@@ -52,14 +47,14 @@ public class MoveTroopsScreenHandler implements ActionListener,
 		String command = event.getActionCommand();
 
 		if ( command == "Move" )
-		{  
+		{
 			/* calls handler's moveTroops method with data from fields */
 			view.callMoveTroops();
-			SwingUtilities.getAncestorOfClass( 
+			SwingUtilities.getAncestorOfClass(
 					JInternalFrame.class, (Component)event.getSource() )
 					.setVisible( false );
 		}
-		
+
 		else if ( command == "Min" )
 		{
 			view.setMinTroops();
@@ -68,83 +63,64 @@ public class MoveTroopsScreenHandler implements ActionListener,
 		{
 			view.setMaxTroops();
 		}
-		
+
 		/* close window, but do not change state */
-		else if ( command.equals( "Quit" ))
+		else if ( command.equals( "Quit" ) )
 		{
-			SwingUtilities.getAncestorOfClass( 
+			SwingUtilities.getAncestorOfClass(
 					JInternalFrame.class, (Component)event.getSource() )
 					.setVisible( false );
 		}
 	}
-	
-	public void moveTroops( Territory movingFrom, Territory movingTo, int numMoving)
+
+	public void moveTroops( Territory movingFrom, Territory movingTo,
+			int numMoving )
 	{
 		model.moveTroops( movingFrom, movingTo, numMoving );
 	}
+
 	/**
-	 * Creates an action for the textfield to verify correct input when 
-	 * the specified key set in MTSP is pressed.   
-	 * JFormattedTextField has a formatter factory set with the appropriate
-	 * values.  
-	 * @return an action to verify input on the field.  
+	 * Creates an action for the textfield to verify correct input when the
+	 * specified key set in MTSP is pressed. JFormattedTextField has a formatter
+	 * factory set with the appropriate values.
+	 * 
+	 * @return an action to verify input on the field.
 	 */
 	@SuppressWarnings( "serial" )
 	private void createVerifyTextAction()
 	{
 		this.verifyTextAction = new AbstractAction()
 		{
-	            public void actionPerformed( ActionEvent event ) 
-	            {
-	            	JFormattedTextField textField = 
-	            			(JFormattedTextField)event.getSource();
-	            	
-	            	System.out.println( "Its happening" );
-	            	//The text is invalid.
-	                if (!textField.isEditValid()) 
-	                { 
-	                    Toolkit.getDefaultToolkit().beep();
-	                    view.handleInvalidInput();
-	                } else try 
-	                {                    //The text is valid,
-	                    textField.commitEdit();     //so use it.
-	                    view.handleValidInput();
-	                } 
-	                catch (java.text.ParseException e ) 
-	                { 
-	                	System.out.println( e.getMessage() );
-	                }
-	            }
-	    };
+			public void actionPerformed( ActionEvent event )
+			{
+				JFormattedTextField textField =
+						(JFormattedTextField)event.getSource();
+
+				// The text is invalid.
+				if ( !textField.isEditValid() )
+				{
+					Toolkit.getDefaultToolkit().beep();
+					view.handleInvalidInput();
+				}
+				else
+					try
+					{ // The text is valid,
+						textField.commitEdit();
+						view.handleValidInput();
+					}
+					catch ( java.text.ParseException e )
+					{
+						System.out.println( e.getMessage() );
+					}
+			}
+		};
 	}
-	
+
 	public Action getVerifyTextAction()
 	{
 		return verifyTextAction;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
-	 * PropertyChangeEvent)
-	 * 
-	 * @Override public void propertyChange( PropertyChangeEvent arg0 ) {
-	 * 
-	 * System.out.printf( "Property change %n" + arg0.getPropertyName() +
-	 * " old value of: " + arg0.getOldValue() + " new value of " +
-	 * arg0.getNewValue() );
-	 * 
-	 * }
-	 */
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent
-	 * )
-	 */
 	@Override
 	public void stateChanged( ChangeEvent e )
 	{

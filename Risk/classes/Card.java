@@ -18,7 +18,6 @@ public class Card
 
 	public Card( String type, String territory )
 	{
-
 		this.type = type;
 		this.territory = territory;
 	}
@@ -28,9 +27,7 @@ public class Card
 	 **/
 	public String getType()
 	{
-
 		return type;
-
 	}
 
 	/**
@@ -38,7 +35,6 @@ public class Card
 	 **/
 	public String getTerritory()
 	{
-
 		return territory;
 	}
 

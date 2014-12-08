@@ -8,236 +8,192 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.GridLayout;
-
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
-
 import classes.Player;
 import classes.Territory;
-
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.border.BevelBorder;
-
-import engine.RiskUtils;
 
 @SuppressWarnings( "serial" )
 public class AttackScreenPanel extends JPanel
 {
-	// 454, 267 
-	private static final int MAX_ATTACK_DICE = 3; 
+
+	private static final int MAX_ATTACK_DICE = 3;
 	private static final int MAX_DEFEND_DICE = 2;
 	private static final String PATH_DIR = "images/";
+
+	private ActionListener handler;
 	
-	private ActionListener handler; 
 	/* north panel description */
 	private JPanel descriptionPanel;
 	private JLabel descriptionLabel, instructionLabel;
-	
+
 	/* center west labels */
-	private JPanel labelPanel; 
+	private JPanel labelPanel;
 	private JLabel attackerLabel, defenderLabel;
-	
+
 	/* center east buttons */
 	private JPanel dicePanel;
 	private List<JToggleButton> attackDiceGroup;
-	private JToggleButton[] attackDice; 
+	private JToggleButton[] attackDice;
 	private List<JToggleButton> defendDiceGroup;
 	private JToggleButton[] defendDice;
-	
+
 	/* south menu options */
-	private JPanel menuPanel; 
+	private JPanel menuPanel;
 	private JButton attackButton, backButton;
-	
-	/* icon panel*/ 
+
+	/* icon panel */
 	private JPanel iconPanel;
 	private JLabel iconLabel;
-	
+
 	/* defender, attacker information */
 	private Territory attacker;
-	private Territory defender; 
+	private Territory defender;
 	private Player attackingPlayer;
-	private Player defendingPlayer;
-	
+
 	/* dice information */
 	private int numAttacking;
 	private int attackDiceEnabled;
 	private int numDefending;
 	private int defendDiceEnabled;
-	
+
 	/**
 	 * Create the panel.
 	 */
 	public AttackScreenPanel( ActionListener handler )
 	{
-		this.handler = handler; 
-		
-		/* north panel description  */
+		this.handler = handler;
+
+		/* north panel description */
 		descriptionPanel = getDescriptionPanel();
-		this.setLayout( new BorderLayout(10, 10) );
+		this.setLayout( new BorderLayout( 10, 10 ) );
 		this.add( descriptionPanel, BorderLayout.NORTH );
-		
-		/* west panel country/player name, troop values*/
+
+		/* west panel country/player name, troop values */
 		labelPanel = getLabelPanel();
 		this.add( labelPanel, BorderLayout.WEST );
-		
+
 		/* east panel dice */
 		dicePanel = getDicePanel();
 		this.add( dicePanel, BorderLayout.EAST );
-		
+
 		/* south panel menu buttons */
 		menuPanel = getMenuPanel();
 		this.add( menuPanel, BorderLayout.SOUTH );
-		
+
 		iconPanel = new JPanel();
 		iconLabel = getAttackIcon();
-		iconLabel.setBorder(new EmptyBorder(15, 33, 0, 0));
+		iconLabel.setBorder( new EmptyBorder( 15, 33, 0, 0 ) );
 		iconPanel.add( iconLabel );
 		this.add( iconPanel, BorderLayout.CENTER );
-		
+
 		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
-		( (AttackScreenHandler)handler ).addView(this);
-		//this.setPreferredSize( RiskUtils.GAME_SIZE );
+		( (AttackScreenHandler)handler ).addView( this );
+		// this.setPreferredSize( RiskUtils.GAME_SIZE );
 	}
-	
+
 	/**
-	 * Initializes attacking panel with necessary information.  
+	 * Initializes attacking panel with necessary information.
 	 * 
-	 * @param attackingFrom Territory currentPlayer is attacking from. 
-	 * @param attackingTo Territory currentPlayer is attacking.  
+	 * @param attackingFrom Territory currentPlayer is attacking from.
+	 * @param attackingTo Territory currentPlayer is attacking.
 	 */
 	public void attack( Territory attackingFrom, Territory attackingTo )
 	{
 		attackingPlayer = attackingFrom.getOccupant();
-		defendingPlayer = attackingTo.getOccupant();
 		attacker = attackingFrom;
 		defender = attackingTo;
-		
+
 		/* set default to maximum, constrain by available armies */
 		this.numAttacking = attacker.getNumArmies() > MAX_ATTACK_DICE ?
 				MAX_ATTACK_DICE : attacker.getNumArmies() - 1;
 		this.numDefending = defender.getNumArmies() >= MAX_DEFEND_DICE ?
 				MAX_DEFEND_DICE : defender.getNumArmies();
-		attackDiceEnabled = MAX_ATTACK_DICE; 
+		attackDiceEnabled = MAX_ATTACK_DICE;
 		defendDiceEnabled = MAX_DEFEND_DICE;
-		
-		System.out.println( "initializing attack, with num attacking and num defending as " 
-				+ numAttacking + " and " + numDefending );
+
 		setDescriptionLabel();
 		setLabelText();
 		setDicePanel();
 		attackButton.setEnabled( true );
-		System.out.println( this.getSize() );
-	}
-	
-	//TODO clean constructor 
-	public AttackScreenPanel( Territory attacker, Territory defender )
-	{
-		this( null );
-		attack( attacker, defender );
-		
-		/*
-		descriptionPanel = getDescriptionPanel();
-		this.setLayout( new BorderLayout() );
-		this.add( descriptionPanel, BorderLayout.NORTH );
-		
-		labelPanel = getLabelPanel();
-		this.add( labelPanel, BorderLayout.WEST );
-		
-		dicePanel = getDicePanel();
-		this.add( dicePanel, BorderLayout.EAST );
-		
-		menuPanel = getMenuPanel();
-		this.add( menuPanel, BorderLayout.SOUTH );
-		
-		iconPanel = new JPanel();
-		iconLabel = getAttackIcon();
-		iconPanel.add( iconLabel );
-		this.add( iconPanel, BorderLayout.CENTER );*/
 	}
 
 	/**
-	 * @return the description panel for the top of the panel 
+	 * @return the description panel for the top of the panel
 	 */
 	private JPanel getDescriptionPanel()
 	{
 		JPanel result = new JPanel( new BorderLayout() );
 		descriptionLabel = new JLabel( "", JLabel.CENTER );
-		descriptionLabel.setBorder( 
-				BorderFactory.createBevelBorder(BevelBorder.LOWERED ) );
-		
+		descriptionLabel.setBorder(
+				BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
+
 		result.add( descriptionLabel, BorderLayout.CENTER );
-		
-		return result; 
+
+		return result;
 	}
-	
+
 	private void setDescriptionLabel()
 	{
-		descriptionLabel.setText( 
+		descriptionLabel.setText(
 				"<html>"
-				+ "<font size = \"4\">Attacking from "
-				+ "<font size = \"5\">" + attacker.getName() 
-				+ "<font size = \"4\">" + " to "
-				+ "<font size = \"5\">" + defender.getName() 
-				+ "</html>");
+						+ "<font size = \"4\">Attacking from "
+						+ "<font size = \"5\">" + attacker.getName()
+						+ "<font size = \"4\">" + " to "
+						+ "<font size = \"5\">" + defender.getName()
+						+ "</html>" );
 	}
+
 	/**
-	 * @return the label panel for center west.  
+	 * @return the label panel for center west.
 	 */
 	private JPanel getLabelPanel()
 	{
-		JPanel result = new JPanel( new GridLayout(2, 1) );
+		JPanel result = new JPanel( new GridLayout( 2, 1 ) );
 		attackerLabel = new JLabel();
 		defenderLabel = new JLabel();
-		
+
 		result.add( attackerLabel );
 		result.add( defenderLabel );
 
-		
 		return result;
 	}
-	
+
 	private void setLabelText()
 	{
-		System.out.println( "Setting label text with attacker = " 
-					+ attacker.getNumArmies() + " and defender = " 
-					+ defender.getNumArmies() );
-		attackerLabel.setText( "<html>Attacker:  " + attacker.getNumArmies() 
-				+ " troops<br>"
-				+ "Player: " + attacker.getOccupant().getName() + "</html>");
-		defenderLabel.setText( "<html>Defender: " + defender.getNumArmies() 
-				+ " troops<br>"
-				+ "Player: " + defender.getOccupant().getName() + "</html>");
 		
-		
+		attackerLabel.setText( "<html>Attacker:  " + attacker.getNumArmies()
+				+ " troops<br>"
+				+ "Player: " + attacker.getOccupant().getName() + "</html>" );
+		defenderLabel.setText( "<html>Defender: " + defender.getNumArmies()
+				+ " troops<br>"
+				+ "Player: " + defender.getOccupant().getName() + "</html>" );
+
 	}
-	
+
 	private void setDicePanel()
 	{
 		int attackerArmies = attacker.getNumArmies();
 		int defenderArmies = defender.getNumArmies();
-		
-		for( int i = 0; i < MAX_ATTACK_DICE; i++ )
+
+		for ( int i = 0; i < MAX_ATTACK_DICE; i++ )
 		{
-			
+
 			/* default state of all dice selected if possible */
-			if( attackerArmies > i + 1 )
+			if ( attackerArmies > i + 1 )
 			{
 				attackDice[i].setEnabled( true );
 				attackDice[i].setSelected( true );
@@ -251,19 +207,19 @@ public class AttackScreenPanel extends JPanel
 				attackDiceEnabled--;
 			}
 		}
-		
-		for( int i = 0; i < MAX_DEFEND_DICE; i++ )
+
+		for ( int i = 0; i < MAX_DEFEND_DICE; i++ )
 		{
 
 			/* default state of all dice selected if possible */
-			if( defenderArmies > i )
+			if ( defenderArmies > i )
 			{
-				defendDice[i].setText( "");
+				defendDice[i].setText( "" );
 				defendDice[i].setEnabled( true );
 				defendDice[i].setSelected( true );
-				
+
 			}
-			
+
 			else
 			{
 				defendDice[i].setText( "" );
@@ -273,52 +229,46 @@ public class AttackScreenPanel extends JPanel
 			}
 		}
 	}
-	
-	
+
 	private JPanel getDicePanel()
 	{
-		attackDice = new JToggleButton[ MAX_ATTACK_DICE ];
-		defendDice = new JToggleButton[ MAX_DEFEND_DICE ];
+		attackDice = new JToggleButton[MAX_ATTACK_DICE];
+		defendDice = new JToggleButton[MAX_DEFEND_DICE];
 		JPanel result = new JPanel( new BorderLayout() );
 		JPanel attackPanel = new JPanel();
-		JPanel defendPanel = new JPanel( 
-				new FlowLayout( FlowLayout.RIGHT ));
-		
+		JPanel defendPanel = new JPanel(
+				new FlowLayout( FlowLayout.RIGHT ) );
+
 		attackDiceGroup = new ArrayList<JToggleButton>( MAX_ATTACK_DICE );
 		defendDiceGroup = new ArrayList<JToggleButton>( MAX_DEFEND_DICE );
-		
-		
-		
-		for( int i = 0; i < MAX_ATTACK_DICE; i++ )
+
+		for ( int i = 0; i < MAX_ATTACK_DICE; i++ )
 		{
 			attackDice[i] = new JToggleButton();
-			//attackDice[i].setPreferredSize( new Dimension
-			//		( TOGGLE_BUTTON_SIZE, TOGGLE_BUTTON_SIZE ) );
+			// attackDice[i].setPreferredSize( new Dimension
+			// ( TOGGLE_BUTTON_SIZE, TOGGLE_BUTTON_SIZE ) );
 			attackDice[i].setText( Integer.toString( i + 1 ) );
 			attackDice[i].setPreferredSize( attackDice[i].getPreferredSize() );
 			attackDiceGroup.add( attackDice[i] );
 			attackPanel.add( attackDice[i] );
-			
+
 			attackDice[i].setActionCommand( Integer.toString( i + 1 ) );
 			attackDice[i].setName( "attack" );
-			
-			/* default state of all dice selected if possible 
-			if( attackerArmies > i + 1 )
-				attackDice[i].setSelected( true );
-			else
-			{
-				attackDice[i].setEnabled( false );
-				attackDiceEnabled--;
-			}*/
+
+			/*
+			 * default state of all dice selected if possible if( attackerArmies
+			 * > i + 1 ) attackDice[i].setSelected( true ); else {
+			 * attackDice[i].setEnabled( false ); attackDiceEnabled--; }
+			 */
 			attackDice[i].addActionListener( handler );
-			
+
 		}
-		
-		for( int i = 0; i < MAX_DEFEND_DICE; i++ )
+
+		for ( int i = 0; i < MAX_DEFEND_DICE; i++ )
 		{
 			defendDice[i] = new JToggleButton();
-			//defendDice[i].setPreferredSize( new Dimension
-			//		( TOGGLE_BUTTON_SIZE, TOGGLE_BUTTON_SIZE ) );
+			// defendDice[i].setPreferredSize( new Dimension
+			// ( TOGGLE_BUTTON_SIZE, TOGGLE_BUTTON_SIZE ) );
 			defendDice[i].setText( Integer.toString( i + 1 ) );
 			defendDiceGroup.add( defendDice[i] );
 			defendPanel.add( defendDice[i] );
@@ -326,109 +276,108 @@ public class AttackScreenPanel extends JPanel
 			/* Give name since text will display dice results */
 			defendDice[i].setActionCommand( Integer.toString( i + 1 ) );
 			defendDice[i].setName( "defend" );
-			
-			/* default state of all dice selected if possible 
-			if( defenderArmies > i )
-				defendDice[i].setSelected( defenderArmies > i );
-			else
-			{
-				defendDice[i].setEnabled( false );
-				defendDiceEnabled--;
-			}
-			defendDice[i].addActionListener( handler );*/
-			
+
+			/*
+			 * default state of all dice selected if possible if( defenderArmies
+			 * > i ) defendDice[i].setSelected( defenderArmies > i ); else {
+			 * defendDice[i].setEnabled( false ); defendDiceEnabled--; }
+			 * defendDice[i].addActionListener( handler );
+			 */
+
 		}
-		
+
 		result.add( attackPanel, BorderLayout.CENTER );
-		result.add( defendPanel, BorderLayout.SOUTH);
-		
+		result.add( defendPanel, BorderLayout.SOUTH );
+
 		instructionLabel = new JLabel( "Dice to roll" );
 		instructionLabel.setHorizontalAlignment( JLabel.RIGHT );
 		result.add( instructionLabel, BorderLayout.NORTH );
-		
-		return result; 
-		
+
+		return result;
+
 	}
+
 	private JPanel getMenuPanel()
 	{
 		JPanel result = new JPanel();
-		
+
 		attackButton = new JButton( "Attack" );
 		attackButton.addActionListener( handler );
-		
+
 		backButton = new JButton( "Quit" );
 		backButton.addActionListener( handler );
-		
+
 		result.add( attackButton );
 		result.add( backButton );
 		backButton.setPreferredSize( attackButton.getPreferredSize() );
-		
-		return result; 
+
+		return result;
 	}
-	
+
 	private JLabel getAttackIcon()
 	{
 		/* construct appropriate path */
 		String pathName = PATH_DIR + "attack.png";
-		
+
 		/* place image icon onto JLabel and return at scaled size */
-		return new JLabel( new javax.swing.ImageIcon(
+		return new JLabel(
 				new javax.swing.ImageIcon(
-				this.getClass().getClassLoader().getResource( pathName ) )
-				.getImage().getScaledInstance( 
-						100, 100, java.awt.Image.SCALE_SMOOTH) ) );
+						new javax.swing.ImageIcon(
+								this.getClass().getClassLoader()
+										.getResource( pathName ) )
+								.getImage().getScaledInstance(
+										100, 100, java.awt.Image.SCALE_SMOOTH ) ) );
 	}
-	
+
 	public void setAttackDiceGroup( int numDice )
 	{
-		for( int i = 0; i < attackDiceGroup.size(); i++ )
+		for ( int i = 0; i < attackDiceGroup.size(); i++ )
 		{
 			/* set selected up to numDice, set false afterwards */
 			attackDiceGroup.get( i ).setSelected( i < numDice );
 		}
-		
-		this.numAttacking = numDice; 
-		
+
+		this.numAttacking = numDice;
+
 	}
-	
+
 	public void setDefendDiceGroup( int numDice )
 	{
-		
-		for( int i = 0; i < defendDiceGroup.size(); i++ )
+
+		for ( int i = 0; i < defendDiceGroup.size(); i++ )
 		{
 			/* set selected up to numDice, set false afterwards */
 			defendDiceGroup.get( i ).setSelected( i < numDice );
 		}
-		
+
 		this.numDefending = numDice;
 	}
-	//TODO: Possibly remove
+
+	// TODO: Possibly remove
 	public Territory getAttacker()
 	{
 		return this.attacker;
 	}
-	
+
 	public Territory getDefender()
 	{
 		return this.defender;
 	}
-	//TODO: Remove test player
+
 	public void updateResults( int[] diceResults )
 	{
 		updateDiceText( diceResults );
-		boolean capturedTerritory = 
+		boolean capturedTerritory =
 				attackingPlayer.attack( attacker, defender, diceResults );
-		
-		if( capturedTerritory )
+
+		if ( capturedTerritory )
 		{
 			attackButton.setEnabled( false );
 			setDefendDiceGroup( 0 );
 			attackDiceEnabled = 0;
-			RiskUtils.printM( attackingPlayer.getTerritoriesList() );
-			JOptionPane.showMessageDialog( null, "You captured the territory!"); 
-					 
-			handler.actionPerformed( new ActionEvent(this, 
-					ActionEvent.ACTION_PERFORMED, "captured") );
+			JOptionPane.showMessageDialog( this, "You captured the territory!" );
+			handler.actionPerformed( new ActionEvent( this,
+					ActionEvent.ACTION_PERFORMED, "captured" ) );
 		}
 		else
 		{
@@ -436,15 +385,15 @@ public class AttackScreenPanel extends JPanel
 			checkDefenderBounds();
 			setLabelText();
 		}
-		
-		
+
 		revalidate();
 		repaint();
-		
+
 	}
+
 	/**
-	 * Handles parsing results and updating the view with highlighting of 
-	 * winner and losers.  
+	 * Handles parsing results and updating the view with highlighting of winner
+	 * and losers.
 	 * 
 	 * @param diceResults
 	 */
@@ -455,69 +404,74 @@ public class AttackScreenPanel extends JPanel
 
 		/* high defense rolls start at length - 1 and decrease to separator */
 		int nextHighDefend = diceResults.length - 1;
-		
+
 		while ( diceResults[nextHighDefend] != 0 && nextHighAttack >= 0 )
 		{
 			int attackRoll = diceResults[nextHighAttack];
 			int defendRoll = diceResults[nextHighDefend];
-			
+
 			attackDiceGroup.get( nextHighAttack ).setText( Integer.toString(
-					attackRoll ));
-			defendDiceGroup.get( nextHighDefend - numAttacking - 1).setText( Integer.toString(
-					defendRoll ));
-			
+					attackRoll ) );
+			defendDiceGroup.get( nextHighDefend - numAttacking - 1 ).setText(
+					Integer.toString(
+							defendRoll ) );
+
 			/* defense wins in a tie. Color green = won, red = lost */
 			if ( defendRoll >= attackRoll )
 			{
-				
+
 				attackDiceGroup.get( nextHighAttack ).setBackground( Color.RED );
-				attackDiceGroup.get( nextHighAttack ).setContentAreaFilled( false );
+				attackDiceGroup.get( nextHighAttack ).setContentAreaFilled(
+						false );
 				attackDiceGroup.get( nextHighAttack ).setOpaque( true );
-				
+
 				defendDiceGroup.get( nextHighDefend - numAttacking - 1 )
 						.setBackground( Color.GREEN );
-				defendDiceGroup.get( 
-						nextHighDefend - numAttacking - 1 ).setContentAreaFilled( false );
-				defendDiceGroup.get( 
+				defendDiceGroup.get(
+						nextHighDefend - numAttacking - 1 )
+						.setContentAreaFilled( false );
+				defendDiceGroup.get(
 						nextHighDefend - numAttacking - 1 ).setOpaque( true );
-				
+
 			}
 			else
 			{
-				attackDiceGroup.get( nextHighAttack ).setBackground( Color.GREEN );
-				attackDiceGroup.get( nextHighAttack ).setContentAreaFilled( false );
+				attackDiceGroup.get( nextHighAttack ).setBackground(
+						Color.GREEN );
+				attackDiceGroup.get( nextHighAttack ).setContentAreaFilled(
+						false );
 				attackDiceGroup.get( nextHighAttack ).setOpaque( true );
-						
+
 				defendDiceGroup.get(
 						nextHighDefend - numAttacking - 1 )
 						.setBackground( Color.RED );
-				defendDiceGroup.get( 
+				defendDiceGroup.get(
 						nextHighDefend - numAttacking - 1 )
 						.setContentAreaFilled( false );
-				defendDiceGroup.get( 
+				defendDiceGroup.get(
 						nextHighDefend - numAttacking - 1 )
 						.setOpaque( true );
 			}
 			nextHighDefend--;
 			nextHighAttack--;
 		}
-		
+
 		/* take care of the remaining attack rolls, no color change */
-		while( nextHighAttack >= 0 )
+		while ( nextHighAttack >= 0 )
 		{
 			attackDiceGroup.get( nextHighAttack ).setText( Integer.toString(
-					diceResults[nextHighAttack] ));
+					diceResults[nextHighAttack] ) );
 			nextHighAttack--;
 		}
-		
+
 		/* take care of the remaining attack rolls, no color change */
-		while( diceResults[nextHighDefend] != 0 )
+		while ( diceResults[nextHighDefend] != 0 )
 		{
 			defendDiceGroup.get( nextHighDefend - numAttacking - 1 )
-				.setText( Integer.toString( diceResults[ nextHighDefend] ));
+					.setText( Integer.toString( diceResults[nextHighDefend] ) );
 			nextHighDefend--;
 		}
-		
+
 		attackButton.setEnabled( false );
 		setLabelText();
 		/* pause for 1.5 seconds, revert background */
@@ -528,152 +482,107 @@ public class AttackScreenPanel extends JPanel
 			{
 				revertBackground( attackDiceGroup );
 				revertBackground( defendDiceGroup );
-				
+
 				/* must have attack dice enabled to attack */
 				attackButton.setEnabled( attackDiceEnabled > 0 );
-				
+
 			}
 		} );
 		t.setRepeats( false );
 		t.start();
-		
+
 	}
+
 	private void checkDefenderBounds()
 	{
 		int defenderArmies = defender.getNumArmies();
-		
-		while( defenderArmies < defendDiceEnabled )
+
+		while ( defenderArmies < defendDiceEnabled )
 		{
-			JToggleButton defendDie = defendDice[ defendDiceEnabled - 1 ];
-			if( defendDie.isSelected())
+			JToggleButton defendDie = defendDice[defendDiceEnabled - 1];
+			if ( defendDie.isSelected() )
 			{
 				defendDie.setSelected( false );
 				numDefending--;
 			}
-			
+
 			defendDie.setEnabled( false );
-			
-			System.out.println( "Defender bounds engaged. Num defending decreasing"
-					+ "from " + numDefending + " by 1") ;
+
+			System.out
+					.println( "Defender bounds engaged. Num defending decreasing"
+							+ "from " + numDefending + " by 1" );
 			defendDiceEnabled--;
 		}
 	}
-	
+
 	/**
-	 * Ensures attacker has appropriate number of troops to attack.  Must leave
-	 * at least 1 troop behind, so n+1 troops needed to attack with n dice.  
+	 * Ensures attacker has appropriate number of troops to attack. Must leave
+	 * at least 1 troop behind, so n+1 troops needed to attack with n dice.
 	 */
 	private void checkAttackerBounds()
 	{
 		int attackerArmies = attacker.getNumArmies();
 		
-		System.out.print("Atk army: " + attackerArmies + "; numAttacking: " + numAttacking 
-				+ "; attackDiceEnabled: " + attackDiceEnabled );
-		while( attackerArmies < attackDiceEnabled + 1)
+		while ( attackerArmies < attackDiceEnabled + 1 )
 		{
-			JToggleButton attackDie = attackDice[ attackDiceEnabled - 1 ];
-			System.out.print( ". Atk army < numAtk + 1.  ");
-			if( attackDie.isSelected() )
+			JToggleButton attackDie = attackDice[attackDiceEnabled - 1];
+			
+			if ( attackDie.isSelected() )
 			{
 				attackDie.setSelected( false );
 				numAttacking--;
 			}
-				
+
 			attackDie.setEnabled( false );
-			
-			System.out.println( "Attacker bounds engaged. Num attacking decreasing"
-					+ "from " + numAttacking + " by 1") ;
+
+			System.out
+					.println( "Attacker bounds engaged. Num attacking decreasing"
+							+ "from " + numAttacking + " by 1" );
 			attackDiceEnabled--;
-			System.out.println( "Num attacking now: " + numAttacking 
-					+ " and troops still " + attacker.getNumArmies() );
 		}
-		
-		if( attackDiceEnabled == 0 )
+
+		if ( attackDiceEnabled == 0 )
 		{
 			attackButton.setEnabled( false );
-			System.out.println( "As noted above, numAttacking = " 
-			+ numAttacking + " and atDiceEnabled = " + attackDiceEnabled );
 		}
 	}
-	
-	private void revertBackground( List<JToggleButton> list ) 
+
+	private void revertBackground( List<JToggleButton> list )
 	{
-		Color defaultColor = javax.swing.UIManager.getColor( "Panel.background" );
-		for( JToggleButton jtb: list )
+		Color defaultColor = javax.swing.UIManager
+				.getColor( "Panel.background" );
+		for ( JToggleButton jtb : list )
 		{
 			jtb.setBackground( defaultColor );
 			jtb.setContentAreaFilled( true );
 		}
 		attackButton.requestFocus();
 	}
+
 	/**
-	 * @return the number of selected attack dice 
+	 * @return the number of selected attack dice
 	 */
 	public int getNumAttacking()
 	{
 		return this.numAttacking;
 	}
-	
+
 	/**
-	 * @return the number of selected defend dice 
+	 * @return the number of selected defend dice
 	 */
 	public int getNumDefending()
 	{
 		return this.numDefending;
 	}
-	
-	//TODO : remove 
-	/** testing***********************/
+
 	public void setAttacker( Territory attacker )
 	{
 		this.attacker = attacker;
 	}
+
 	public void setDefender( Territory defender )
 	{
-		this.defender = defender; 
+		this.defender = defender;
 	}
-	
-	public static void main( String[] args )
-	{
-		SwingUtilities.invokeLater( new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				createAndShowGUI();
-			}
-		} );
-	}
-	
-	public static void createAndShowGUI()
-	{
-		JFrame jf = new JFrame();
-		
-		/* fake territory data to view */
-		Player p1 = new Player( "Tony" );
-		Player p2 = new Player( "Pizza" );
-		Territory attacker = new Territory("W", null, null );
-		attacker.setNumArmies( 15 );
-		p1.addTerritory( attacker );
-		Territory defender = new Territory("E", null, null );
-		defender.setNumArmies( 10 );
-		p2.addTerritory( defender );
-		
-		JInternalFrame jif = new JInternalFrame();
-		//AttackScreenPanel asp = new AttackScreenPanel( attacker, defender );
-		AttackScreenPanel asp = new AttackScreenPanel( null );
-		jf.getContentPane().setLayout( null );
-		jf.getContentPane().add(  jif );
-		jif.add ( asp );
-		jif.pack();
-		jif.setVisible( true );
-		jf.pack();
-		jf.setVisible( true );
-		jf.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		System.out.println(  "frame:" +  jf.getSize() );
-		asp.attack( attacker, defender );
-		jif.pack();
-	}
-	
 
 }

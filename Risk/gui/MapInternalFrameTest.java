@@ -68,10 +68,7 @@ public class MapInternalFrameTest extends JInternalFrame
 	 */
 	protected void toggleButton()
 	{
-		System.out.print( this.isVisible() + " changed to " );
-		this.setVisible( !this.isVisible() );
-		System.out.println( this.isVisible() );
-		
+		this.setVisible( !this.isVisible() );		
 		JInternalFrame jif = new JInternalFrame();
         desktopPane.add(jif);
         jif.setLocation(disp, disp);
@@ -84,7 +81,6 @@ public class MapInternalFrameTest extends JInternalFrame
 
 	public static void main( String[] args )
 	{
-		System.out.println( "Started ");
 		SwingUtilities.invokeLater( new Runnable()
 		{
 			@Override

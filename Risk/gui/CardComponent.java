@@ -15,7 +15,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
@@ -29,11 +28,9 @@ public class CardComponent extends JPanel
 	private JLabel countryName;
 	private JLabel cardIcon;
 	private Card card;
-	private boolean isSelected = false;
-	
+	private boolean isSelected = false;	
 	private CompoundBorder normalBorder;
 	private CompoundBorder selectedBorder;
-	private Border selectedBorder2;
 
 	public CardComponent( Card card )
 	{

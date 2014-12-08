@@ -9,22 +9,9 @@ package gui;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.AbstractQueue;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
-
-import classes.Card;
-import classes.Continent;
-import classes.Deck;
-import classes.GameBoard;
 import classes.Player;
-import classes.RiskGame;
-import classes.Territory;
 import engine.RiskGameEngine;
-import engine.RiskUtils;
 import engine.RiskGameEngine.State;
 
 
@@ -45,10 +32,7 @@ public class MapScreenHandler implements ActionListener
 	public void actionPerformed( ActionEvent event )
 	{
 		Component source = (Component)event.getSource();
-		
-		System.out.print( "Action event.  " 
-				+ event.getSource().getClass());
-		
+				
 		if( source instanceof JComboBox )
 		{
 			if( source.getName().equals( "actionFromBox" ))
@@ -60,7 +44,6 @@ public class MapScreenHandler implements ActionListener
 		/* sets state to fortify and notify observers */
 		else if( event.getActionCommand().equals( "endTurn" ))
 		{
-			System.out.printf( "Ending turn ");
 			model.fortify();
 		}
 	}
@@ -75,8 +58,6 @@ public class MapScreenHandler implements ActionListener
 	 */
 	private void handleActionFrom( JComboBox<String> comboBox, ActionEvent event)
 	{
-		System.out.printf(" name: %s; value %s; %d items left %n", 
-				comboBox.getName(), comboBox.getSelectedItem(), comboBox.getItemCount() );
 		
 		String territory = ( (String)comboBox.getSelectedItem() );
 		State state = model.getState();

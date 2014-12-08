@@ -15,8 +15,6 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map.Entry;
-
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -32,20 +30,7 @@ public final class RiskUtils
 	
 	/* RiskUtils should not be instantiated */
 	private RiskUtils() {}
-	
-	public static <K, V> void printM( java.util.Map<K, V> map)
-	{
-		System.out.printf("Print map-> ");
-		for ( Entry<K, V> entry : map.entrySet() )
-		{
-			
-			V value = entry.getValue();
-			System.out.printf("%s ", value );
-		}
-		System.out.printf("%n");
-	}
-	
-	
+		
 	/**
 	 * Returns an image icon from the images folder.  
 	 * 

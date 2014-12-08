@@ -7,48 +7,27 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
-
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JFormattedTextField;
-import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
-
-import classes.Player;
 import classes.Territory;
-
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.List;
-
 import javax.swing.border.BevelBorder;
-import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
 @SuppressWarnings( "serial" )
 public class MoveTroopsScreenPanel extends JPanel
 {
-	
+
 	private MoveTroopsScreenHandler handler;
 	private String errorMessage;
 
@@ -69,7 +48,7 @@ public class MoveTroopsScreenPanel extends JPanel
 	/* south menu options */
 	private JPanel menuPanel;
 	private JButton moveButton, quitButton;
-	
+
 	/* defender, attacker information */
 	private Territory movingFrom, movingTo;
 
@@ -82,8 +61,8 @@ public class MoveTroopsScreenPanel extends JPanel
 		this.handler = handler;
 		this.setLayout( new BorderLayout( 10, 10 ) );
 		// TODO: remove
-		//dummyTerritory();
-		
+		// dummyTerritory();
+
 		descriptionPanel = getDescriptionPanel();
 		this.add( descriptionPanel, BorderLayout.NORTH );
 
@@ -99,31 +78,30 @@ public class MoveTroopsScreenPanel extends JPanel
 		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
 
 		( (MoveTroopsScreenHandler)handler ).addView( this );
-		
-		//TODO: remove
-		//initPanel(3);
+
+		// TODO: remove
+		// initPanel(3);
 	}
-	
-	
+
 	/**
-	 * Passes move data from panel through handler to 
-	 * the model to call move on the current player.  
+	 * Passes move data from panel through handler to the model to call move on
+	 * the current player.
 	 */
 	public void callMoveTroops()
 	{
-		handler.moveTroops( movingFrom, movingTo, 
+		handler.moveTroops( movingFrom, movingTo,
 				Integer.parseInt( numMovingField.getText() ) );
-		
+
 	}
-	
+
 	// TODO tie this in with good transition attack-> move panel, and fortify
 	// i,e., add territories moving from, to here
 	private void initPanel( int minToMove )
 	{
 		int maxToMove = movingFrom.getNumArmies() - 1;
-		errorMessage = "Please enter an integer from " 
+		errorMessage = "Please enter an integer from "
 				+ minToMove + " to " + maxToMove;
-		
+
 		troopSlider.setMinimum( minToMove );
 		troopSlider.setMaximum( maxToMove );
 		troopSlider.setMajorTickSpacing( 2 );
@@ -135,45 +113,20 @@ public class MoveTroopsScreenPanel extends JPanel
 
 		// textField.getActionMap().put("check", anAction)
 
-		
-		 // allow user to input a number within specified range */
-		NumberFormat numberFormat = NumberFormat.getIntegerInstance(); 
+		// allow user to input a number within specified range */
+		NumberFormat numberFormat = NumberFormat.getIntegerInstance();
 		NumberFormatter formatter = new NumberFormatter( numberFormat );
-		formatter.setMinimum( minToMove ); formatter.setMaximum( maxToMove );
-		DefaultFormatterFactory nfFactory = 
+		formatter.setMinimum( minToMove );
+		formatter.setMaximum( maxToMove );
+		DefaultFormatterFactory nfFactory =
 				new DefaultFormatterFactory( formatter );
-		  
+
 		numMovingField.setFormatterFactory( nfFactory );
-		  
-		  
-		numMovingField.getInputMap().put(KeyStroke.getKeyStroke(
-				KeyEvent.VK_ENTER, 0), "verify"); 
+
+		numMovingField.getInputMap().put( KeyStroke.getKeyStroke(
+				KeyEvent.VK_ENTER, 0 ), "verify" );
 		numMovingField.getActionMap().put(
-						"verify", handler.getVerifyTextAction() );
-		 /*
-		textField.getInputMap().put( KeyStroke.getKeyStroke(
-				KeyEvent.VK_ENTER, 0 ),
-				"check" );
-		textField.getActionMap().put( "check", new AbstractAction()
-		{
-			public void actionPerformed( ActionEvent e )
-			{
-				if ( !textField.isEditValid() )
-				{ // The text is invalid.
-					Toolkit.getDefaultToolkit().beep();
-					textField.selectAll();
-				}
-				else
-					try
-					{ // The text is valid,
-						textField.commitEdit(); // so use it.
-						moveButton.requestFocus();
-					}
-					catch ( java.text.ParseException exc )
-					{
-					}
-			}
-		} );*/
+				"verify", handler.getVerifyTextAction() );
 
 	}
 
@@ -182,63 +135,63 @@ public class MoveTroopsScreenPanel extends JPanel
 		moveButton.setEnabled( true );
 		moveButton.requestFocus();
 	}
-	
+
 	public void handleInvalidInput()
 	{
 		numMovingField.selectAll();
 		moveButton.setEnabled( false );
-		JOptionPane.showMessageDialog( this, errorMessage, 
-				"Invalid troop selection", 
-				JOptionPane.ERROR_MESSAGE);		
+		JOptionPane.showMessageDialog( this, errorMessage,
+				"Invalid troop selection",
+				JOptionPane.ERROR_MESSAGE );
 	}
-	
+
 	public void setMaxTroops()
 	{
 		setTextField( troopSlider.getMaximum() );
 	}
-	
+
 	public void setMinTroops()
 	{
-		setTextField ( troopSlider.getMinimum() );
+		setTextField( troopSlider.getMinimum() );
 	}
+
 	public void setTextField( int newValue )
 	{
 		numMovingField.setValue( newValue );
 		troopSlider.setValue( newValue );
 		handleValidInput();
 	}
-	
+
 	/**
-	 * <b>Attack phase:</b> Initializes move panel with the 
-	 * information provided for the attack phase.    
+	 * <b>Attack phase:</b> Initializes move panel with the information provided
+	 * for the attack phase.
 	 * 
 	 * @param movingFrom territory troops are moving from
-	 * @param movingTo territory troops are moving to 
+	 * @param movingTo territory troops are moving to
 	 */
-	public void moveTroops( Territory movingFrom, Territory movingTo, int minToMove )
+	public void moveTroops( Territory movingFrom, Territory movingTo,
+			int minToMove )
 	{
 		quitButton.setVisible( false );
-		Player movingPlayer = movingFrom.getOccupant();
 		this.movingFrom = movingFrom;
 		this.movingTo = movingTo;
 		setLabelText();
 		initPanel( minToMove );
 		setDescriptionPanel();
-
 	}
-	
+
 	/**
-	 * <b>Fortify phase:</b>  Initializes move panel with the information for 
-	 * the fortify phase, making the quit button available for the player.    
+	 * <b>Fortify phase:</b> Initializes move panel with the information for the
+	 * fortify phase, making the quit button available for the player.
 	 * 
 	 * @param movingFrom territory troops are moving from
-	 * @param movingTo territory troops are moving to 
+	 * @param movingTo territory troops are moving to
 	 */
 	public void moveTroops( Territory movingFrom, Territory movingTo )
 	{
 		moveTroops( movingFrom, movingTo, 1 );
 		quitButton.setVisible( true );
-		
+
 	}
 
 	/**
@@ -247,8 +200,8 @@ public class MoveTroopsScreenPanel extends JPanel
 	private JPanel getDescriptionPanel()
 	{
 		JPanel result = new JPanel( new BorderLayout() );
-		descriptionLabel = new JLabel(); 
-				
+		descriptionLabel = new JLabel();
+
 		descriptionLabel.setBorder(
 				BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
 
@@ -256,16 +209,17 @@ public class MoveTroopsScreenPanel extends JPanel
 
 		return result;
 	}
-	
+
 	private void setDescriptionPanel()
 	{
 		descriptionLabel.setText( "<html>"
-						+ "<font size = \"4\">Moving from "
-						+ "<font size = \"5\">" + movingFrom.getName()
-						+ "<font size = \"4\">" + " to "
-						+ "<font size = \"5\">" + movingTo.getName()
-						+ "</html>" );
+				+ "<font size = \"4\">Moving from "
+				+ "<font size = \"5\">" + movingFrom.getName()
+				+ "<font size = \"4\">" + " to "
+				+ "<font size = \"5\">" + movingTo.getName()
+				+ "</html>" );
 	}
+
 	/**
 	 * @return the label panel for center west.
 	 */
@@ -277,7 +231,6 @@ public class MoveTroopsScreenPanel extends JPanel
 
 		result.add( movingFromLabel );
 		result.add( movingToLabel );
-		
 
 		return result;
 	}
@@ -310,7 +263,7 @@ public class MoveTroopsScreenPanel extends JPanel
 		troopSlider = new JSlider();
 		troopSlider.addChangeListener( handler );
 		numMovingField = new JFormattedTextField();
-		//textField.addActionListener( handler );
+		// textField.addActionListener( handler );
 		numMovingField.setActionCommand( "textField" );
 		numMovingField.setColumns( 3 );
 		numMovingField.setAlignmentX( CENTER_ALIGNMENT );
@@ -337,58 +290,30 @@ public class MoveTroopsScreenPanel extends JPanel
 		moveButton = new JButton( "Move" );
 		moveButton.addActionListener( handler );
 		result.add( moveButton );
-		
+
 		quitButton = new JButton( "Quit" );
 		quitButton.addActionListener( handler );
 		result.add( quitButton );
-		quitButton.setVisible(false);
-		
+		quitButton.setVisible( false );
+
 		return result;
 	}
 
-	// TODO : remove
-	/** testing ***********************/
+
+	/**
+	 * @param movingTo Territory moving to
+	 */
 	public void setMovingTo( Territory movingTo )
 	{
 		this.movingTo = movingTo;
 	}
 
+	/**
+	 * @param movingFrom Territory moving from
+	 */
 	public void setMovingFrom( Territory movingFrom )
 	{
 		this.movingFrom = movingFrom;
-	}
-
-	public static void main( String[] args )
-	{
-		SwingUtilities.invokeLater( new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				createAndShowGUI();
-			}
-		} );
-	}
-
-	public static void createAndShowGUI()
-	{
-		JFrame jf = new JFrame();
-
-		/* fake territory data to view */
-		Territory attacker = new Territory( "Attackistan", null, null );
-		attacker.setNumArmies( 15 );
-		Territory defender = new Territory( "Defendaria", null, null );
-		defender.setNumArmies( 10 );
-
-		MoveTroopsScreenPanel msp =
-				new MoveTroopsScreenPanel( new MoveTroopsScreenHandler( null ) );
-
-		msp.initPanel( 2 );
-		jf.getContentPane().add( msp );
-		jf.pack();
-		jf.setVisible( true );
-		jf.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-
 	}
 
 }

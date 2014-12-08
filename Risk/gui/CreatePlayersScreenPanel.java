@@ -18,11 +18,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -34,7 +31,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
@@ -414,7 +410,6 @@ public class CreatePlayersScreenPanel extends JPanel
 				/* enforce bounds of [0, MAX_PLAYERS] on nextField*/
 				nextField = (nextField + MAX_PLAYERS ) % MAX_PLAYERS;
 				
-				System.out.println( "Modulo action" + nextField );
 				if ( nextButton.isEnabled() )
 					nextButton.requestFocus();
 				else if( playerFields[nextField].isVisible() )

@@ -8,12 +8,8 @@
 package engine;
 
 import java.awt.Color;
-import java.util.List;
 import java.util.Map;
 import java.util.Observable;
-
-import javax.swing.JOptionPane;
-
 import classes.Player;
 import classes.RiskGame;
 import classes.Territory;
@@ -62,7 +58,6 @@ public class RiskGameEngine extends Observable
 	
 	public void createNewGame()
 	{
-		System.out.println( "In createNewGame of RiskGameEngine" );
 		game.createNewGame();
 		this.state = State.createPlayers;
 		this.setChanged();
