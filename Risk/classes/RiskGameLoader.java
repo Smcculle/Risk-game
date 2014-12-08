@@ -8,14 +8,15 @@ package classes;
 
 import java.awt.Point;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JOptionPane;
+
+import engine.RiskUtils;
 
 /**
  * Reads the config file and creates new GameBoard and Deck classes for
@@ -164,14 +165,18 @@ public class RiskGameLoader
 	 */
 	private void getConfigData( String filename )
 	{
-
-		File inFile = new File( filename );
+		
+		/*****replaced by input stream for jar creation***********/ 
+		//File inFile = new File( filename ); */
+		
+		InputStream is = RiskUtils.getResourceAsStream( CONFIG_FILE );
 
 		/*
 		 * if the file does not exist, is not accessible, is not regular, print
 		 * error message and exit.  
 		 */
-		if ( !( inFile.exists() && inFile.canRead() && inFile.isFile() ) )
+		//if ( !( inFile.exists() && inFile.canRead() && inFile.isFile() ) )
+		if( is == null )
 		{
 			JOptionPane.showMessageDialog( null, "Provided filename" + 
 					filename + "is not valid. Exiting program." );
@@ -181,11 +186,12 @@ public class RiskGameLoader
 		/* if the file is valid, use bufferedreader in a try statement to open */
 		else
 		{
-			/* try to open file, catch FileNotFoundException */
+			/* try to open file, catch FileNotFoundException 
 			try
-			{
-				FileReader fin = new FileReader( inFile );
-				BufferedReader bin = new BufferedReader( fin );
+			{*/
+				//FileReader fin = new FileReader( inFile );
+				BufferedReader bin = new BufferedReader( 
+						new InputStreamReader( is ));
 				String currentLine;
 
 				/* try to read file, catch IOException */
@@ -213,13 +219,13 @@ public class RiskGameLoader
 					System.err
 							.println( "Couldn't read file: " + e.getMessage() );
 				}
-			}
-			/* TOCTTOU error occurred */
+		//	}
+			/* TOCTTOU error occurred 
 			catch ( FileNotFoundException e )
 			{
-				System.err.printf( "File %s is no longer readable. %n", inFile );
+				System.err.printf( "File %s is no longer readable. %n", filename );
 				e.printStackTrace();
-			}
+			} */
 		}
 	}
 }

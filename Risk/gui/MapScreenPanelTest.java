@@ -12,16 +12,12 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
@@ -45,8 +41,8 @@ public class MapScreenPanelTest extends JPanel
 	{
 		private BufferedImage bufferedMap; 
 		private BufferedImage mapOverlay;
-		private final static String MAP_PATH = "images/RiskBoard.jpg";
-		private final static String OVERLAY_PATH = "images/BoardOverlay.png";
+		private final static String MAP_PATH = "RiskBoard.jpg";
+		private final static String OVERLAY_PATH = "BoardOverlay.png";
 		
 		private int w, h; 
 		
@@ -62,7 +58,7 @@ public class MapScreenPanelTest extends JPanel
 		private BufferedImage readImage( String pathName )
 		{
 			
-			URL url = MapScreenPanelTest.class.getClassLoader().getResource( pathName );
+			/*URL url = MapScreenPanelTest.class.getClassLoader().getResource( pathName );
 			BufferedImage img = null;
 			
 			try
@@ -74,9 +70,9 @@ public class MapScreenPanelTest extends JPanel
 				System.err.println( "Error reading image" );
 				e.printStackTrace();
 				System.exit( 1 );
-			}
+			}*/
 			
-			return img;
+			return RiskUtils.getImage( pathName );
 		}
 		
 		public Dimension getPreferredSize()

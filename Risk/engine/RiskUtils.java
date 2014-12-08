@@ -14,7 +14,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -102,12 +102,29 @@ public final class RiskUtils
 	{
 		return getRelativeScreenLocation( START_POSITION, START_POSITION );
 	}
-	private static URL getResource( String fileName )
+	
+	
+	/**
+	 * helper method to retrieve resource as stream for an image file.  
+	 */
+	private static InputStream getResource( String fileName )
 	{
 		String pathName = PATH_DIR + fileName;
-		URL url = RiskUtils.class.getClassLoader().getResource( pathName );
-		
-		return url;
+		return RiskUtils.class.getClassLoader().getResourceAsStream( pathName );
+	}
+	
+	/**
+	 * Gets resource as stream for the provided fileName and directory.
+	 *   
+	 * @param filePath String path relative to top level Risk folder 
+	 * with fileName and extension to retrieve as stream, i.e., 
+	 * "images/example.png" or "classes/config.txt".   
+	 * 
+	 * @return InputStream containing the resource selected.  
+	 */
+	public static InputStream getResourceAsStream( String filePath )
+	{
+		return RiskUtils.class.getClassLoader().getResourceAsStream( filePath );
 	}
 
 }

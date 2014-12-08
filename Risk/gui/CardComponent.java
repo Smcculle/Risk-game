@@ -19,6 +19,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
 import classes.Card;
+import engine.RiskUtils;
 
 @SuppressWarnings( "serial" )
 public class CardComponent extends JPanel
@@ -73,11 +74,10 @@ public class CardComponent extends JPanel
 	private JLabel getCardIcon()
 	{
 		/* construct appropriate path */
-		String pathName = PATH_DIR + card.getType() + ".png";
+		String fileName = card.getType() + ".png";
 		
 		/* place image icon onto JLabel and return */
-		return new JLabel( new javax.swing.ImageIcon(
-				this.getClass().getClassLoader().getResource( pathName ) ) );
+		return RiskUtils.getIcon( fileName );
 	}
 
 	public boolean isSelected()

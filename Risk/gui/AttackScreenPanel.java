@@ -9,6 +9,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,14 +18,19 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
+
 import classes.Player;
 import classes.Territory;
+
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.border.BevelBorder;
+
+import engine.RiskUtils;
 
 @SuppressWarnings( "serial" )
 public class AttackScreenPanel extends JPanel
@@ -32,7 +38,7 @@ public class AttackScreenPanel extends JPanel
 
 	private static final int MAX_ATTACK_DICE = 3;
 	private static final int MAX_DEFEND_DICE = 2;
-	private static final String PATH_DIR = "images/";
+	private static final String IMAGE_NAME = "attack.png";
 
 	private ActionListener handler;
 	
@@ -316,17 +322,9 @@ public class AttackScreenPanel extends JPanel
 
 	private JLabel getAttackIcon()
 	{
-		/* construct appropriate path */
-		String pathName = PATH_DIR + "attack.png";
 
 		/* place image icon onto JLabel and return at scaled size */
-		return new JLabel(
-				new javax.swing.ImageIcon(
-						new javax.swing.ImageIcon(
-								this.getClass().getClassLoader()
-										.getResource( pathName ) )
-								.getImage().getScaledInstance(
-										100, 100, java.awt.Image.SCALE_SMOOTH ) ) );
+		return RiskUtils.getScaledIcon( IMAGE_NAME, 100, 100 );
 	}
 
 	public void setAttackDiceGroup( int numDice )
