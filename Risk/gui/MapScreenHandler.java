@@ -41,10 +41,23 @@ public class MapScreenHandler implements ActionListener
 				handleActionTo( (JComboBox<String>)source, event );
 		}
 		
-		/* sets state to fortify and notify observers */
-		else if( event.getActionCommand().equals( "endTurn" ))
+		/* button event received */
+		else
 		{
-			model.fortify();
+			String command = event.getActionCommand();
+			/* sets state to fortify and notify observers */
+			if( command.equals( "endTurn" ))
+			{
+				if( model.getState() == State.attack )
+					model.fortify();
+				else if ( model.getState() == State.fortify )
+					model.endTurn();
+			}
+			else if( command.equals( "openCards" ))
+			{
+				System.out.println( "showing a cards. Player has " + model.getCurrentPlayer().getHandSize() );
+				view.showCards( model.getCurrentPlayer(), false );
+			}
 		}
 	}
 	
@@ -71,8 +84,11 @@ public class MapScreenHandler implements ActionListener
 			
 			/* continue while there are territories to assign */
 			if( comboBox.getItemCount() > 0 )
-				view.setNextPlayer( model.getNextPlayer() );
-			
+			{
+				Player currentPlayer = model.getNextPlayer();
+				view.setLabelAssignTerritories( currentPlayer );
+				view.setNextPlayer( currentPlayer );
+			}
 			/* all territories have been taken, advance to second stage */
 			else 
 				model.assignArmies();
@@ -146,8 +162,10 @@ public class MapScreenHandler implements ActionListener
 	 */
 	public void initializeMap()
 	{	
+		Player currentPlayer = model.getNextPlayer();
 		view.setMap( model.getGame().getTerritoriesList() );
-		view.setNextPlayer( model.getNextPlayer() );
+		view.setNextPlayer( currentPlayer );
+		view.setLabelAssignTerritories( currentPlayer );
 	}
 	
 	/**

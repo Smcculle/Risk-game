@@ -102,22 +102,9 @@ public class CreatePlayersScreenPanel extends JPanel
 		
 		( (CreatePlayersScreenHandler)handler ).setView( this );
 		
-		//TODO remove
-		testOptions();
 		
 	}
-	private void testOptions()
-	{
-		colorPanels[0].setBackground( ColorFrame.RED );
-		playerFields[0].setText( "Red player" );
-		
-		colorPanels[1].setBackground( ColorFrame.BLUE );
-		playerFields[1].setText( "Blue player" );
-		
-		colorPanels[2].setBackground( ColorFrame.GREEN );
-		playerFields[2].setText( "Green player" );
-		nextButton.setEnabled( true );
-	}
+	
 	private JPanel getLabelPanel()
 	{
 		JPanel innerPanel = new JPanel();

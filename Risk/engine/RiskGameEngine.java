@@ -181,16 +181,25 @@ public class RiskGameEngine extends Observable
 		
 		if( this.state == State.fortify )
 		{
-			game.endTurn();
-			
-			/* change state to placeArmie and get reinforcements */
-			placeArmies();
+			this.endTurn();
 		}
 		else
 		{
 			this.setChanged();
 			this.notifyObservers( "troopsMoved" );
 		}
+	}
+	
+	/**
+	 * Ends player's turn by assigning card if necessary and getting next 
+	 * player.  
+	 */
+	public void endTurn()
+	{
+		game.endTurn();
+		
+		/* change state to placeArmies and get reinforcements */
+		placeArmies();
 	}
 
 	public void loadGame( String gameFileName )

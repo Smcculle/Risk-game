@@ -80,6 +80,8 @@ public class CardScreenPanel extends JPanel
 		scrollPane.setPreferredSize( new Dimension( PREFERRED_WIDTH, PREFERRED_HEIGHT));
 		this.add( southPanel, BorderLayout.SOUTH );
 		this.setBorder( new EmptyBorder( 10, 10, 10, 10 ) );
+		
+		handler.addView( this );
 	
 	}
 	

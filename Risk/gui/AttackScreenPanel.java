@@ -508,9 +508,6 @@ public class AttackScreenPanel extends JPanel
 
 			defendDie.setEnabled( false );
 
-			System.out
-					.println( "Defender bounds engaged. Num defending decreasing"
-							+ "from " + numDefending + " by 1" );
 			defendDiceEnabled--;
 		}
 	}
@@ -535,9 +532,6 @@ public class AttackScreenPanel extends JPanel
 
 			attackDie.setEnabled( false );
 
-			System.out
-					.println( "Attacker bounds engaged. Num attacking decreasing"
-							+ "from " + numAttacking + " by 1" );
 			attackDiceEnabled--;
 		}
 

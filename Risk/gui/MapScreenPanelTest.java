@@ -139,7 +139,7 @@ public class MapScreenPanelTest extends JPanel
 		currentAttackFramePanel = new JPanel();
 		
 		cardFrame = new JInternalFrame();
-		cardFrame.setLocation( RiskUtils.getRelativeScreenLocation( 0.10, 0.2 ) );
+		cardFrame.setLocation( RiskUtils.getRelativeScreenLocation( 0.0, 0.25) );
 		
 		attackFrame = new JInternalFrame();
 		attackFrame.setLocation( RiskUtils.getRelativeScreenLocation( 0.15, 0.15 ) );
@@ -155,16 +155,10 @@ public class MapScreenPanelTest extends JPanel
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		menuPanel.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null), new EmptyBorder(0, 0, 0, 0)));
 		menuPanel.setBounds(0, 0, 1280, 40);
+
+		cardButton.setActionCommand("openCards");
+		cardButton.addActionListener( handler );
 		
-		//TODO put in handler class 
-		cardButton.addActionListener( new ActionListener()
-		{
-			@Override
-			public void actionPerformed( ActionEvent e )
-			{
-				cardFrame.setVisible( !cardFrame.isVisible() );
-			}
-		} );
 		
 		actionFromBox = new JComboBox<String>();
 		actionFromBox.setName( "actionFromBox" );
@@ -274,13 +268,16 @@ public class MapScreenPanelTest extends JPanel
 	}
 	
 	/**
-	 * Update map data with new troop values, erase actionFromBox items.  
+	 * Update map data with new troop values, erase actionToBox items.  
 	 */
 	public void updateMove( Player currentPlayer )
 	{
 		
 		updateAttackBox( currentPlayer );
-		actionFromBox.removeAllItems();
+		
+		actionToBox.removeActionListener( handler );
+		actionToBox.removeAllItems();
+		actionToBox.addActionListener( handler );
 	}
 	
 	/**
@@ -345,6 +342,8 @@ public class MapScreenPanelTest extends JPanel
 	{
 		this.territories = territories; 
 		initActionFromBox( territories );
+		endTurnButton.setEnabled( false );
+		
 	}
 	
 	/**
@@ -401,13 +400,13 @@ public class MapScreenPanelTest extends JPanel
 		
 	}
 
-	//TODO Distinction not needed 
 	public void placeArmies( Player currentPlayer )
 	{
+		endTurnButton.setEnabled( false );
 		assignArmies( currentPlayer );
 	}
 	
-	private void setLabelAssignTerritories( Player currentPlayer )
+	public void setLabelAssignTerritories( Player currentPlayer )
 	{
 		infoLabel.setText( currentPlayer.getName() + ", choose a territory "
 				+ "from the box." );
@@ -464,7 +463,7 @@ public class MapScreenPanelTest extends JPanel
 	public void showCards( Player currentPlayer, boolean mustTradeCards )
 	{
 		cardScreenPanel.setPlayer( currentPlayer, mustTradeCards );
-		
+		cardFrame.setVisible( !cardFrame.isVisible() );
 	}
 	/**
 	 * Sets up the actionToBox for attack state.  
@@ -523,6 +522,7 @@ public class MapScreenPanelTest extends JPanel
 	public void showAttackBox( Player currentPlayer )
 	{
 		actionToBox.setVisible( true );
+		endTurnButton.setEnabled( true );
 		actionToBox.setPreferredSize( actionFromBox.getPreferredSize() );
 		setLabelAttack( currentPlayer );
 		updateAttackBox ( currentPlayer );
