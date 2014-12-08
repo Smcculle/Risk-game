@@ -25,7 +25,6 @@ import engine.RiskUtils;
 public class CardComponent extends JPanel
 {
 	private static final int PAD_VALUE = 5; 
-	private static final String PATH_DIR = "images/";
 	private JLabel countryName;
 	private JLabel cardIcon;
 	private Card card;

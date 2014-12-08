@@ -8,12 +8,27 @@
 package engine;
 
 import gui.GameGUI;
+
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class Risk
 {
 
 	public static void main( String[] args )
+	{
+		/* start program on EDT */
+		SwingUtilities.invokeLater( new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				createAndShowGUI();
+			}
+		} );
+	}
+	
+	public static void createAndShowGUI()
 	{
 		RiskGameEngine gameEngine = new RiskGameEngine();
 		GameGUI gui = new GameGUI( gameEngine );

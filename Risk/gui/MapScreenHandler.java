@@ -55,7 +55,6 @@ public class MapScreenHandler implements ActionListener
 			}
 			else if( command.equals( "openCards" ))
 			{
-				System.out.println( "showing a cards. Player has " + model.getCurrentPlayer().getHandSize() );
 				view.showCards( model.getCurrentPlayer(), false );
 			}
 		}
