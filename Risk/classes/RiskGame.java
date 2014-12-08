@@ -239,8 +239,19 @@ public class RiskGame
 		return this.mustTradeCards;
 	}
 
-	private void takeTurn()
+	/**
+	 * Give a card to the current player if hasCaptured is true, and set
+	 * the next player to current player.  
+	 */
+	public void endTurn()
 	{
+		if( currentPlayer.hasCaptured() )
+		{
+			currentPlayer.setHasCaptured( false );
+			currentPlayer.addCard( deck.deal() );
+		}
+		
+		getNextPlayer();
 	}
 
 	/**

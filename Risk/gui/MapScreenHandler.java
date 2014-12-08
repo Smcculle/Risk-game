@@ -56,9 +56,12 @@ public class MapScreenHandler implements ActionListener
 			else if ( source.getName().equals( "actionToBox"))
 				handleActionTo( (JComboBox<String>)source, event );
 		}
+		
+		/* sets state to fortify and notify observers */
 		else if( event.getActionCommand().equals( "endTurn" ))
 		{
 			System.out.printf( "Ending turn ");
+			model.fortify();
 		}
 	}
 	
@@ -76,9 +79,10 @@ public class MapScreenHandler implements ActionListener
 				comboBox.getName(), comboBox.getSelectedItem(), comboBox.getItemCount() );
 		
 		String territory = ( (String)comboBox.getSelectedItem() );
+		State state = model.getState();
 		
 		/* assign a territory, get next player */
-		if( model.getState() == State.assignTerritories)
+		if( state == State.assignTerritories)
 		{	
 			model.addTerritory( territory );
 			comboBox.removeItem( comboBox.getSelectedItem() );
@@ -94,7 +98,7 @@ public class MapScreenHandler implements ActionListener
 		}
 		
 		/* assign 1 army to 1 territory, get next player */
-		else if( model.getState() == State.assignArmies )
+		else if( state == State.assignArmies )
 		{
 			/* increase troop in territory by 1, decrease currentPlayer by 1*/
 			model.incrementTroops( territory );
@@ -110,7 +114,7 @@ public class MapScreenHandler implements ActionListener
 			}
 		}
 		/* place all armies remaining and then begin turn */ 
-		else if( model.getState() == State.placeArmies )
+		else if( state == State.placeArmies )
 		{
 			model.incrementTroops( territory );
 			view.setLabelPlaceArmies( model.getCurrentPlayer() );
@@ -121,9 +125,15 @@ public class MapScreenHandler implements ActionListener
 		}
 		
 		/* selecting territory to attack from, load adjacencies */
-		else if( model.getState() == State.attack )
+		else if( state == State.attack )
 		{
 			view.initActionToBox( territory );
+		}
+		
+		/* populate the actionToBox with friendly adjacent territories */
+		else if( state == State.fortify )
+		{
+			view.initFortifyToChoices( territory );
 		}
 		
 	} 
@@ -137,10 +147,16 @@ public class MapScreenHandler implements ActionListener
 	 */
 	private void handleActionTo( JComboBox<String> comboBox, ActionEvent event)
 	{
+		State state = model.getState();
 		/* open attack screen between the 2 territories */
-		if( model.getState() == State.attack )
+		if( state == State.attack )
 		{
 			view.attack();
+		}
+		/* open move screen between 2 territories */
+		else if( state == State.fortify )
+		{
+			view.fortify();
 		}
 	}
 	/**
@@ -173,8 +189,8 @@ public class MapScreenHandler implements ActionListener
 	}
 	
 	/**
-	 * Update map data with new troop values, close troop panel, update
-	 * comboBox with new territory if necessary.  
+	 * Update map data with new troop values, update comboBox with new 
+	 * territory if necessary.  
 	 */
 	public void updateMove()
 	{
@@ -205,6 +221,7 @@ public class MapScreenHandler implements ActionListener
 	public void updateCapturedState()
 	{
 		Player currentPlayer = model.getCurrentPlayer();
+		currentPlayer.setHasCaptured( true );
 		view.showMoveTroopsScreen();
 		view.updateAttackBox( currentPlayer );
 	}
@@ -219,6 +236,16 @@ public class MapScreenHandler implements ActionListener
 	}
 	
 	/**
+	 * State has been set to fortify, populate actionFromBox with all 
+	 * territories a player owns for troop movement.    
+	 */
+	public void fortify()
+	{
+		Player currentPlayer = model.getCurrentPlayer();
+		view.initFortifyFromChoices( currentPlayer );
+	}
+	
+	/**
 	 * Adds the mapScreenPanel so that we can call its methods easily.  
 	 *  
 	 * @param view mapScreenPanel to add to the member variables.  
@@ -227,7 +254,5 @@ public class MapScreenHandler implements ActionListener
 	{
 		this.view = view; 
 	}
-
 	
-
 }

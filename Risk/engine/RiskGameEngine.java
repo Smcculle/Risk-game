@@ -123,6 +123,15 @@ public class RiskGameEngine extends Observable
 	}
 	
 	/**
+	 * Sets fortify state, allow player to move troops once.  
+	 */
+	public void fortify()
+	{
+		this.state = State.fortify;
+		this.setChanged();
+		this.notifyObservers();
+	}
+	/**
 	 * Notifies observer that map needs to be updated 
 	 */
 	public void sendGUIMessage( String message )
@@ -163,7 +172,8 @@ public class RiskGameEngine extends Observable
 	}
 	
 	/**
-	 * Calls RiskGame method for the current player to move troops. 
+	 * If in fortify state, takes steps needed to end turn, otherwise updates
+	 * the map with new state.  
 	 * 
 	 * @param movingFrom Territory starting move
 	 * @param movingTo Territory ending move 
@@ -173,8 +183,19 @@ public class RiskGameEngine extends Observable
 			int numMoving )
 	{
 		game.moveTroops( movingFrom, movingTo, numMoving );
-		this.setChanged();
-		this.notifyObservers( "troopsMoved" );
+		
+		if( this.state == State.fortify )
+		{
+			game.endTurn();
+			
+			/* change state to placeArmie and get reinforcements */
+			placeArmies();
+		}
+		else
+		{
+			this.setChanged();
+			this.notifyObservers( "troopsMoved" );
+		}
 	}
 
 	public void loadGame( String gameFileName )

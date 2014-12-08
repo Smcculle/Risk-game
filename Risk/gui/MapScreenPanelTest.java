@@ -359,12 +359,13 @@ public class MapScreenPanelTest extends JPanel
 	}
 	
 	/**
-	 * Update map data with new troop values and close troop panel.
+	 * Update map data with new troop values, erase actionFromBox items.  
 	 */
 	public void updateMove( Player currentPlayer )
 	{
 		attackFrame.setVisible( false );
 		updateAttackBox( currentPlayer );
+		actionFromBox.removeAllItems();
 	}
 	
 	/**
@@ -387,6 +388,29 @@ public class MapScreenPanelTest extends JPanel
 		
 	}
 	
+	/**
+	 * Fortify phase: Initialize the move panel with territories selected 
+	 * in actionFromBox to territory in actionToBox
+	 */
+	public void fortify()
+	{
+		moveTroopsScreenPanel.moveTroops( 
+				territories.get( (String)actionFromBox.getSelectedItem() ), 
+				territories.get( (String)actionToBox.getSelectedItem() ) );
+		
+		attackFrame.setVisible( false );
+		
+		this.changeAttackFrameContent( moveTroopsScreenPanel );
+		attackFrame.show();
+		
+	}
+	
+	
+	/**
+	 * Updates content in attackFrame with newContent
+	 * 
+	 * @param newContent JPanel containing new content.  
+	 */
 	private void changeAttackFrameContent( JPanel newContent )
 	{
 		attackFrame.getContentPane().remove( currentAttackFramePanel );
@@ -428,6 +452,7 @@ public class MapScreenPanelTest extends JPanel
 		this.updateMap();
 	}
 	
+	
 	/**
 	 * Updates label with appropriate text for assigning territories and 
 	 * sets the current player.  
@@ -467,12 +492,13 @@ public class MapScreenPanelTest extends JPanel
 		assignArmies( currentPlayer );
 	}
 	
-	public void setLabelAssignTerritories( Player currentPlayer )
+	private void setLabelAssignTerritories( Player currentPlayer )
 	{
 		infoLabel.setText( currentPlayer.getName() + ", choose a territory "
 				+ "from the box." );
 		repaint();
 	}
+	
 	public void setLabelPlaceArmies( Player currentPlayer )
 	{
 		infoLabel.setText( currentPlayer.getName() + ", place your armies.  " 
@@ -481,13 +507,26 @@ public class MapScreenPanelTest extends JPanel
 		repaint();
 	}
 	
-	public void setLabelAttack( Player currentPlayer )
+	private void setLabelAttack( Player currentPlayer )
 	{
 		infoLabel.setText( currentPlayer.getName() + ", begin attack phase" );
 		repaint();
 		
 	}
 	
+	private void setLabelFortify( Player currentPlayer ) 
+	{
+		infoLabel.setText( currentPlayer.getName() + ", reinforcement phase");
+		repaint();
+	}
+	/**
+	 * @param currentPlayer
+	 */
+	public void initFortifyFromChoices( Player currentPlayer )
+	{
+		setLabelFortify( currentPlayer );
+		updateAttackBox( currentPlayer );
+	}
 	
 	public void showMoveTroopsScreen()
 	{
@@ -535,6 +574,32 @@ public class MapScreenPanelTest extends JPanel
 	}
 	
 	/**
+	 * Populates actionToBox with a list of neighbors of movingTerritory for
+	 * fortify state. 
+	 * 
+	 * TODO merge with initActionToBox with branching point. 
+	 * @param movingTerritory String name of territory moving from.  
+	 */
+	public void initFortifyToChoices( String movingTerritory )
+	{
+		Territory movingFrom = territories.get( movingTerritory );
+		Player movingPlayer = movingFrom.getOccupant();
+		Map<String, Territory> choices = movingFrom.getNeighbors();
+		
+		actionToBox.removeActionListener( handler );
+		actionToBox.removeAllItems(); 
+		
+		/* check ownership before adding to box */
+		for( Territory t : choices.values() )
+		{
+			if( t.getOccupant() == movingPlayer )
+			actionToBox.addItem( t.getName() );
+		}
+		
+		actionToBox.addActionListener( handler );	
+	}
+	
+	/**
 	 * Shows the actionToBox and populates actionFromBox with list of 
 	 * territories that a player can attack from. 
 	 * 
@@ -560,7 +625,7 @@ public class MapScreenPanelTest extends JPanel
 		actionFromBox.removeAllItems(); 
 		for( Territory t : currentPlayer.getTerritoriesList().values() )
 		{
-			System.out.printf( "%s ", t);
+			/* need at least 2 armies to fortify or attack */
 			if( t.getNumArmies() > 1 )
 				actionFromBox.addItem( t.getName() );
 		}
@@ -715,4 +780,5 @@ public class MapScreenPanelTest extends JPanel
 		public void mouseReleased( MouseEvent e ){}
 		
 	}
+	
 }

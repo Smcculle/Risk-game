@@ -55,7 +55,9 @@ public class MoveTroopsScreenHandler implements ActionListener,
 		{  
 			/* calls handler's moveTroops method with data from fields */
 			view.callMoveTroops();
-			//SwingUtilities.getWindowAncestor( event.getSource() );
+			SwingUtilities.getAncestorOfClass( 
+					JInternalFrame.class, (Component)event.getSource() )
+					.setVisible( false );
 		}
 		
 		else if ( command == "Min" )
@@ -66,9 +68,13 @@ public class MoveTroopsScreenHandler implements ActionListener,
 		{
 			view.setMaxTroops();
 		}
-		else
+		
+		/* close window, but do not change state */
+		else if ( command.equals( "Quit" ))
 		{
-			System.out.println( "Command of " + event.getActionCommand() );
+			SwingUtilities.getAncestorOfClass( 
+					JInternalFrame.class, (Component)event.getSource() )
+					.setVisible( false );
 		}
 	}
 	

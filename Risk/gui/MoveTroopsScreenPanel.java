@@ -48,8 +48,6 @@ import javax.swing.text.NumberFormatter;
 @SuppressWarnings( "serial" )
 public class MoveTroopsScreenPanel extends JPanel
 {
-
-	private static final String PATH_DIR = "images/";
 	
 	private MoveTroopsScreenHandler handler;
 	private String errorMessage;
@@ -63,21 +61,17 @@ public class MoveTroopsScreenPanel extends JPanel
 	private JLabel movingFromLabel, movingToLabel;
 
 	/* center buttons, slider */
-	private JPanel sliderPanel;
-	private JPanel choicePanel;
+	private JPanel sliderPanel, choicePanel;
 	private JFormattedTextField numMovingField;
 	private JSlider troopSlider;
-	private JButton minButton;
-	private JButton maxButton;
+	private JButton minButton, maxButton;
 
 	/* south menu options */
 	private JPanel menuPanel;
-	private JButton moveButton;
-
+	private JButton moveButton, quitButton;
+	
 	/* defender, attacker information */
-	private Territory movingFrom;
-	private Territory movingTo;
-	private Player movingPlayer;
+	private Territory movingFrom, movingTo;
 
 	/**
 	 * Create the panel.
@@ -195,8 +189,7 @@ public class MoveTroopsScreenPanel extends JPanel
 		moveButton.setEnabled( false );
 		JOptionPane.showMessageDialog( this, errorMessage, 
 				"Invalid troop selection", 
-				JOptionPane.ERROR_MESSAGE);	
-		
+				JOptionPane.ERROR_MESSAGE);		
 	}
 	
 	public void setMaxTroops()
@@ -216,20 +209,36 @@ public class MoveTroopsScreenPanel extends JPanel
 	}
 	
 	/**
-	 * Initializes move panel with the information provided.  
+	 * <b>Attack phase:</b> Initializes move panel with the 
+	 * information provided for the attack phase.    
 	 * 
 	 * @param movingFrom territory troops are moving from
 	 * @param movingTo territory troops are moving to 
 	 */
 	public void moveTroops( Territory movingFrom, Territory movingTo, int minToMove )
 	{
-		movingPlayer = movingFrom.getOccupant();
+		quitButton.setVisible( false );
+		Player movingPlayer = movingFrom.getOccupant();
 		this.movingFrom = movingFrom;
 		this.movingTo = movingTo;
 		setLabelText();
 		initPanel( minToMove );
+		setDescriptionPanel();
 
-		// TODO test value
+	}
+	
+	/**
+	 * <b>Fortify phase:</b>  Initializes move panel with the information for 
+	 * the fortify phase, making the quit button available for the player.    
+	 * 
+	 * @param movingFrom territory troops are moving from
+	 * @param movingTo territory troops are moving to 
+	 */
+	public void moveTroops( Territory movingFrom, Territory movingTo )
+	{
+		moveTroops( movingFrom, movingTo, 1 );
+		quitButton.setVisible( true );
+		
 	}
 
 	/**
@@ -243,7 +252,7 @@ public class MoveTroopsScreenPanel extends JPanel
 		descriptionLabel.setBorder(
 				BorderFactory.createBevelBorder( BevelBorder.LOWERED ) );
 
-		result.add( descriptionLabel, BorderLayout.WEST );
+		result.add( descriptionLabel, BorderLayout.CENTER );
 
 		return result;
 	}
@@ -327,8 +336,13 @@ public class MoveTroopsScreenPanel extends JPanel
 
 		moveButton = new JButton( "Move" );
 		moveButton.addActionListener( handler );
-
 		result.add( moveButton );
+		
+		quitButton = new JButton( "Quit" );
+		quitButton.addActionListener( handler );
+		result.add( quitButton );
+		quitButton.setVisible(false);
+		
 		return result;
 	}
 

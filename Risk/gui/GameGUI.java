@@ -151,7 +151,45 @@ public class GameGUI extends JFrame implements Observer
 			this.changeScreen( this.createGameScreen );
 		}
 		else*/ 
-		if ( state == State.loadStartScreen ) 
+		/* attack phase of turn */
+		if( state == State.attack )
+		{
+			System.out.println( "In notify observers attack state, object = " + obj );
+			
+			//TODO check it 
+			if( obj instanceof String) 
+			{
+				if ( obj.equals( "captured") )
+					mapScreenHandler.updateCapturedState();
+				
+				else if( obj.equals( "troopsMoved" )) 
+					mapScreenHandler.updateMove();
+			
+				else if( obj.equals( "updateAttackBox") )
+					mapScreenHandler.updateAttackBox();
+				
+				else
+				{
+					System.out.printf("Calling update map %n");
+					mapScreenHandler.updateMap();
+				}
+					
+			}
+			else
+			{
+				System.out.println( "Object not string, call attack");
+				mapScreenHandler.attack();
+			}
+
+		}
+		
+		/*begin fortify phase of turn */
+		else if ( state == State.fortify )
+		{
+			mapScreenHandler.fortify();
+		}
+		
+		else if ( state == State.loadStartScreen ) 
 		{
 			System.out.println( "Moving to startScreen in GUI" );
 			this.changeScreen( this.startScreen );
@@ -187,36 +225,6 @@ public class GameGUI extends JFrame implements Observer
 		else if( state == State.placeArmies )
 		{
 			mapScreenHandler.placeArmies(); 
-		}
-		else if( state == State.attack )
-		{
-			System.out.println( "In notify observers attack state, object = " + obj );
-			
-			//TODO check it 
-			if( obj instanceof String) 
-			{
-				if ( obj.equals( "captured") )
-					mapScreenHandler.updateCapturedState();
-				
-				else if( obj.equals( "troopsMoved" )) 
-					mapScreenHandler.updateMove();
-			
-				else if( obj.equals( "updateAttackBox") )
-					mapScreenHandler.updateAttackBox();
-				
-				else
-				{
-					System.out.printf("Calling update map %n");
-					mapScreenHandler.updateMap();
-				}
-					
-			}
-			else
-			{
-				System.out.println( "Object not string, call attack");
-				mapScreenHandler.attack();
-			}
-
 		}
 		else if( state == State.failedInit)
 		{

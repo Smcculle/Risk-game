@@ -24,10 +24,14 @@ public class Player
 	private Map<String, Continent> continents;
 	private Hand cardHand;
 	private Color circleColor;
+	
+	/* track capture for card at end of turn */
+	private boolean hasCaptured; 
 
 	public Player()
 	{
 		this( null );
+		hasCaptured = false; 
 	}
 
 	public Player( String name )
@@ -36,6 +40,7 @@ public class Player
 		territories = new HashMap<String, Territory>();
 		continents = new HashMap<String, Continent>();
 		cardHand = new Hand();
+		hasCaptured = false; 
 	}
 
 	public Player( String name, Color color )
@@ -324,11 +329,15 @@ public class Player
 	{
 		this.numArmies++;
 	}
-
-	// TODO remove
-	public String toString()
+	
+	public void setHasCaptured( boolean flag )
 	{
-		return (this.name + this.hashCode());
+		this.hasCaptured = flag; 
+	}
+	
+	public boolean hasCaptured()
+	{
+		return this.hasCaptured;
 	}
 
 } // end Player class
