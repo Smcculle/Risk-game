@@ -4,6 +4,6 @@ Usage: With all class files in respective folders
 
 1) execute RunRiskGame.vbs, which executes a vb script to hide a command window and runs "java engine/Risk"
 
-or 
+-or- 
 
 2) java engine/Risk from console 
