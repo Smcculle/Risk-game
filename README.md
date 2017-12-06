@@ -7,6 +7,7 @@ Class project for software development II focusing on test-driven development.  
 Risk game is nearly complete with minor issues that need to be addressed such as additional player guidance and ending conditions. 
 
 ```bash
+cd Risk
 $ RunRiskGame.vbs
 ``` 
 which executes a vb script to hide a command window and runs `java engine/Risk`
@@ -14,5 +15,6 @@ which executes a vb script to hide a command window and runs `java engine/Risk`
 -or-
 
 ```bash
+cd Risk
 $ java engine/Risk  
 ```
